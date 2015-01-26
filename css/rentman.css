@@ -1,0 +1,21 @@
+.rentman-attachment {
+	padding: 5px;
+}
+.rentman-extra-margin {
+	margin-top: 16px !important;
+}
+.icon-green { 
+	color: #68C97B;
+	font-size: 24px;
+}
+.icon-red { 
+	color: #D6202C;
+	font-size: 24px;
+}
+.icon-orange { 
+	color: #DE0540;
+	font-size: 24px;
+}
+.product .sku_wrapper { 
+	display: none !important; 
+}
