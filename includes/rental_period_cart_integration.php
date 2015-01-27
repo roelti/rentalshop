@@ -49,7 +49,7 @@ class Rentman_Rental_Period {
 			$availability = json_decode($availability);
 		}
 		if (!isset($availability) || $availability === null) {
-			echo '</br><span id='. $product_sku .' class="error">Beschikbaarheid kon niet worden opgehaald</span>';
+			echo '</br><span id='. $product_sku .' class="error">Beschikbaarheid ophalen...</span>';
 			return;
 		}
 		$quantity = $cart_item["quantity"];
