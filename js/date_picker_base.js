@@ -48,15 +48,15 @@ function create_datepicker(cart) {
 
 	jQuery(function() {
 		jQuery( "#datepicker-from-date" ).datepicker({
-			// Minimum date is today
-			minDate: new Date(Date.now()),
+			// Minimum date is tomorrow
+			minDate: new Date(Date.now() + (24 * 60 * 60 * 1000)),
 			onSelect: function(date) {
 				date_picked(date, this);
 			}
 		});
 		jQuery( "#datepicker-to-date" ).datepicker({
-			// Minimum date is tomorrow
-			minDate: new Date(Date.now() + (24 * 60 * 60 * 1000)),
+			// Minimum date is the day after tomorrow
+			minDate: new Date(Date.now() + (2 * 24 * 60 * 60 * 1000)),
 			onSelect: function(date) {
 				date_picked(date, this);
 			}
@@ -158,10 +158,7 @@ function handle_availability(result) {
 
 function handle_availability_cart(result) {
 	result.forEach(function(element) {
-		var quantity = jQuery("#" + element.id).parent().parent().find("input.input-text.qty.text").attr("value");
-		if (! quantity) {
-			jQuery("#" + element.id).html('');
-		}
+		var quantity = jQuery("#" + element.id).attr("quantity");
 		if (quantity <= element.maxconfirmed) {
 			jQuery("#" + element.id).html('<span class="icon-green">&#9679;</span>Product is beschikbaar');
 		} else if (quantity <= element.maxoption) {

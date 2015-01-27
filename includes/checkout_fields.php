@@ -43,8 +43,8 @@ class Rentman_Checkout_Fields {
 		if ( ! $_POST['datepicker-from-date'] || ! $_POST['datepicker-to-date'] ) {
 			wc_add_notice( 'Het invullen van een huurperiode is verplicht' );
 		} else {
-			$from_date = $_POST['datepicker-from-date'];
-			$to_date = $_POST['datepicker-to-date'];
+			$from_date = $this->convert_date_string($_POST['datepicker-from-date']);
+			$to_date = $this->convert_date_string($_POST['datepicker-to-date']);	
 
 			if ( $from_date >= $to_date) {
 				wc_add_notice( 'Begin huurperiode is na of op dezelfde dag als het eind van de huurperiode' );

@@ -48,25 +48,24 @@ class Rentman_Rental_Period {
 			$availability = $rentman->api_get_availability($from_date, $to_date, $product_sku, false);
 			$availability = json_decode($availability);
 		}
+		
+		$quantity = $cart_item["quantity"];
 
-		if ( ! is_checkout() ) {
-			if (!isset($availability) || $availability === null) {
-				echo '</br><span id='. $product_sku .' class="error">Beschikbaarheid ophalen...</span>';
-				return;
-			}
-			$quantity = $cart_item["quantity"];
-
-			echo "<br>";
-			echo '<span id="' . $product_sku . '">';
-			if ($quantity <= $availability->maxconfirmed) {
-				echo '<span class="icon-green">&#9679;</span>Beschikbaar';
-			} else if ($quantity <= $availability->maxoption) {
-				echo '<span class="icon-orange">&#9679;</span>Mogelijk beschikbaar';
-			} else {
-				echo '<span class="icon-red">&#9679;</span>Niet beschikbaar';
-			}
-			echo "</span>";
+		if (!isset($availability) || $availability === null) {
+			echo '</br><span id='. $product_sku .' quantity="'. $quantity .'" class="error">Beschikbaarheid ophalen...</span>';
+			return;
 		}
+
+		echo "<br>";
+		echo '<span id="' . $product_sku . '">';
+		if ($quantity <= $availability->maxconfirmed) {
+			echo '<span class="icon-green">&#9679;</span>Beschikbaar';
+		} else if ($quantity <= $availability->maxoption) {
+			echo '<span class="icon-orange">&#9679;</span>Mogelijk beschikbaar';
+		} else {
+			echo '<span class="icon-red">&#9679;</span>Niet beschikbaar';
+		}
+		echo "</span>";
 
 	}
 
