@@ -620,7 +620,10 @@ class Rentman {
 
 	// Add the required HTML for datepickers and availability to product pages
 	function product_datepicker_template() {
-		if ( isset($_SESSION['rentman_rental_session']) && 
+		global $woocommerce;
+
+		if ( count( $woocommerce->cart->cart_contents ) !== 0 &&
+				isset($_SESSION['rentman_rental_session']) && 
 				isset($_SESSION['rentman_rental_session']['from_date']) && 
 				isset($_SESSION['rentman_rental_session']['to_date']) ) {
 			$from_date_formatted = $_SESSION['rentman_rental_session']['from_date'];
@@ -639,7 +642,6 @@ class Rentman {
 			<input type="hidden" id="datepicker-from-date" class="datepicker" /><br>
 			<input type="hidden" id="datepicker-to-date" class="datepicker" /><br>
 			<?php
-			//echo __('Go to the cart to change rental period', 'rentman');
 		} else { 
 			?>
 			<input type="text" id="datepicker-from-date" class="datepicker"><br>
@@ -647,7 +649,6 @@ class Rentman {
 			<div class="" id="rentman-availability-status"></div></br>
 			<?php
 		}
-
 	}
 
 	// Gets all the rentman ids of the products in cart
@@ -738,9 +739,12 @@ class Rentman {
 			$template = $plugin_path . $template_name;
 		}
 
-		// Hacky bullshit
+		// Hacky way to make the template override work in certain themes
 		if (strpos('_' . $_template, 'rentable.php')) {
-			return str_replace('woocommerce/templates', 'rentman/woocommerce', $_template);
+			// Get the name of the plugin folder (with intermediate variables so PHP isn't confused by pointers)
+			$plugin_folder_name = explode( '/', $plugin_path );
+			$plugin_folder_name = array_reverse( $plugin_folder_name );
+			return str_replace('woocommerce/templates', $plugin_folder_name[2] . '/woocommerce', $_template);
 		}
 
 		// Use default template
