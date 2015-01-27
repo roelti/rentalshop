@@ -84,7 +84,7 @@ function create_datepicker(cart) {
 
 		send_server_timezone_offset();
 
-		if (cart) date_picked_cart(); else date_picked();
+		date_picked();
 	});
 }
 
@@ -137,7 +137,6 @@ function date_picked() {
 			});
 		});
 	} else {
-		console.log('hide button');
 		jQuery('.single_add_to_cart_button').hide();
 	}
 }
@@ -160,7 +159,9 @@ function handle_availability(result) {
 function handle_availability_cart(result) {
 	result.forEach(function(element) {
 		var quantity = jQuery("#" + element.id).parent().parent().find("input.input-text.qty.text").attr("value");
-		
+		if (! quantity) {
+			jQuery("#" + element.id).html('');
+		}
 		if (quantity <= element.maxconfirmed) {
 			jQuery("#" + element.id).html('<span class="icon-green">&#9679;</span>Product is beschikbaar');
 		} else if (quantity <= element.maxoption) {

@@ -192,7 +192,7 @@ class Rentman {
 				$this->add_rentman_id_to_db( $wp_id, $user_id, $contact_data_serialized );
 				$rentman_user_id = $user_id;
 			} else {
-				//logit('userid problem');
+				logit('userid problem');
 				return false;
 			}
 		// Information has changed
@@ -203,7 +203,7 @@ class Rentman {
 
 			$this->update_rentman_customer_data( $rentman_user_id, $contact_data_serialized );
 		} else {
-			//logit('user already exists');
+			$rentman_user_id = $db_data->rentman_id;
 		}
 
 		$this->send_products( $rentman_user_id, $order );
