@@ -24,9 +24,7 @@ class Rentman_Options {
 	 }
 
 	 public function validate( $input ) {
-	 	//logit($input);
-	 	echo 'dinges';
-	 	return($input);
+		return($input);
 	 }
 }
 global $option_object;
