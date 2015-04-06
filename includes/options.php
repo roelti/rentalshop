@@ -26,6 +26,17 @@ class Rentman_Options {
 	 public function validate( $input ) {
 		return($input);
 	 }
+
+    public function render_availabilityCheck()
+    {
+        $options = get_option( 'rentman_settings' );
+        ?>
+        <select name='rentman_settings[rentman_availabilityCheck]'>
+            <option value="1" <?php if($options['rentman_availabilityCheck'] == 1){echo"selected";} ?>>Ja</option>
+            <option value="0" <?php if($options['rentman_availabilityCheck'] == 0){echo"selected";} ?>>Nee</option>
+        </select>
+        <?php
+    }
 }
 global $option_object;
 $option_object = new Rentman_Options();

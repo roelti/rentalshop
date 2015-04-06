@@ -33,6 +33,10 @@ class Rentman_Rental_Period {
 		// Debug::dump($value);
 		// Debug::dump($cart_item);
 
+        $options = get_option( 'rentman_settings' );
+        if(!$options['rentman_availabilityCheck'])
+            return;
+
 		global $rentman;
 		echo $value;
 		if (isset($_SESSION['rentman_rental_session']['from_date']) && 

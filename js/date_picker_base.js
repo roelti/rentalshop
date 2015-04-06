@@ -142,8 +142,15 @@ function date_picked() {
 }
 
 // Updates the DOM to match product availability for the selected date
-function handle_availability(result) {
-	var quantity = jQuery('.input-text.qty.text').attr("value");
+function handle_availability(result)
+{
+	if(date_picker_localized.rm_checkAvailabilty == 0)
+    {
+        jQuery('.single_add_to_cart_button').show();
+        return;
+    }
+
+    var quantity = jQuery('.input-text.qty.text').attr("value");
 	if (quantity <= result.maxconfirmed) {
 		jQuery('#rentman-availability-status').html('<span class="icon-green">&#9679;</span>Product is beschikbaar');
 		jQuery('.single_add_to_cart_button').show();
@@ -157,7 +164,12 @@ function handle_availability(result) {
 }
 
 function handle_availability_cart(result) {
-	result.forEach(function(element) {
+    if(date_picker_localized.rm_checkAvailabilty == 0)
+    {
+        return;
+    }
+
+    result.forEach(function(element) {
 		var quantity = jQuery("#" + element.id).attr("quantity");
 		if (quantity <= element.maxconfirmed) {
 			jQuery("#" + element.id).html('<span class="icon-green">&#9679;</span>Product is beschikbaar');

@@ -101,6 +101,14 @@ class Rentman {
 			'rentman_login_section' 
 		);
 
+        add_settings_field(
+            'rentman_availabilityCheck',
+            'Check beschikbaarheid voor versturen',
+            array( $option_object, 'render_availabilityCheck' ),
+            'rentman',
+            'rentman_login_section'
+        );
+
 		if ( isset ( $_POST['import-rentman-products'])) {
 			$result = $this->import_products();
 			if ( is_wp_error( $result ) ) {
@@ -375,7 +383,7 @@ class Rentman {
 
 	// Gets a single product's cross sells
 	function api_get_cross_sell($product_id) {
-		$server_response = $this->api_get('api/v1/Materiaal/'. $id . '/link/accessoire');
+		$server_response = $this->api_get('api/v1/Materiaal/'. $product_id . '/link/accessoire');
 		if (!empty($server_response)) {
 			return $server_response;
 		 } else {
@@ -589,14 +597,15 @@ class Rentman {
 			$product_id = get_post_meta($post->ID, "_sku");
 			$product_id = $product_id[0];
 		}
-
+        $options = get_option( 'rentman_settings' );
 	    $js_variables = array( 
 	    	'ajax_file_path' => admin_url('admin-ajax.php'),
 	    	'from_date' => $from_date,
 	    	'to_date' => $to_date,
 	    	'cart_ids' => $cart_ids,
 	    	'product_id' => $product_id,
-	    	'server_utc_offset' => timezone_offset_get(timezone_open(date_default_timezone_get()), new DateTime())
+	    	'server_utc_offset' => timezone_offset_get(timezone_open(date_default_timezone_get()), new DateTime()),
+            'rm_checkAvailabilty' => $options['rentman_availabilityCheck']
 	    	); 
 	    wp_localize_script( 'date_picker_base', 'date_picker_localized', $js_variables);
 		// CSS for jQuery UI
