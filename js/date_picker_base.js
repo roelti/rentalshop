@@ -1,6 +1,17 @@
-jQuery(document).ready(function() {
-	hide_wc_elements();
+jQuery(document).ready(function()
+{
+    jQuery.datepicker.setDefaults( jQuery.datepicker.regional[ "nl" ] );
+    hide_wc_elements();
 	create_datepicker();
+
+    jQuery("input[name=quantity]").change(function()
+    {
+        date_picked();
+    });
+
+    jQuery("#changePeriod").click(function(){
+        jQuery("input[name='update_cart']").trigger("click");
+    });
 });
 
 function hide_wc_elements() {
@@ -46,8 +57,9 @@ function create_datepicker(cart) {
 	var from_date_object = new Date(date_picker_localized.from_date * 1000 - get_server_timezone_offset());
 	var to_date_object = new Date(date_picker_localized.to_date * 1000 - get_server_timezone_offset());
 
-	jQuery(function() {
-		jQuery( "#datepicker-from-date" ).datepicker({
+	jQuery(function()
+    {
+        jQuery( "#datepicker-from-date" ).datepicker({
 			// Minimum date is tomorrow
 			minDate: new Date(Date.now() + (24 * 60 * 60 * 1000)),
 			onSelect: function(date) {
@@ -60,7 +72,8 @@ function create_datepicker(cart) {
 			onSelect: function(date) {
 				date_picked(date, this);
 			}
-		});
+		},
+        jQuery.datepicker.regional['nl']);
 
 		// Get the date from object
 		jQuery("#datepicker-from-date").datepicker("setDate", from_date_object);
@@ -89,7 +102,8 @@ function create_datepicker(cart) {
 }
 
 
-function date_picked() {
+function date_picked()
+{
 	var from_date = jQuery("#datepicker-from-date").datepicker("getDate");
 	var to_date = jQuery("#datepicker-to-date").datepicker("getDate");
 	var result = {};
@@ -101,9 +115,14 @@ function date_picked() {
 	from_date = from_date / 1000 + get_server_timezone_offset();
 	to_date = to_date / 1000 + get_server_timezone_offset();
 
+    //store new date
+    ajax_post_date();
+
 	// Check if the entered dates are even possible without breaking the space-time continuum
-	if ((from_date !== "") && (to_date !== "") && (from_date <= to_date)) {
-		jQuery(function() {
+	if ((from_date !== "") && (to_date !== "") && (from_date <= to_date))
+    {
+        jQuery(function()
+        {
 			jQuery.ajax({
 				"url": date_picker_localized.ajax_file_path,
 				"type": 'post',
@@ -116,14 +135,12 @@ function date_picked() {
 						"cart_ids": date_picker_localized.cart_ids
 					}
 				},
-				success: function(data) {
-					try {
-						//data = jQuery.parseJSON(data);
+				success: function(data)
+                {
+                    try {
 						// Check if you're on a cart page and have to handle multiple products
 						if (typeof date_picker_localized.cart_ids === 'undefined' || date_picker_localized.cart_ids.length === 0) {
 							handle_availability(data);
-						} else {
-							handle_availability_cart(data);
 						}
 					}
 					catch(e) {
@@ -136,49 +153,33 @@ function date_picked() {
 				}
 			});
 		});
-	} else {
-		jQuery('.single_add_to_cart_button').hide();
+
+	}
+    else {
+        jQuery('.single_add_to_cart_button').hide();
 	}
 }
 
 // Updates the DOM to match product availability for the selected date
 function handle_availability(result)
 {
-	if(date_picker_localized.rm_checkAvailabilty == 0)
+    if(date_picker_localized.rm_checkAvailabilty == 0)
     {
         jQuery('.single_add_to_cart_button').show();
         return;
     }
 
     var quantity = jQuery('.input-text.qty.text').attr("value");
-	if (quantity <= result.maxconfirmed) {
+	if (quantity <= result.maxoption && quantity <= result.maxconfirmed) {
 		jQuery('#rentman-availability-status').html('<span class="icon-green">&#9679;</span>Product is beschikbaar');
 		jQuery('.single_add_to_cart_button').show();
-	} else if (quantity <= result.maxoption) {
+	} else if (quantity <= result.maxconfirmed) {
 		jQuery('#rentman-availability-status').html('<span class="icon-orange">&#9679;</span>Het product is mogelijk beschikbaar, maar niet definitief');
 		jQuery('.single_add_to_cart_button').show();
 	} else {
 		jQuery('#rentman-availability-status').html('<span class="icon-red">&#9679;</span>Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode');
 		jQuery('.single_add_to_cart_button').hide();
 	}
-}
-
-function handle_availability_cart(result) {
-    if(date_picker_localized.rm_checkAvailabilty == 0)
-    {
-        return;
-    }
-
-    result.forEach(function(element) {
-		var quantity = jQuery("#" + element.id).attr("quantity");
-		if (quantity <= element.maxconfirmed) {
-			jQuery("#" + element.id).html('<span class="icon-green">&#9679;</span>Product is beschikbaar');
-		} else if (quantity <= element.maxoption) {
-			jQuery("#" + element.id).html('<span class="icon-orange">&#9679;</span>Mogelijk beschikbaar, maar niet definitief');
-		} else {
-			jQuery("#" + element.id).html('<span class="icon-red">&#9679;</span>Niet beschikbaar in deze hoeveelheid voor de opgegeven periode');
-		}
-	});
 }
 
 function ajax_post_date() {

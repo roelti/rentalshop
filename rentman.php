@@ -14,14 +14,19 @@ class Rentman {
 		    session_start();
 		}
 
-		// session_unset();
-
 		$this->dbname = 'rentman_customers';
 
+        $this->api_username = "";;
+        $this->api_sslkey = "";;
+        $this->base_url = "";
+
 		$options = get_option( 'rentman_settings' );
-		$this->api_username = $options['rentman_account_name'];
-		$this->api_sslkey = $options['rentman_password'];
-		$this->base_url = 'https://'. $options['rentman_account_name'] . '.rentman.nl';
+        if($options)
+        {
+            $this->api_username = $options['rentman_account_name'];
+            $this->api_sslkey = $options['rentman_password'];
+            $this->base_url = 'https://'. $options['rentman_account_name'] . '.rentman.nl';
+        }
 
 		register_activation_hook(__FILE__, array($this, 'add_defaults'));
 		register_deactivation_hook(__FILE__, array($this, 'remove_defaults'));
@@ -31,7 +36,6 @@ class Rentman {
 		include_once('includes/rentman_product_rentable.php');
 		// Add cart session integration
 		include_once('includes/rental_period_cart_integration.php');
-		include_once('includes/rentman_class_wc_cart.php');
 		// Add RESTclient
 		include_once('includes/restclient.php');
 		// Add JSON import
@@ -40,8 +44,6 @@ class Rentman {
 		include_once('includes/options.php'); 
 		// Add date fields for Checkout
 		include_once('includes/checkout_fields.php');
-
-		add_action('woocommerce_init', array($this, 'wc_cart_extension_init'));
 
 		add_action('wp_enqueue_scripts', array($this, 'script_init'));
 		// Register admin menu
@@ -57,9 +59,8 @@ class Rentman {
 
 		add_action( 'woocommerce_checkout_update_order_meta', array($this, 'send_user_details') );
 
-		add_action( 'rentman_cron_action', array( $this, 'cron_action') );
-
-		$this->empty_cart_fix();
+        add_action( 'woocommerce_cart_calculate_fees', array($this, 'multiplyDailyFee') );
+        add_filter( 'gettext', array($this,'my_text_strings'), 20, 3 );
 	}
 
 	function script_init() {
@@ -109,58 +110,93 @@ class Rentman {
             'rentman_login_section'
         );
 
-		if ( isset ( $_POST['import-rentman-products'])) {
-			$result = $this->import_products();
-			if ( is_wp_error( $result ) ) {
-				$error_string = $result->get_error_message();
-				echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
-			}
-		}
-	}
+        add_settings_field(
+            'rentman_addDiscount',
+            'Korting contact uit Rentman overnemen',
+            array( $option_object, 'render_addDiscount' ),
+            'rentman',
+            'rentman_login_section'
+        );
 
-	function render_login() {
-
-	}
-
-	function wc_cart_extension_init() {
-		global $woocommerce;
-		if ( !is_admin() || defined( 'DOING_AJAX' ) ) {
-	        $woocommerce->cart = new Rentman_Class_WC_Cart();
-	    }
-	}
-
-	function import_products() {
-		if ( ! $this->login_credentials_correct() ) {
-			echo "Inloggegevens niet correct";
-			return false;
+		if ( isset ( $_POST['import-rentman']))
+        {
+            wp_enqueue_script(
+                'admin_add_product',
+                plugins_url('js/admin_import.js', __FILE__ ),
+                array( 'jquery' )
+            );
 		}
 
-        set_time_limit(120);
-		$json_product_import = new JSON_Product_Import();
-		$products = $this->api_get_products();
-		if (!is_null($products)) {
-			$categories = $this->api_get_categories();
-			if (empty($categories)) {
-				return new WP_Error('no categories', 'De categorieën konden niet worden geladen');
-			}
-			$json_product_import->import_categories_safe($categories);
-			$cross_sells = $this->api_get_cross_sells($products);
-			//$json_product_import->delete_all_products();
-			$json_product_import->import_products($products);
-			$json_product_import->delete_all_products_safe($products);
-			$json_product_import->add_cross_sells($cross_sells);
-		} else {
-			error_log("FATAL: Error parsing Rentman API JSON. Please check login settings and API availability");
-		}
+        if(isset($_GET["import"]) && in_array($_GET["import"],array("import_categories","import_products","import_delete_products","import_cross_sells")))
+        {
+            set_time_limit(600);
+            if ( ! $this->login_credentials_correct() )
+            {
+                echo '<div id="message" class="error"><p>Inloggegevens niet correct</p></div>';
+                return false;
+            }
+
+            $van = isset($_GET["van"]) ? $_GET["van"] : null;
+            $tot = isset($_GET["tot"]) ? $_GET["tot"] : null;
+
+            $products = $this->api_get_products();
+            if (is_null($products))
+            {
+                $error_string = "FATAL: Error parsing Rentman API JSON. Please check login settings and API availability";
+                error_log($error_string);
+                echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
+                return false;
+            }
+
+            $result = $this->$_GET["import"]($products, $van,$tot);
+
+            if ( is_wp_error( $result ) )
+                $status = array("status" => "error", "error" => $result->get_error_message());
+            else
+                $status = array("status" => "ok", "products" => count($products));
+
+            die(json_encode($status));
+        }
 	}
 
-	function send_user_details( $order_id ) {
+	function import_categories($products,$van,$tot)
+    {
+        $categories = $this->api_get_categories();
+        if (empty($categories)) {
+            return new WP_Error('no categories', 'De categorieën konden niet worden geladen');
+        }
+
+        $json_product_import = new JSON_Product_Import();
+        $json_product_import->import_categories_safe($categories);
+	}
+
+    function import_products($products,$van,$tot)
+    {
+        $products = array_slice($products,$van,$tot-$van);
+
+        $json_product_import = new JSON_Product_Import();
+        $json_product_import->import_products($products);
+    }
+
+    function import_delete_products($products,$van,$tot)
+    {
+        $json_product_import = new JSON_Product_Import();
+        $json_product_import->delete_all_products_safe($products);
+    }
+
+    function import_cross_sells($products,$van,$tot)
+    {
+        $products = array_slice($products,$van,$tot-$van);
+
+        $json_product_import = new JSON_Product_Import();
+        $cross_sells = $this->api_get_cross_sells($products);
+        $json_product_import->add_cross_sells($cross_sells);
+    }
+
+	function send_user_details( $order_id )
+    {
 		$order = new WC_Order($order_id);
-		$billing_address = $order->get_billing_address();
-		$billing_address2 = $order->get_formatted_billing_address();
-		$transaction_id = $order->get_transaction_id();
 		$user = $order->get_user();
-		$order_notes = $order->get_customer_order_notes();
 		$wp_id = $user->ID;
 
 		$visiting_street = $order->billing_address_1;
@@ -178,10 +214,19 @@ class Rentman {
 			'bezoekstraat' => $visiting_street,
 			'bezoekpostcode' => $postcode,
 			'bezoekstad' => $city,
+            'factuurstraat' => $visiting_street,
+            'factuurpostcode' => $postcode,
+            'factuurstad' => $city,
+            'poststraat' => $visiting_street,
+            'postpostcode' => $postcode,
+            'poststad' => $city,
 			'voornaam' => $first_name,
-			'achternaam' => $last_name,
+			'naam' => $last_name,
 			'telefoon' => $phone
 			);
+
+        if($company == "")
+            $contact_data["type"] == "particulier";
 
 		$contact_data_serialized = serialize($contact_data);
 
@@ -222,7 +267,6 @@ class Rentman {
 		$products = $order->get_items();
 
 		$cart = array();
-		$dates = $this->get_dates();
 
 		foreach ( $products as $product ) {
 			$product_id = $product['item_meta']['_product_id'][0];
@@ -247,13 +291,11 @@ class Rentman {
 			"notes" => $notes
 			);
 
-		//logit($output);
-
-		$reply = $this->api_post_order($output);
-		//logit( $reply );
+		$this->api_post_order($output);
 	}
 
-	function get_rentman_id_from_db( $user_id ) {
+	function get_rentman_id_from_db( $user_id )
+    {
 		global $wpdb;
 		$wpdb->show_errors();
 		
@@ -264,13 +306,14 @@ class Rentman {
 		return $result;
 	}
 
-	function add_rentman_id_to_db( $wp_id, $rentman_id, $data ) {
+	function add_rentman_id_to_db( $wp_id, $rentman_id, $data )
+    {
 		global $wpdb;
 		$wpdb->show_errors();
 		
 		$table_name = $wpdb->prefix . $this->dbname;
 		
-		$result = $wpdb->insert( 
+		$wpdb->insert(
 			$table_name, 
 			array( 
 				'wp_id' => $wp_id,
@@ -279,14 +322,11 @@ class Rentman {
 			) 
 		);
 
-		if ($result == false) {
-			//logit('DB ERROR');
-		}
-
 		return $wpdb->insert_id;
 	}
 
-	function update_rentman_customer_data( $rentman_id, $data ) {
+	function update_rentman_customer_data( $rentman_id, $data )
+    {
 		global $wpdb;
 		$wpdb->show_errors();
 		
@@ -307,7 +347,8 @@ class Rentman {
 		return $wpdb->insert_id;	
 	}
 
-	function login_credentials_correct() {
+	function login_credentials_correct()
+    {
 		$request = $this->api_get('api/v1/webshop/staffel/1' , false, true);
 		if ( $request->info->http_code === 200 ) {
 			$options = get_option( 'rentman_settings' );
@@ -320,11 +361,13 @@ class Rentman {
 		return false;
 	}
 
-	function api_get_products() {
+	function api_get_products()
+    {
 		return $this->api_get('api/v1/Materiaal/isFolder/0/tijdelijk/0/inShop/1');
 	}
 
-	function api_get_categories() {
+	function api_get_categories()
+    {
 		return $this->api_get('api/v1/webshop/menu/inShop');
 	}
 
@@ -335,10 +378,21 @@ class Rentman {
 	 * $product_id: the rentman id of the product to check (only set if single product)
 	 * $cart_ids: (only set if the user is viewing cart) list of Rentman id's of the cart products
 	 */
-	function api_get_availability($from_date, $to_date, $product_id, $cart_ids) {
-		if ( $cart_ids ) {
+	function api_get_availability($from_date, $to_date, $product_id, $cart_ids, $cache = true)
+    {
+        $key = "rm_availability_" . $from_date ."_". $to_date . "_". $product_id."_";
+        if(is_array($cart_ids))
+            $key .= implode("-",$cart_ids);
+
+        if ($cache && wp_cache_get($key)) {
+            return wp_cache_get($key);
+        }
+
+        if ( $cart_ids )
+        {
 			$result = array();
-			foreach ( $cart_ids as $product ) {
+			foreach ( $cart_ids as $product )
+            {
 				 // Get the result from the api and add the current product ID
 				$api = $this->api_get('api/v1/available/' . $from_date . '/'. $to_date . '/'. $product, false);
 				// Use string replacement 
@@ -348,13 +402,19 @@ class Rentman {
 			$result = implode(",", $result);
 			$result = substr_replace($result, '[', 0, 0);
 			$result .= "]";
+
+            wp_cache_set($key,$result,300);
 			return $result;
-		} else {
-			return $this->api_get('api/v1/available/' . $from_date . '/'. $to_date . '/'. $product_id, false);
+		} else
+        {
+            $result = $this->api_get('api/v1/available/' . $from_date . '/'. $to_date . '/'. $product_id, false);
+            wp_cache_set($key,$result,300);
+            return $result;
 		}
 	}
 
-	function api_get_staffel($days) {
+	function api_get_staffel($days)
+    {
 		$key = "rm_staffel_" . $days;
 
 		if (wp_cache_get($key)) {
@@ -366,32 +426,54 @@ class Rentman {
 		return $staffel;	
 	}
 
-	function api_get_cross_sells($products) {
+    function api_get_discount_user($userId)
+    {
+        $key = "discount_" . $userId;
+
+        if (wp_cache_get($key)) {
+            return wp_cache_get($key);
+        }
+
+        $users = $this->api_get('api/v1/contact/ids/' . $userId);
+        $discount = $users[0]["materiaalkorting"];
+        wp_cache_set($key,$discount);
+
+        return $discount;
+    }
+
+	function api_get_cross_sells($products)
+    {
 		$cross_sells = array();
-		if ($products) {
-			foreach($products as $product) {
+		if ($products)
+        {
+			foreach($products as $product)
+            {
 				$id = $product["id"];
 				$server_response = $this->api_get('api/v1/Materiaal/'. $id . '/link/accessoire');
-				if (!empty($server_response)) {
+				if (!empty($server_response))
+                {
 					$server_response["parent"] = $id;
 					$cross_sells[] = $server_response;
-				 }
+				}
 			}
 		}
 		return $cross_sells;
 	}
 
 	// Gets a single product's cross sells
-	function api_get_cross_sell($product_id) {
+	function api_get_cross_sell($product_id)
+    {
 		$server_response = $this->api_get('api/v1/Materiaal/'. $product_id . '/link/accessoire');
-		if (!empty($server_response)) {
+		if (!empty($server_response))
+        {
 			return $server_response;
 		 } else {
 		 	return false;
 		 }
 	}
 
-	function api_get($url, $decoded = TRUE, $return_object = false) {
+	function api_get($url, $decoded = TRUE, $return_object = false)
+    {
 		$api = new RestClient(array(
 		    'base_url' => $this->base_url, 
 		    'format' => "json", 
@@ -403,18 +485,21 @@ class Rentman {
 		return ($decoded ? json_decode($result->response, TRUE) : $result->response);
 	}
 
-	function api_post_contact( $contact ) {
+	function api_post_contact( $contact )
+    {
 		$result = $this->api_post('api/v1/Contact', $contact);
 		return json_decode($result->response);
 	}
 
-	function api_post_order( $order ) {
+	function api_post_order( $order )
+    {
 		$result = $this->api_post('api/v1/webshop/submitorder', $order);
 		//logit($result);
 		return json_decode($result->response);
 	}
 
-	function api_post( $url, $data ) {
+	function api_post( $url, $data )
+    {
 		$api = new RestClient(array(
 		    'base_url' => $this->base_url, 
 		    'format' => "json", 
@@ -423,35 +508,9 @@ class Rentman {
 		return $result;
 	}
 
-	function empty_cart_fix() {
-		global $woocommerce;
-
-		if ( ! isset( $woocommerce->cart ) || $woocommerce->cart == '' ) {
-            //$woocommerce->cart = new Rentman_Class_WC_Cart();
-            //$woocommerce->cart->empty_cart( false );
-        }
-	}
-
-	function add_defaults() {
+	function add_defaults()
+    {
 		global $wpdb;
-		global $jal_db_version;
-
-		// Set up cronjob
-		// Use wp_next_scheduled to check if the event is already scheduled
-		$timestamp = wp_next_scheduled( 'rentman_cron_action' );
-
-		// 23:00 on the current day
-		$first_date = date('d-m-Y H:i:s', strtotime('today', time()));
-		$first_date = $first_date + 60 * 60 * 11; 
-
-		// Make sure the first time hasn't already passed (with some margin)
-		if ( $first_date < ( time() + 60 ) ) {
-			$first_date = time() + 60;
-		}
-
-		if( $timestamp === false ){
-			wp_schedule_event( $first_date, 'daily', 'rentman_cron_action' );
-		}
 
 		$table_name = $wpdb->prefix . $this->dbname;
 		
@@ -483,16 +542,9 @@ class Rentman {
 
 	}
 
-	function remove_defaults() {
-		wp_clear_scheduled_hook( 'rentman_cron_action' );
-	}
-
-	function cron_action() {
-		$this->import_products();
-	}
-
 	// Staffel = volume discount factor
-	function apply_staffel($price) {
+	function apply_staffel($price)
+    {
 		// Get the current dates from session
 		$dates = $this->get_dates();
 		if (is_numeric($dates['from_date']) && is_numeric($dates['to_date'])) {
@@ -514,20 +566,54 @@ class Rentman {
 		}
 	}
 
-	function get_dates() {
-		if (isset($_SESSION['rentman_rental_session']['from_date']) && 
-				isset($_SESSION['rentman_rental_session']['to_date']))
+    function get_staffel()
+    {
+        // Get the current dates from session
+        $days = $this->get_days();
+        $staffel = $this->api_get_staffel($days);
+        $staffel = str_replace('"', '', $staffel);
+        if (is_numeric($staffel))
+            return $staffel;
+
+        return 1;
+    }
+
+    function get_days()
+    {
+        // Get the current dates from session
+        $dates = $this->get_dates();
+        if (is_numeric($dates['from_date']) && is_numeric($dates['to_date'])) {
+            $from_date = new DateTime();
+            $to_date = new DateTime();
+            $from_date->setTimestamp($dates['from_date']);
+            $to_date->setTimestamp($dates['to_date']);
+            return $to_date->diff($from_date)->format("%a");
+        }
+
+        return 1;
+    }
+
+	function get_dates()
+    {
+        if (!isset ($_SESSION['rentman_rental_session']))
+        {
+            $_SESSION['rentman_rental_session'] = array();
+        }
+
+        if (isset($_SESSION['rentman_rental_session']['from_date']) && isset($_SESSION['rentman_rental_session']['to_date']))
         {
 			$from_date = sanitize_text_field($_SESSION['rentman_rental_session']['from_date']);
 			$to_date = sanitize_text_field($_SESSION['rentman_rental_session']['to_date']);
 			return array("from_date" => $from_date, "to_date" => $to_date);
-		} else
+		}
+        else
         {
 			return false;
 		}
 	}
 
-	function add_menu() {
+	function add_menu()
+    {
 		add_submenu_page('woocommerce', 
 			'Rentman settings',
 			'Rentman', 
@@ -537,16 +623,20 @@ class Rentman {
 			);
 	}
 
-	function build_menu() {
+	function build_menu()
+    {
 		?>
 		<h1>Rentman import</h1>
 		<p>
 			<form method="post">
-			<input type="hidden" name="import-rentman-products">
+			<input type="hidden" name="import-rentman">
 			<input type="submit" class="button button-primary" value="Producten importeren">
 			</form>
 		</p>
-		<p>Het importeren van producten kan enkele minuten duren.</p>
+		<p id="importMelding" style="display: none;">Bezig met importeren. Het importeren van producten kan enkele minuten duren, sluit gedurende deze periode dit scherm niet af.</p>
+        <ul id="importstatus" style="color: orange;">
+
+        </ul>
 		<p>
 			<form action="options.php" method="post">
 			<?php
@@ -562,7 +652,8 @@ class Rentman {
 	/**
 	 * $cart: whether the current page is the cart page
 	 */
-	function init_datepickers($cart = false) {
+	function init_datepickers($cart = false)
+    {
 		global $post;
 		// Register the required JS
 		wp_enqueue_script(
@@ -570,17 +661,20 @@ class Rentman {
 			"https://code.jquery.com/ui/1.11.1/jquery-ui.min.js",
 			array( 'jquery' )
 		);
+        wp_enqueue_script(
+            'jquery-ui-i18n',
+            "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/i18n/jquery-ui-i18n.min.js",
+            array( 'jquery' )
+        );
 		wp_enqueue_script(
 			'date_picker_base',
 			plugins_url('js/date_picker_base.js', __FILE__),
 			array( 'jquery' )
 		);
 
-		if ( ! isset ($_SESSION['rentman_rental_session'])) {
-			$_SESSION['rentman_rental_session'] = array();
-		}
 		$session_dates = $this->get_dates();
-		if ($session_dates !== false) {
+		if ($session_dates !== false)
+        {
 			$from_date = $session_dates["from_date"];
 			$to_date = $session_dates["to_date"];
 		} else {
@@ -615,31 +709,35 @@ class Rentman {
 		);
 	}
 
-	function cart_datepicker_template() {
-		global $woocommerce;
-		//Debug::dump($woocommerce->cart->get_dates());
+	function cart_datepicker_template()
+    {
+		global $woocommerce; global $rentman;
+
 		?>
-		<h2>Huurtermijn</h2>
-		<label for="datepicker-from-date">Van: </label>
+        <div class="cart_totals">
+		<h2>Huurperiode</h2>
+		<label for="datepicker-from-date" style="display: inline-block; width: 60px;">Van: </label>
 		<input type="text" id="datepicker-from-date" class="datepicker"><br>
-		<label for="datepicker-from-date">Tot: </label>
+		<label for="datepicker-from-date" style="display: inline-block; width: 60px;">Tot: </label>
 		<input type="text" id="datepicker-to-date" class="datepicker"><br>
+        <label for="datepicker-from-date" style="display: inline-block; width: 60px;">Staffel: </label>
+        <span id="staffelweergave"><?php echo($rentman->get_staffel()); ?></span><br>
+        <input type="button" class="button" value="Periode bijwerken" id="changePeriod" style="margin-top: 20px;">
+        </div>
 		<?php
 	}
 
 	// Add the required HTML for datepickers and availability to product pages
-	function product_datepicker_template() {
+	function product_datepicker_template()
+    {
 		global $woocommerce;
 
-		if ( count( $woocommerce->cart->cart_contents ) !== 0 &&
-				isset($_SESSION['rentman_rental_session']) && 
-				isset($_SESSION['rentman_rental_session']['from_date']) && 
-				isset($_SESSION['rentman_rental_session']['to_date']) ) {
-			$from_date_formatted = $_SESSION['rentman_rental_session']['from_date'];
-			$to_date_formatted = $_SESSION['rentman_rental_session']['to_date'];
+        $dates = $this->get_dates();
+		if ( count( $woocommerce->cart->cart_contents ) !== 0 && is_numeric($dates['from_date']) && is_numeric($dates['to_date']))
+        {
 			$format = "%d %B %Y";
-			$from_date_formatted = strftime($format, $from_date_formatted);
-			$to_date_formatted = strftime($format, $to_date_formatted);
+			$from_date_formatted = strftime($format, $dates['from_date']);
+			$to_date_formatted = strftime($format, $dates['to_date']);
 
 			echo '<h4>Geselecteerde data:</h4><p>';
 			echo $from_date_formatted;
@@ -661,10 +759,12 @@ class Rentman {
 	}
 
 	// Gets all the rentman ids of the products in cart
-	function get_cart_ids() {
-		global $woocommerce, $post;
+	function get_cart_ids()
+    {
+		global $woocommerce;
 		$ids = array();
-		foreach($woocommerce->cart->cart_contents as $cart_item) {
+		foreach($woocommerce->cart->cart_contents as $cart_item)
+        {
 			$product_id = $cart_item["product_id"];
 			$sku = get_post_meta($product_id, "_sku");
 			$ids[] = $sku[0];
@@ -672,8 +772,9 @@ class Rentman {
 		return $ids;
 	}
 
-	function show_attachments() {
-		global $woocommerce, $post;
+	function show_attachments()
+    {
+		global $post;
 
 		$args = array( 
 			'post_type' => 'attachment',
@@ -685,9 +786,11 @@ class Rentman {
 
 		$attachments = get_posts( $args );
 
-		if ( $attachments ) {
+		if ( $attachments )
+        {
 			echo "<h4>Bijgevoegde bestanden:</h4></br>";
-			foreach ( $attachments as $attachment ) {
+			foreach ( $attachments as $attachment )
+            {
 				echo '<div class="rentman-attachment">';
 				echo wp_get_attachment_link( $attachment->ID, 'thumbnail', false, false);
 				echo '</div>';
@@ -696,35 +799,38 @@ class Rentman {
 		}
 	}
 
-	function add_to_cart_template() {
+	function add_to_cart_template()
+    {
 		global $post;
 		$product = get_product($post->ID);
 
-		//echo $product->product_type;
-
-		if ($product->product_type == 'rentable') {
+		if ($product->product_type == 'rentable')
+        {
 			wc_get_template( 'single-product/add-to-cart/rentable.php');
 			$this->init_datepickers(false);
 			$this->product_datepicker_template();
 		}
 	}
 
-	function cart_date_picker() {
-		global $woocommerce;
+	function cart_date_picker()
+    {
 		$this->init_datepickers(TRUE);
 		$this->cart_datepicker_template();
 	}
 
-	function disable_comments() {
+	function disable_comments()
+    {
 		return false;
 	}
 
-	function plugin_path() { 
+	function plugin_path()
+    {
 	  // gets the absolute path to this plugin directory
 	  return untrailingslashit( plugin_dir_path( __FILE__ ) );
 	}
 
-	function rentman_woocommerce_locate_template( $template, $template_name, $template_path ) {
+	function rentman_woocommerce_locate_template( $template, $template_name, $template_path )
+    {
 		global $woocommerce, $product;
 
 		$_template = $template;
@@ -744,12 +850,14 @@ class Rentman {
 		}
 
 		// Modification: Get the template from this plugin, if it exists
-		if ( ( $theme_template || ! $template ) && file_exists( $plugin_path . $template_name ) ) {
+		if ( ( $theme_template || ! $template ) && file_exists( $plugin_path . $template_name ) )
+        {
 			$template = $plugin_path . $template_name;
 		}
 
 		// Hacky way to make the template override work in certain themes
-		if (strpos('_' . $_template, 'rentable.php')) {
+		if (strpos('_' . $_template, 'rentable.php'))
+        {
 			// Get the name of the plugin folder (with intermediate variables so PHP isn't confused by pointers)
 			$plugin_folder_name = explode( '/', $plugin_path );
 			$plugin_folder_name = array_reverse( $plugin_folder_name );
@@ -758,18 +866,59 @@ class Rentman {
 
 		// Use default template
 		if ( ! $template )
-		$template = $_template;
+		    $template = $_template;
 
 		// Return what we found
 		return $template;
 	}
+
+    function multiplyDailyFee()
+    {
+        global $woocommerce,$rentman;
+
+        $total = floatval( preg_replace( '#[^\d,]#', '', $woocommerce->cart->get_cart_subtotal() ) );
+        $days = $this->get_days();
+
+        $incl_staffel = $rentman->apply_staffel($total);
+        if($incl_staffel - $total > 0)
+            $woocommerce->cart->add_fee( __('Extra '.($days-1) .' dag(en)', 'woocommerce'), floatval ($incl_staffel - $total),true);
+
+        //Add discount:
+        $options = get_option( 'rentman_settings' );
+        if($options['rentman_addDiscount'] && get_current_user_id()> 0)
+        {
+            $db_data = $this->get_rentman_id_from_db( get_current_user_id() );
+
+            if ( is_numeric($db_data->rentman_id) )
+            {
+                $discount = $this->api_get_discount_user($db_data->rentman_id);
+
+                if($discount > 0)
+                    $woocommerce->cart->add_fee($discount."% Korting",($incl_staffel * ($discount * 0.01) * -1),true);
+            }
+        }
+    }
+
+    function my_text_strings( $translated_text, $text, $domain )
+    {
+        switch ( $translated_text ) {
+            case 'Subtotaal' :
+                $translated_text = "Dagprijs";
+                break;
+            case 'Winkelmand Subtotaal' :
+                $translated_text = "Dagprijs";
+                break;
+        }
+        return $translated_text;
+    }
 }
-if (!defined('ABSPATH')) exit; 
+
+
+
+if (!defined('ABSPATH')) exit;
 
 global $rentman_db_version;
 $rentman_db_version = '0.1';
 
-define("APPLICATION_ENV", "development");
-include("debug.php");
 setlocale(LC_ALL, 'nl_NL');
 $rentman = new Rentman();

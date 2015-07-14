@@ -261,7 +261,8 @@ class JSON_Product_Import {
 		}
 	}
 
-	public function import_products($decoded) {
+	public function import_products($decoded)
+    {
 		// Check if the decoded JSON is a list of lists
 		if (NULL == $decoded || !(is_array($decoded[0]))) {
 			return new WP_Error('no_json', 'No JSON data was found');
@@ -282,12 +283,15 @@ class JSON_Product_Import {
 
 		$dates_modified = get_option( 'rentman_products_modified ');
 
+        //check different taxes
+
 		// Add the new products
 		foreach ($decoded as $product) {
 			$product_id = intval( $product["id"] );
 			if ( is_array($dates_modified) &&
 					array_key_exists( $product_id , $dates_modified ) && 
-					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] ) {
+					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] )
+            {
 				// Product is updated
 				$post_id = $dates_modified[$product_id]["wc_id"];
 				if ( empty( $product["shopDescriptionLong"] ) ) {
@@ -374,6 +378,9 @@ class JSON_Product_Import {
 							Debug::dump('File upload failed');
 						}
 					}
+
+
+
 					// Add object to object list
 					//$this->object_list[$product["id"]] = $post_id;
 					// Set all other data
