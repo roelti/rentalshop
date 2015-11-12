@@ -9,18 +9,18 @@
  * Text Domain: rentman
 */
 class Rentman {
-	function __construct() {
-		if(session_id() == '') {
-		    session_start();
-		}
+    function __construct() {
+        if(session_id() == '') {
+            session_start();
+        }
 
-		$this->dbname = 'rentman_customers';
+        $this->dbname = 'rentman_customers';
 
         $this->api_username = "";;
         $this->api_sslkey = "";;
         $this->base_url = "";
 
-		$options = get_option( 'rentman_settings' );
+        $options = get_option( 'rentman_settings' );
         if($options)
         {
             $this->api_username = $options['rentman_account_name'];
@@ -28,47 +28,54 @@ class Rentman {
             $this->base_url = 'https://'. $options['rentman_account_name'] . '.rentman.nl';
         }
 
-		register_activation_hook(__FILE__, array($this, 'add_defaults'));
-		register_deactivation_hook(__FILE__, array($this, 'remove_defaults'));
+        register_activation_hook(__FILE__, array($this, 'add_defaults'));
+        register_deactivation_hook(__FILE__, array($this, 'remove_defaults'));
 
-		// Add product type files
-		include_once('includes/admin/rentman_product_rentable_admin.php');
-		include_once('includes/rentman_product_rentable.php');
-		// Add cart session integration
-		include_once('includes/rental_period_cart_integration.php');
-		// Add RESTclient
-		include_once('includes/restclient.php');
-		// Add JSON import
-		include_once('includes/json_product_import.php');
-		// Add Option field object
-		include_once('includes/options.php'); 
-		// Add date fields for Checkout
-		include_once('includes/checkout_fields.php');
+        // Add product type files
+        include_once('includes/admin/rentman_product_rentable_admin.php');
+        include_once('includes/rentman_product_rentable.php');
+        // Add cart session integration
+        include_once('includes/rental_period_cart_integration.php');
+        // Add RESTclient
+        include_once('includes/restclient.php');
+        // Add JSON import
+        include_once('includes/json_product_import.php');
+        // Add Option field object
+        include_once('includes/options.php');
+        // Add date fields for Checkout
+        include_once('includes/checkout_fields.php');
 
-		add_action('wp_enqueue_scripts', array($this, 'script_init'));
-		// Register admin menu
-		add_action('admin_menu', array($this, 'add_menu'));
-		add_action('admin_init', array($this, 'init' ));
+        add_action('plugins_loaded', array($this,'translatePlugin'));
 
-		add_filter( 'woocommerce_locate_template', array($this, 'rentman_woocommerce_locate_template'), 10, 3 );
-		add_filter( 'comments_open', array( $this, 'disable_comments') );
-		add_action( 'woocommerce_single_product_summary', array($this, 'add_to_cart_template'), 30 );
-		add_action( 'woocommerce_single_product_summary', array($this, 'show_attachments'), 10, 2);
+        add_action('wp_enqueue_scripts', array($this, 'script_init'));
+        // Register admin menu
+        add_action('admin_menu', array($this, 'add_menu'));
+        add_action('admin_init', array($this, 'init' ));
 
-		add_action( 'woocommerce_cart_collaterals', array($this, 'cart_date_picker') );
+        add_filter( 'woocommerce_locate_template', array($this, 'rentman_woocommerce_locate_template'), 10, 3 );
+        add_filter( 'comments_open', array( $this, 'disable_comments') );
+        add_action( 'woocommerce_single_product_summary', array($this, 'add_to_cart_template'), 30 );
+        add_action( 'woocommerce_single_product_summary', array($this, 'show_attachments'), 10, 2);
 
-		add_action( 'woocommerce_checkout_update_order_meta', array($this, 'send_user_details') );
+        add_action( 'woocommerce_cart_collaterals', array($this, 'cart_date_picker') );
+
+        add_action( 'woocommerce_checkout_update_order_meta', array($this, 'send_user_details') );
 
         add_action( 'woocommerce_cart_calculate_fees', array($this, 'multiplyDailyFee') );
         add_filter( 'gettext', array($this,'my_text_strings'), 20, 3 );
-	}
+    }
 
-	function script_init() {
-		wp_enqueue_style(
-			'rentman',
-			plugins_url('css/rentman.css', __FILE__)
-		);
-	}
+    function script_init() {
+        wp_enqueue_style(
+            'rentman',
+            plugins_url('css/rentman.css', __FILE__)
+        );
+    }
+
+    function translatePlugin()
+    {
+        load_plugin_textdomain( 'rentman', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
+    }
 
 	function init() {
 		global $option_object;
@@ -81,14 +88,14 @@ class Rentman {
 
 		add_settings_section(
 			'rentman_login_section', 
-			'Log hier in met uw Rentman API gegevens', 
+			__('Log hier in met uw Rentman API gegevens',"rentman"),
 			array( $option_object, 'render_login' ), 
 			'rentman'
 		);
 
 		add_settings_field( 
 			'rentman_account_name', 
-			'Accountnaam', 
+			__('Accountnaam',"rentman"),
 			array( $option_object, 'render_account_name' ), 
 			'rentman', 
 			'rentman_login_section' 
@@ -96,7 +103,7 @@ class Rentman {
 
 		add_settings_field( 
 			'rentman_password', 
-			'Wachtwoord', 
+			__('Wachtwoord',"rentman"),
 			array( $option_object, 'render_password' ), 
 			'rentman', 
 			'rentman_login_section' 
@@ -104,7 +111,7 @@ class Rentman {
 
         add_settings_field(
             'rentman_availabilityCheck',
-            'Check beschikbaarheid voor versturen',
+            __('Check beschikbaarheid voor versturen',"rentman"),
             array( $option_object, 'render_availabilityCheck' ),
             'rentman',
             'rentman_login_section'
@@ -112,7 +119,7 @@ class Rentman {
 
         add_settings_field(
             'rentman_addDiscount',
-            'Korting contact uit Rentman overnemen',
+            __('Korting contact uit Rentman overnemen',"rentman"),
             array( $option_object, 'render_addDiscount' ),
             'rentman',
             'rentman_login_section'
@@ -132,7 +139,7 @@ class Rentman {
             set_time_limit(600);
             if ( ! $this->login_credentials_correct() )
             {
-                echo '<div id="message" class="error"><p>Inloggegevens niet correct</p></div>';
+                echo '<div id="message" class="error"><p>'.__('Inloggegevens niet correct',"rentman").'</p></div>';
                 return false;
             }
 
@@ -163,7 +170,7 @@ class Rentman {
     {
         $categories = $this->api_get_categories();
         if (empty($categories)) {
-            return new WP_Error('no categories', 'De categorieën konden niet worden geladen');
+            return new WP_Error('no categories', __('De categorieën konden niet worden geladen. Controleer in Rentman of er producten zijn waarbij u heeft aangegeven dat ze worden getoond in de webshop.',"rentman"));
         }
 
         $json_product_import = new JSON_Product_Import();
@@ -238,7 +245,6 @@ class Rentman {
 		if ( ! $db_data->rentman_id || $db_data->rentman_id === NULL ) {
 
 			$user_id = $this->api_post_contact($contact_data);
-
 			$user_id = $user_id[0]->id;
 
 			if ( is_numeric( $user_id ) ) {
@@ -630,10 +636,10 @@ class Rentman {
 		<p>
 			<form method="post">
 			<input type="hidden" name="import-rentman">
-			<input type="submit" class="button button-primary" value="Producten importeren">
+			<input type="submit" class="button button-primary" value="<?php echo __('Producten importeren',"rentman"); ?>">
 			</form>
 		</p>
-		<p id="importMelding" style="display: none;">Bezig met importeren. Het importeren van producten kan enkele minuten duren, sluit gedurende deze periode dit scherm niet af.</p>
+		<p id="importMelding" style="display: none;"><?php echo __('Bezig met importeren. Het importeren van producten kan enkele minuten duren, sluit gedurende deze periode dit scherm niet af',"rentman"); ?></p>
         <ul id="importstatus" style="color: orange;">
 
         </ul>
@@ -702,6 +708,12 @@ class Rentman {
             'rm_checkAvailabilty' => $options['rentman_availabilityCheck']
 	    	); 
 	    wp_localize_script( 'date_picker_base', 'date_picker_localized', $js_variables);
+
+        wp_localize_script( 'date_picker_base', 'rm_translate', array(
+            'is_available' => __( 'Product is beschikbaar', 'rentman' ),
+            'not_available' => __( 'Het product is mogelijk beschikbaar, maar niet definitief', 'rentman' ),
+            'maybe_available' => __( 'Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode', 'rentman' )
+            ));
 		// CSS for jQuery UI
 		wp_enqueue_style(
 			'jquery-ui',
@@ -715,12 +727,12 @@ class Rentman {
 
 		?>
         <div class="cart_totals">
-		<h2>Huurperiode</h2>
-		<label for="datepicker-from-date" style="display: inline-block; width: 60px;">Van: </label>
+		<h2><?php echo __('Huurperiode',"rentman"); ?></h2>
+		<label for="datepicker-from-date" style="display: inline-block; width: 60px;"><?php echo __('Van:',"rentman"); ?> </label>
 		<input type="text" id="datepicker-from-date" class="datepicker"><br>
-		<label for="datepicker-from-date" style="display: inline-block; width: 60px;">Tot: </label>
+		<label for="datepicker-from-date" style="display: inline-block; width: 60px;"><?php echo __('Tot:',"rentman"); ?> </label>
 		<input type="text" id="datepicker-to-date" class="datepicker"><br>
-        <label for="datepicker-from-date" style="display: inline-block; width: 60px;">Staffel: </label>
+        <label for="datepicker-from-date" style="display: inline-block; width: 60px;"><?php echo __('Staffel:',"rentman"); ?> </label>
         <span id="staffelweergave"><?php echo($rentman->get_staffel()); ?></span><br>
         <input type="button" class="button" value="Periode bijwerken" id="changePeriod" style="margin-top: 20px;">
         </div>
@@ -739,11 +751,11 @@ class Rentman {
 			$from_date_formatted = strftime($format, $dates['from_date']);
 			$to_date_formatted = strftime($format, $dates['to_date']);
 
-			echo '<h4>Geselecteerde data:</h4><p>';
+			echo '<h4>'. __('Geselecteerde data',"rentman") .'</h4><p>';
 			echo $from_date_formatted;
 			echo " - ";
 			echo $to_date_formatted;
-			echo '</p><p>Ga naar de winkelwagen om de huurperiode te wijzigen</p>';
+			echo '</p><p>'. __('Ga naar de winkelwagen om de huurperiode te wijzigen',"rentman").'</p>';
 			?>
 			<div class="" id="rentman-availability-status"></div>
 			<input type="hidden" id="datepicker-from-date" class="datepicker" /><br>
@@ -788,7 +800,7 @@ class Rentman {
 
 		if ( $attachments )
         {
-			echo "<h4>Bijgevoegde bestanden:</h4></br>";
+			echo "<h4>". __('Bijgevoegde bestanden:',"rentman") ."</h4></br>";
 			foreach ( $attachments as $attachment )
             {
 				echo '<div class="rentman-attachment">';
@@ -894,7 +906,7 @@ class Rentman {
                 $discount = $this->api_get_discount_user($db_data->rentman_id);
 
                 if($discount > 0)
-                    $woocommerce->cart->add_fee($discount."% Korting",($incl_staffel * ($discount * 0.01) * -1),true);
+                    $woocommerce->cart->add_fee($discount.__("% Korting","rentman"),($incl_staffel * ($discount * 0.01) * -1),true);
             }
         }
     }
@@ -903,10 +915,10 @@ class Rentman {
     {
         switch ( $translated_text ) {
             case 'Subtotaal' :
-                $translated_text = "Dagprijs";
+                $translated_text = __("Dagprijs","rentman");
                 break;
             case 'Winkelmand Subtotaal' :
-                $translated_text = "Dagprijs";
+                $translated_text = __("Dagprijs","rentman");
                 break;
         }
         return $translated_text;

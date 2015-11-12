@@ -17,9 +17,9 @@ class Rentman_Checkout_Fields {
         $tot = new DateTime();
         $tot->setTimestamp($dates['to_date']);
 
-        echo '<div id="rentman_checkout_fields"><h3>Huurperiode</h3>';
-        echo '<span style="font-weight: bold;">Van: '.$van->format("d-m-Y").'</span><br>';
-        echo '<span style="font-weight: bold;">Tot: '.$tot->format("d-m-Y").'</span><br>';
+        echo '<div id="rentman_checkout_fields"><h3>'. __('Huurperiode',"rentman").'</h3>';
+        echo '<span style="font-weight: bold;">'. __('Van:',"rentman"). $van->format("d-m-Y").'</span><br>';
+        echo '<span style="font-weight: bold;">'. __('Tot:',"rentman").$tot->format("d-m-Y").'</span><br>';
 
 		echo '</div>';
 
@@ -47,8 +47,8 @@ class Rentman_Checkout_Fields {
 	}
 
 	function display_admin_order_meta( $order ){
-	    echo '<p><strong>Begindatum verhuur:</strong> ' . date( "l j-n-Y", get_post_meta( $order->id, 'from_date', true ) ) . '</p>';
-	    echo '<p><strong>Einddatum verhuur:</strong> ' . date( "l j-n-Y", get_post_meta( $order->id, 'to_date', true ) ) . '</p>';
+	    echo '<p><strong>'. __('Begindatum verhuur:',"rentman"). '</strong> ' . date( "l j-n-Y", get_post_meta( $order->id, 'from_date', true ) ) . '</p>';
+	    echo '<p><strong>'. __('Einddatum verhuur:',"rentman"). '</strong> ' . date( "l j-n-Y", get_post_meta( $order->id, 'to_date', true ) ) . '</p>';
 	}
 
 }

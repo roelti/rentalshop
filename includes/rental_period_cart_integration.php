@@ -31,10 +31,10 @@ class Rentman_Rental_Period {
 
         //check dates
         if(!$dates)
-            wc_add_notice("De ingevoerde huurperiode is niet correct","error");
+            wc_add_notice(__("De ingevoerde huurperiode is niet correct","rentman"),"error");
 
         if($dates["to_date"] < $dates["from_date"])
-            wc_add_notice("De ingevoerde huurperiode is niet correct","error");
+            wc_add_notice(__("De ingevoerde huurperiode is niet correct","rentman"),"error");
 
         //check availability
 
@@ -114,11 +114,11 @@ class Rentman_Rental_Period {
         echo "<br>";
         echo '<span id="' . $product_sku . '">';
         if ($quantity <= $availability->maxconfirmed) {
-            echo '<span class="icon-green">&#9679;</span>Beschikbaar';
+            echo '<span class="icon-green">&#9679;</span>'.__('Beschikbaar',"rentman");
         } else if ($quantity <= $availability->maxoption) {
-            echo '<span class="icon-orange">&#9679;</span>Mogelijk beschikbaar';
+            echo '<span class="icon-orange">&#9679;</span>'.__('Mogelijk beschikbaar',"rentman");
         } else {
-            echo '<span class="icon-red">&#9679;</span>Niet beschikbaar';
+            echo '<span class="icon-red">&#9679;</span>'.__('Niet beschikbaar',"rentman");
         }
         echo "</span>";
 

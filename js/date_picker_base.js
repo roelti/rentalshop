@@ -171,13 +171,13 @@ function handle_availability(result)
 
     var quantity = jQuery('.input-text.qty.text').attr("value");
 	if (quantity <= result.maxoption && quantity <= result.maxconfirmed) {
-		jQuery('#rentman-availability-status').html('<span class="icon-green">&#9679;</span>Product is beschikbaar');
+		jQuery('#rentman-availability-status').html('<span class="icon-green">&#9679;</span>'+rm_translate.is_available);
 		jQuery('.single_add_to_cart_button').show();
 	} else if (quantity <= result.maxconfirmed) {
-		jQuery('#rentman-availability-status').html('<span class="icon-orange">&#9679;</span>Het product is mogelijk beschikbaar, maar niet definitief');
+		jQuery('#rentman-availability-status').html('<span class="icon-orange">&#9679;</span>'+rm_translate.maybe_available);
 		jQuery('.single_add_to_cart_button').show();
 	} else {
-		jQuery('#rentman-availability-status').html('<span class="icon-red">&#9679;</span>Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode');
+		jQuery('#rentman-availability-status').html('<span class="icon-red">&#9679;</span>'+rm_translate.not_available);
 		jQuery('.single_add_to_cart_button').hide();
 	}
 }

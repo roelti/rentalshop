@@ -5,7 +5,7 @@ class Rentman_Options {
 		if ( ! $rentman->login_credentials_correct() ) {
 			?><p><strong>Kon geen verbinding maken met de Rentman API. Zijn de inloggevens correct?</strong></p><?php
 		} else {
-			?><p>Logingegevens correct</p><?php
+			?><p>Succesfull login</p><?php
 		}
 	}
 

@@ -295,7 +295,7 @@ class JSON_Product_Import {
 				// Product is updated
 				$post_id = $dates_modified[$product_id]["wc_id"];
 				if ( empty( $product["shopDescriptionLong"] ) ) {
-					$content = "Geen informatie beschikbaar";
+					$content = __("Geen informatie beschikbaar","rentman");
 				} else {
 					$content = $product["shopDescriptionLong"];
 				}
@@ -351,7 +351,7 @@ class JSON_Product_Import {
 
 			} else if ($product["naam"] && ! in_array( $product_id, $existing_skus ) ) {
 				if ( empty( $product["shopDescriptionLong"] ) ) {
-					$content = "Geen informatie beschikbaar";
+					$content = __("Geen informatie beschikbaar");
 				} else {
 					$content = $product["shopDescriptionLong"];
 				}
