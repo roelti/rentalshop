@@ -220,7 +220,7 @@ class JSON_Product_Import {
 				}
 
 				// $filename should be the path to a file in the upload directory.
-				$filename = "rm_".$file["id"] . $file["naam"] ;
+				$filename = $file["id"] . $file["naam"] ;
 
 				// The ID of the post this attachment is for.
 				$parent_post_id = $attachment_post_id;
@@ -319,7 +319,7 @@ class JSON_Product_Import {
                     foreach($attachments as $a)
                     {
                         foreach($files as $fkey => $file)
-                            if(basename($a->guid) == ("rm_".$file["id"] . $file["naam"]))
+                            if(basename($a->guid) == ($file["id"] . $file["naam"]))
                                 continue(2);
 
                         wp_delete_attachment($a->ID, true);
@@ -329,7 +329,7 @@ class JSON_Product_Import {
                     foreach($files as $fkey => $file)
                     {
                         foreach($attachments as $a)
-                            if(basename($a->guid) == ("rm_".$file["id"] . $file["naam"]))
+                            if(basename($a->guid) == ($file["id"] . $file["naam"]))
                                 unset($files[$fkey]);
                     }
 
