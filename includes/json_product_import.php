@@ -190,7 +190,8 @@ class JSON_Product_Import {
 
 	private function add_attachments($files, $attachment_post_id) {
 		global $rentman;
-		foreach ($files as $i => $file) {
+		foreach ($files as $file)
+        {
 			// Get the path to the upload directory.
 			$wp_upload_dir = wp_upload_dir();
 			
@@ -210,7 +211,7 @@ class JSON_Product_Import {
 			    }
 
 				$file_save_success = file_put_contents(
-					$folder . $i . $file['naam'], 
+					$folder . $file["id"] . $file['naam'],
 					$fh
 					);
 				if ($file_save_success === false) {
@@ -219,7 +220,7 @@ class JSON_Product_Import {
 				}
 
 				// $filename should be the path to a file in the upload directory.
-				$filename = $wp_upload_dir[ 'subdir' ] . '/' . $i . $file["naam"] ;
+				$filename = "rm_".$file["id"] . $file["naam"] ;
 
 				// The ID of the post this attachment is for.
 				$parent_post_id = $attachment_post_id;
@@ -229,14 +230,15 @@ class JSON_Product_Import {
 
 				// Prepare an array of post data for the attachment.
 				$attachment = array(
-					'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ), 
+					'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ),
 					'post_mime_type' => $filetype['type'],
-					'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+					'post_title'     => $file["naam"],
 					'post_content'   => '',
-					'post_status'    => 'inherit'
+					'post_status'    => 'inherit',
+                    'post_name'      => $filename
 				);
 
-				$file_absolute_path = $wp_upload_dir['path'] . '/' . $i . $file["naam"];
+				$file_absolute_path = $wp_upload_dir['path'] . '/' . $file["id"] . $file["naam"];
 
 				// Insert the attachment
 				$attach_id = wp_insert_attachment( $attachment, $file_absolute_path, $parent_post_id );
@@ -308,12 +310,20 @@ class JSON_Product_Import {
 					"post_type" => "product"
 					));
 
-				wp_delete_attachment($post_id, true);
-				if ($post_id == 17372) {
-					Debug::dump($product);
-				}
-				if ( isset( $product["files"] ) ) {
-					$files_upload_success = $this->add_attachments( $product["files"], $post_id );
+				//wp_delete_attachment($post_id, true);
+
+				if ( isset( $product["files"] ) )
+                {
+                    $attachments = get_attached_media( '', $post_id);
+                    $files = $product["files"];
+                    foreach($attachments as $a)
+                    {
+                        foreach($files as $fkey => $file)
+                            if($a->post_name == ("rm_".$file["id"] . $file["naam"]))
+                                unset($files[$fkey]);
+                    }
+
+                    $files_upload_success = $this->add_attachments( $files, $post_id );
 					if (is_wp_error($files_upload_success)) {
 						return $files_upload_success;
 						Debug::dump('File upload failed');
@@ -341,6 +351,7 @@ class JSON_Product_Import {
 				update_post_meta( $post_id, '_manage_stock', "no" );
 				update_post_meta( $post_id, '_backorders', "no" );
 				update_post_meta( $post_id, '_stock', "aantal" );
+                update_post_meta( $post_id, '_rental', $product["verhuur"]);
 
 				$dates_modified[$product_id]["modified"] = time();
 				update_option( 'rentman_products_modified', $dates_modified );
@@ -407,6 +418,8 @@ class JSON_Product_Import {
 					update_post_meta( $post_id, '_manage_stock', "no" );
 					update_post_meta( $post_id, '_backorders', "no" );
 					update_post_meta( $post_id, '_stock', "aantal" );
+                    update_post_meta( $post_id, '_rental', $product["verhuur"]);
+
 					// Set category
 					$category_lookup = get_option( 'rentman_categories', array() );
 					$category_slug = array_search( intval($product["parent"]) , $category_lookup );

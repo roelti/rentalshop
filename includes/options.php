@@ -3,7 +3,7 @@ class Rentman_Options {
 	public function render_login() {
 		global $rentman;
 		if ( ! $rentman->login_credentials_correct() ) {
-			?><p><strong>Kon geen verbinding maken met de Rentman API. Zijn de inloggevens correct?</strong></p><?php
+			?><p><strong>Couldn't connect to the Rentman API. Did you provide the correct credentials?</strong></p><?php
 		} else {
 			?><p>Succesfull login</p><?php
 		}
@@ -32,8 +32,8 @@ class Rentman_Options {
         $options = get_option( 'rentman_settings' );
         ?>
         <select name='rentman_settings[rentman_availabilityCheck]'>
-            <option value="1" <?php if($options && $options['rentman_availabilityCheck'] == 1){echo"selected";} ?>>Ja</option>
-            <option value="0" <?php if($options && $options['rentman_availabilityCheck'] == 0){echo"selected";} ?>>Nee</option>
+            <option value="1" <?php if($options && $options['rentman_availabilityCheck'] == 1){echo"selected";} ?>>Yes</option>
+            <option value="0" <?php if($options && $options['rentman_availabilityCheck'] == 0){echo"selected";} ?>>No</option>
         </select>
         <?php
     }
@@ -43,8 +43,8 @@ class Rentman_Options {
         $options = get_option( 'rentman_settings' );
         ?>
         <select name='rentman_settings[rentman_addDiscount]'>
-            <option value="1" <?php if($options && isset($options['rentman_addDiscount']) && $options['rentman_addDiscount'] == 1){echo"selected";} ?>>Ja</option>
-            <option value="0" <?php if($options && isset($options['rentman_addDiscount']) && $options['rentman_addDiscount'] == 0){echo"selected";} ?>>Nee</option>
+            <option value="1" <?php if($options && isset($options['rentman_addDiscount']) && $options['rentman_addDiscount'] == 1){echo"selected";} ?>>Yes</option>
+            <option value="0" <?php if($options && isset($options['rentman_addDiscount']) && $options['rentman_addDiscount'] == 0){echo"selected";} ?>>No</option>
         </select>
     <?php
     }
