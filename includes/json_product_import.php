@@ -319,13 +319,14 @@ class JSON_Product_Import {
                     foreach($attachments as $a)
                     {
                         foreach($files as $fkey => $file)
-                            if(basename($a->guid) == ($file["id"] . $file["naam"]))
+                            if(basename($a->guid) == ($file["id"] . $file["naam"]) && strtotime($a->post_modified) > strtotime($file["modified"]))
                                 continue(2);
 
                         wp_delete_attachment($a->ID, true);
                     }
 
                     //add attachments
+                    $attachments = get_attached_media( '', $post_id);
                     foreach($files as $fkey => $file)
                     {
                         foreach($attachments as $a)
