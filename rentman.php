@@ -432,9 +432,9 @@ class Rentman {
 		return $staffel;	
 	}
 
-    function api_get_discount_user($userId)
+    function api_get_rental_discount_user($userId)
     {
-        $key = "discount_" . $userId;
+        $key = "discount_rental_" . $userId;
 
         if (wp_cache_get($key)) {
             return wp_cache_get($key);
@@ -442,6 +442,21 @@ class Rentman {
 
         $users = $this->api_get('api/v1/contact/ids/' . $userId);
         $discount = $users[0]["materiaalkorting"];
+        wp_cache_set($key,$discount);
+
+        return $discount;
+    }
+
+    function api_get_sale_discount_user($userId)
+    {
+        $key = "discount_sale_" . $userId;
+
+        if (wp_cache_get($key)) {
+            return wp_cache_get($key);
+        }
+
+        $users = $this->api_get('api/v1/contact/ids/' . $userId);
+        $discount = $users[0]["verkoopkorting"];
         wp_cache_set($key,$discount);
 
         return $discount;
@@ -725,6 +740,9 @@ class Rentman {
     {
 		global $woocommerce; global $rentman;
 
+        if(!$this->rentalInCart())
+            return;
+
 		?>
         <div class="cart_totals">
 		<h2><?php echo __('Huurperiode',"rentman"); ?></h2>
@@ -826,9 +844,25 @@ class Rentman {
 
 	function cart_date_picker()
     {
-		$this->init_datepickers(TRUE);
+        if(!$this->rentalInCart())
+            return;
+
+        $this->init_datepickers(TRUE);
 		$this->cart_datepicker_template();
 	}
+
+    function rentalInCart()
+    {
+        global $woocommerce;
+
+        foreach ($woocommerce->cart->cart_contents as $cart_key => $cart_item)
+        {
+            if($cart_item['data']->product_type == "rentable")
+                return true;
+        }
+
+        return false;
+    }
 
 	function disable_comments()
     {
@@ -888,12 +922,23 @@ class Rentman {
     {
         global $woocommerce,$rentman;
 
-        $total = floatval( preg_replace( '#[^\d,]#', '', $woocommerce->cart->get_cart_subtotal() ) );
+        $totalSale = 0;
+        $totalRental = 0;
+        foreach ($woocommerce->cart->cart_contents as $cart_key => $cart_item)
+        {
+            if($cart_item['data']->product_type == "rentable")
+                $totalRental += $cart_item["line_total"];
+            else
+                $totalSale += $cart_item["line_total"];
+            //var_dump($cart_item_array);
+        }
+
+
         $days = $this->get_days();
 
-        $incl_staffel = $rentman->apply_staffel($total);
-        if($incl_staffel - $total > 0)
-            $woocommerce->cart->add_fee( __('Extra '.($days-1) .' dag(en)', 'woocommerce'), floatval ($incl_staffel - $total),true);
+        $incl_staffel = $rentman->apply_staffel($totalRental);
+        if($incl_staffel - $totalRental > 0)
+            $woocommerce->cart->add_fee( __('Extra', 'woocommerce'). " " .($days-1) .__(' dag(en)', 'woocommerce'), floatval ($incl_staffel - $totalRental),true);
 
         //Add discount:
         $options = get_option( 'rentman_settings' );
@@ -903,10 +948,13 @@ class Rentman {
 
             if ( is_numeric($db_data->rentman_id) )
             {
-                $discount = $this->api_get_discount_user($db_data->rentman_id);
-
+                $discount = $this->api_get_rental_discount_user($db_data->rentman_id);
                 if($discount > 0)
-                    $woocommerce->cart->add_fee($discount.__("% Korting","rentman"),($incl_staffel * ($discount * 0.01) * -1),true);
+                    $woocommerce->cart->add_fee($discount.__("% Korting verhuur","rentman"),($incl_staffel * ($discount * 0.01) * -1),true);
+
+                $discount = $this->api_get_rental_discount_user($db_data->rentman_id);
+                if($discount > 0)
+                    $woocommerce->cart->add_fee($discount.__("% Korting verkoop","rentman"),($totalSale * ($discount * 0.01) * -1),true);
             }
         }
     }

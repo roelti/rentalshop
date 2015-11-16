@@ -20,7 +20,6 @@ class Rentman_Rental_Period {
 		add_filter('woocommerce_cart_item_name', array($this, 'cart_item_availability'), 10, 3);
 
 		add_filter('woocommerce_update_cart_action_cart_updated', array($this, 'cart_validator'), 10, 1);
-
         add_filter('woocommerce_update_cart_validation', array($this, 'cart_validator'), 1, 4 );
 	}
 
@@ -97,6 +96,10 @@ class Rentman_Rental_Period {
         global $rentman;
         $dates = $rentman->get_dates();
         if(!is_array($dates))
+            return;
+
+        $product = get_product( $cart_item["product_id"] );
+        if(!$product->is_type( 'rentable') )
             return;
 
         $product_sku = get_post_meta($cart_item["product_id"], "_sku");

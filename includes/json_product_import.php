@@ -395,8 +395,11 @@ class JSON_Product_Import {
 					// Add object to object list
 					//$this->object_list[$product["id"]] = $post_id;
 					// Set all other data
-					wp_set_object_terms($post_id, 'rentable', 'product_type');
-					add_post_meta($post_id, 'true', 'rentman_imported');
+
+                    if($product["verhuur"])
+                        wp_set_object_terms($post_id, 'rentable', 'product_type');
+
+                    add_post_meta($post_id, 'true', 'rentman_imported');
 					update_post_meta( $post_id, '_visibility', 'visible' );
 					update_post_meta( $post_id, '_stock_status', 'instock');
 					update_post_meta( $post_id, 'total_sales', '0');
