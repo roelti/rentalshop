@@ -238,7 +238,7 @@ class JSON_Product_Import {
                     'post_name'      => $filename
 				);
 
-				$file_absolute_path = $wp_upload_dir['path'] . '/' . $file["id"] . $file["naam"];
+				$file_absolute_path = $wp_upload_dir['path'] . '/' .$file["id"] . $file["naam"];
 
 				// Insert the attachment
 				$attach_id = wp_insert_attachment( $attachment, $file_absolute_path, $parent_post_id );
@@ -283,7 +283,7 @@ class JSON_Product_Import {
 			}
 		}
 
-		$dates_modified = get_option( 'rentman_products_modified ');
+		$dates_modified = get_option( 'rentman_products_modified');
 
         //check different taxes
 
@@ -310,16 +310,26 @@ class JSON_Product_Import {
 					"post_type" => "product"
 					));
 
-				//wp_delete_attachment($post_id, true);
-
 				if ( isset( $product["files"] ) )
                 {
                     $attachments = get_attached_media( '', $post_id);
                     $files = $product["files"];
+
+                    //delete unused attachments
                     foreach($attachments as $a)
                     {
                         foreach($files as $fkey => $file)
-                            if($a->post_name == ("rm_".$file["id"] . $file["naam"]))
+                            if(basename($a->guid) == ("rm_".$file["id"] . $file["naam"]))
+                                continue(2);
+
+                        wp_delete_attachment($a->ID, true);
+                    }
+
+                    //add attachments
+                    foreach($files as $fkey => $file)
+                    {
+                        foreach($attachments as $a)
+                            if(basename($a->guid) == ("rm_".$file["id"] . $file["naam"]))
                                 unset($files[$fkey]);
                     }
 
@@ -329,6 +339,11 @@ class JSON_Product_Import {
 						Debug::dump('File upload failed');
 					}
 				}
+                else{
+                    $attachments = get_attached_media( '', $post_id);
+                    foreach($attachments as $a)
+                        wp_delete_attachment( $a->ID, true);
+                }
 
 				update_post_meta( $post_id, '_visibility', 'visible' );
 				update_post_meta( $post_id, '_stock_status', 'instock');

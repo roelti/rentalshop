@@ -752,7 +752,7 @@ class Rentman {
 		<input type="text" id="datepicker-to-date" class="datepicker"><br>
         <label for="datepicker-from-date" style="display: inline-block; width: 60px;"><?php echo __('Staffel:',"rentman"); ?> </label>
         <span id="staffelweergave"><?php echo($rentman->get_staffel()); ?></span><br>
-        <input type="button" class="button" value="Periode bijwerken" id="changePeriod" style="margin-top: 20px;">
+        <input type="button" class="button" value="<?php echo __('Periode bijwerken:',"rentman"); ?>" id="changePeriod" style="margin-top: 20px;">
         </div>
 		<?php
 	}
@@ -938,7 +938,7 @@ class Rentman {
 
         $incl_staffel = $rentman->apply_staffel($totalRental);
         if($incl_staffel - $totalRental > 0)
-            $woocommerce->cart->add_fee( __('Extra', 'woocommerce'). " " .($days-1) .__(' dag(en)', 'woocommerce'), floatval ($incl_staffel - $totalRental),true);
+            $woocommerce->cart->add_fee( __('Extra', 'rentman'). " " .($days-1) .__(' dag(en)', 'rentman'), floatval ($incl_staffel - $totalRental),true);
 
         //Add discount:
         $options = get_option( 'rentman_settings' );
