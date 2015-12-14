@@ -41,7 +41,7 @@ class Rentman {
         // Add JSON import
         include_once('includes/json_product_import.php');
         // Add Option field object
-        include_once('includes/options.php');
+        include_once('includes/rentman_options.php');
         // Add date fields for Checkout
         include_once('includes/checkout_fields.php');
 
@@ -134,7 +134,7 @@ class Rentman {
             );
 		}
 
-        if(isset($_GET["import"]) && in_array($_GET["import"],array("import_categories","import_products","import_delete_products","import_cross_sells")))
+        if(isset($_GET["import"]) && in_array($_GET["import"],array("import_categories","import_products","import_delete_products","import_cross_sells")) && method_exists($this, $_GET["import"]))
         {
             set_time_limit(600);
             if ( ! $this->login_credentials_correct() )
@@ -155,7 +155,7 @@ class Rentman {
                 return false;
             }
 
-            $result = $this->$_GET["import"]($products, $van,$tot);
+            $result = $this->{$_GET["import"]}($products, $van,$tot);
 
             if ( is_wp_error( $result ) )
                 $status = array("status" => "error", "error" => $result->get_error_message());
