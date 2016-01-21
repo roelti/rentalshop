@@ -147,6 +147,7 @@ class Rentman {
             $tot = isset($_GET["tot"]) ? $_GET["tot"] : null;
 
             $products = $this->api_get_products();
+
             if (is_null($products))
             {
                 $error_string = "FATAL: Error parsing Rentman API JSON. Please check login settings and API availability";
@@ -369,12 +370,12 @@ class Rentman {
 
 	function api_get_products()
     {
-		return $this->api_get('api/v1/Materiaal/isFolder/0/tijdelijk/0/inShop/1');
+		return $this->api_get('api/v1/Materiaal/isFolder/0/tijdelijk/0/inShop_sec/1');
 	}
 
 	function api_get_categories()
     {
-		return $this->api_get('api/v1/webshop/menu/inShop');
+		return $this->api_get('api/v1/webshop/menu/inShop_sec');
 	}
 
 	/** 

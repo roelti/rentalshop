@@ -50,34 +50,34 @@ class JSON_Product_Import {
 		}
 	}
 
-	public function add_category($category, $rentman_ids, $current_categories, $parent = 0) {
+	public function add_category($category, $rentman_ids, $current_categories, $parent = 0)
+	{
 		$id = intval($category["id"]);
 		$name = $category['naam'];
 		$children = $category["children"];
 		$this->new_rentman_category_ids[] = $id;
 
-		if ( in_array( $id, $rentman_ids ) ) {
+		if ( in_array( $id, $rentman_ids ) && term_exists(array_search( $id , $rentman_ids ), 'product_cat'))
+		{
 			$wc_id = array_search( $id , $rentman_ids );
 
 			// Item already exists
 			if ( ! $this->product_name_exists( $name, $current_categories ) ) {
 				// Name changed
-				if ($wc_id === false ) {
+				if ($wc_id === false )
+				{
 					Debug::dump('Error in category lookup');
-				} else {
+				} else
+				{
 					$new_data = array( 'name' => $name, 'slug' => $name );
 					wp_update_term( $wc_id, 'product_cat',  $new_data );
-					// Debug::dump($name);
-					// Debug::dump($current_categories);
 				}
 			}
-			if (! empty ( $children ) ) {
-				$term_id = $wc_id;
-				foreach ($children as $child) {
-					$this->add_category($child, $rentman_ids, $current_categories, $term_id);
-				}
-			}
-		} else {
+
+			//for update children
+			$term_id = $wc_id;
+		} else
+		{
 			// Item must be new
 			$insertion = wp_insert_term($category["naam"], "product_cat", array('parent' => $parent, 'slug' => $category["naam"]));
 			if (is_wp_error($insertion)) {
@@ -86,21 +86,29 @@ class JSON_Product_Import {
 				$term_id = $insertion["term_id"];
 			}
 			$rentman_categories = get_option( 'rentman_categories' , array() );
+
+			foreach($rentman_categories as $k => $rc)
+				if($rc == $id)
+					unset($rentman_categories[$k]);
+
 			$rentman_categories[ $term_id ] = $id;
 			update_option( 'rentman_categories', $rentman_categories );
-			if (! empty ( $children ) ) {
-				foreach ($children as $child) {
-					$this->add_category($child, $rentman_ids, $current_categories, $term_id);
-				}
+		}
+
+		if (! empty ( $children ) ) {
+			foreach ($children as $child) {
+				$this->add_category($child, $rentman_ids, $current_categories, $term_id);
 			}
 		}
 	}
 
 	public function import_categories_safe( $new_categories ) {
+
+
 		$rentman_categories = get_option( 'rentman_categories' , array() );
 		$current_categories = get_terms('product_cat', array('hide_empty' => 0));
 		//Debug::dump($current_categories);
-		
+
 		// Add the new categories
 		foreach ( $new_categories as $new_category ) {
 			$this->add_category( $new_category, $rentman_categories, $current_categories );
@@ -284,16 +292,17 @@ class JSON_Product_Import {
 		}
 
 		$dates_modified = get_option( 'rentman_products_modified');
-
         //check different taxes
 
 		// Add the new products
 		foreach ($decoded as $product) {
 			$product_id = intval( $product["id"] );
+
 			if ( is_array($dates_modified) &&
 					array_key_exists( $product_id , $dates_modified ) && 
 					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] )
             {
+
 				// Product is updated
 				$post_id = $dates_modified[$product_id]["wc_id"];
 				if ( empty( $product["shopDescriptionLong"] ) ) {
@@ -374,7 +383,6 @@ class JSON_Product_Import {
 
 				$category_lookup = get_option( 'rentman_categories', array() );
 				$category_slug = array_search( intval($product["parent"]) , $category_lookup );
-				$result2 = wp_set_object_terms($post_id, array($category_slug), "product_cat");
 
 			} else if ($product["naam"] && ! in_array( $product_id, $existing_skus ) ) {
 				if ( empty( $product["shopDescriptionLong"] ) ) {
