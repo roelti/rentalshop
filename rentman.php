@@ -370,12 +370,12 @@ class Rentman {
 
 	function api_get_products()
     {
-		return $this->api_get('api/v1/Materiaal/isFolder/0/tijdelijk/0/inShop_sec/1');
+		return $this->api_get('api/v1/Materiaal/isFolder/0/tijdelijk/0/inShop/1');
 	}
 
 	function api_get_categories()
     {
-		return $this->api_get('api/v1/webshop/menu/inShop_sec');
+		return $this->api_get('api/v1/webshop/menu/inShop');
 	}
 
 	/** 
