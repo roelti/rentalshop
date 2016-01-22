@@ -210,16 +210,17 @@ class JSON_Product_Import {
 			}
 
 			$url = $file['url'];
+			$naam = $file['naam'];
+			if(!strpos("url",".jpg") && !strpos("url",".jpeg") && !strpos("url",".gif")  && !strpos("url",".png") && !strpos("url",".pdf") && !strpos("url",".zip"))
+			{
+				$naam = $naam.$this->getExtension($file["type"]);
+			}
 
 			try {
-			    $fh = fopen($url, 'r');
-
-			    if (! $fh) {
-			        throw new Exception("Could not open the file");
-			    }
+			    $fh = @fopen($url, 'r');
 
 				$file_save_success = file_put_contents(
-					$folder . $file["id"] . $file['naam'],
+					$folder . $file["id"] . urlencode($naam),
 					$fh
 					);
 				if ($file_save_success === false) {
@@ -228,25 +229,30 @@ class JSON_Product_Import {
 				}
 
 				// $filename should be the path to a file in the upload directory.
-				$filename = $file["id"] . $file["naam"] ;
+				$filename = $file["id"] . $naam ;
 
 				// The ID of the post this attachment is for.
 				$parent_post_id = $attachment_post_id;
 
 				// Check the type of tile. We'll use this as the 'post_mime_type'.
-				$filetype = wp_check_filetype( basename( $filename ), null );
+				if(!is_string($file["type"]))
+				{
+					$filetype = wp_check_filetype( basename( $filename ), null );
+					$file["type"] = $filetype['type'];
+				}
+
 
 				// Prepare an array of post data for the attachment.
 				$attachment = array(
 					'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ),
-					'post_mime_type' => $filetype['type'],
-					'post_title'     => $file["naam"],
+					'post_mime_type' => $file['type'],
+					'post_title'     => $naam,
 					'post_content'   => '',
 					'post_status'    => 'inherit',
                     'post_name'      => $filename
 				);
 
-				$file_absolute_path = $wp_upload_dir['path'] . '/' .$file["id"] . $file["naam"];
+				$file_absolute_path = $wp_upload_dir['path'] . '/' .$file["id"] . $naam;
 
 				// Insert the attachment
 				$attach_id = wp_insert_attachment( $attachment, $file_absolute_path, $parent_post_id );
@@ -269,6 +275,22 @@ class JSON_Product_Import {
 			}
 
 		}
+	}
+
+	public function getExtension ($mime_type){
+
+		$extensions = array(
+				'image/jpeg' => '.jpg',
+				'image/gif' => '.gif',
+				'image/png' => '.png',
+				'image/x-png' => '.png',
+				'text/xml' => '.xml',
+				'application/pdf' => '.pdf'
+		);
+
+
+		return $extensions[$mime_type];
+
 	}
 
 	public function import_products($decoded)
@@ -302,7 +324,6 @@ class JSON_Product_Import {
 					array_key_exists( $product_id , $dates_modified ) && 
 					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] )
             {
-
 				// Product is updated
 				$post_id = $dates_modified[$product_id]["wc_id"];
 				if ( empty( $product["shopDescriptionLong"] ) ) {
@@ -321,7 +342,7 @@ class JSON_Product_Import {
 
 				if ( isset( $product["files"] ) )
                 {
-                    $attachments = get_attached_media( '', $post_id);
+					$attachments = get_attached_media( '', $post_id);
                     $files = $product["files"];
 
                     //delete unused attachments
@@ -336,12 +357,19 @@ class JSON_Product_Import {
 
                     //add attachments
                     $attachments = get_attached_media( '', $post_id);
+
                     foreach($files as $fkey => $file)
                     {
                         foreach($attachments as $a)
-                            if(basename($a->guid) == ($file["id"] . $file["naam"]))
+                            if(basename($a->guid) == ($file["id"] . $file["naam"]) && strlen(get_post_mime_type($a->ID)))
                                 unset($files[$fkey]);
+
+						if ($file['inShop'] && strlen(get_post_mime_type($a->ID)))
+						{
+							set_post_thumbnail( $post_id, $a->ID);
+						}
                     }
+
 
                     $files_upload_success = $this->add_attachments( $files, $post_id );
 					if (is_wp_error($files_upload_success)) {
