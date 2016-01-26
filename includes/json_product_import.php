@@ -174,14 +174,18 @@ class JSON_Product_Import {
 		$this->object_list = $object_list;
 	}
 
-	public function add_cross_sells($products) {
+	public function add_cross_sells($products)
+	{
 		$this->generate_object_list();
 		$object_list = $this->object_list;
+
 		foreach ($products as $product) {
 			$values = array();
-			foreach($product as $cross_sell) {
+			foreach($product as $cross_sell)
+			{
 				// Parent ID is also an element but not an array
-				if (is_array($cross_sell)) {
+				if (is_array($cross_sell) && isset($object_list[$cross_sell["materiaal"]])) {
+
 					// Find the parent object in the object list
 					$values[] = $object_list[$cross_sell["materiaal"]];
 				}
@@ -210,8 +214,9 @@ class JSON_Product_Import {
 			}
 
 			$url = $file['url'];
+			$lowerUrl = $url;
 			$naam = $file['naam'];
-			if(!strpos("url",".jpg") && !strpos("url",".jpeg") && !strpos("url",".gif")  && !strpos("url",".png") && !strpos("url",".pdf") && !strpos("url",".zip"))
+			if(!strpos($lowerUrl,".jpg") && !strpos($lowerUrl,".jpeg") && !strpos($lowerUrl,".gif")  && !strpos($lowerUrl,".png") && !strpos($lowerUrl,".pdf") && !strpos($lowerUrl,".zip"))
 			{
 				$naam = $naam.$this->getExtension($file["type"]);
 			}
@@ -319,6 +324,14 @@ class JSON_Product_Import {
 		// Add the new products
 		foreach ($decoded as $product) {
 			$product_id = intval( $product["id"] );
+
+			if($product_id == '3003')
+			{
+				if(array_key_exists( $product_id , $dates_modified ))
+					die("exists: " .$dates_modified[$product_id]["wc_id"]);
+
+				die("henk");
+			}
 
 			if ( is_array($dates_modified) &&
 					array_key_exists( $product_id , $dates_modified ) && 
