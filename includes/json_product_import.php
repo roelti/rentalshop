@@ -322,16 +322,9 @@ class JSON_Product_Import {
         //check different taxes
 
 		// Add the new products
-		foreach ($decoded as $product) {
+		foreach ($decoded as $product)
+		{
 			$product_id = intval( $product["id"] );
-
-			if($product_id == '3003')
-			{
-				if(array_key_exists( $product_id , $dates_modified ))
-					die("exists: " .$dates_modified[$product_id]["wc_id"]);
-
-				die("henk");
-			}
 
 			if ( is_array($dates_modified) &&
 					array_key_exists( $product_id , $dates_modified ) && 
