@@ -290,7 +290,9 @@ class JSON_Product_Import {
 				'image/png' => '.png',
 				'image/x-png' => '.png',
 				'text/xml' => '.xml',
-				'application/pdf' => '.pdf'
+				'application/pdf' => '.pdf',
+				'image/bmp' => '.bmp',
+				'image/x-ms-bmp' => '.bmp'
 		);
 
 
