@@ -214,7 +214,7 @@ class JSON_Product_Import {
 			}
 
 			$url = $file['url'];
-			$lowerUrl = $url;
+			$lowerUrl = strtolower($url);
 			$naam = $file['naam'];
 			if(!strpos($lowerUrl,".jpg") && !strpos($lowerUrl,".jpeg") && !strpos($lowerUrl,".gif")  && !strpos($lowerUrl,".png") && !strpos($lowerUrl,".pdf") && !strpos($lowerUrl,".zip"))
 			{

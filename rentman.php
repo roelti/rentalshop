@@ -727,8 +727,8 @@ class Rentman {
 
         wp_localize_script( 'date_picker_base', 'rm_translate', array(
             'is_available' => __( 'Product is beschikbaar', 'rentman' ),
-            'not_available' => __( 'Het product is mogelijk beschikbaar, maar niet definitief', 'rentman' ),
-            'maybe_available' => __( 'Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode', 'rentman' )
+            'not_available' => __( 'Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode', 'rentman' ),
+            'maybe_available' => __( 'Het product is mogelijk beschikbaar, maar niet definitief', 'rentman' )
             ));
 		// CSS for jQuery UI
 		wp_enqueue_style(
