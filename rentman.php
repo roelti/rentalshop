@@ -720,7 +720,7 @@ class Rentman {
 	    	'to_date' => $to_date,
 	    	'cart_ids' => $cart_ids,
 	    	'product_id' => $product_id,
-	    	'woocommerce_language' => 'nl', //strstr(get_locale(),"_",true),
+	    	'woocommerce_language' => strstr(get_locale(),"_",true),
 	    	'server_utc_offset' => timezone_offset_get(timezone_open(date_default_timezone_get()), new DateTime()),
             'rm_checkAvailabilty' => $options['rentman_availabilityCheck']
 	    	); 
