@@ -683,16 +683,17 @@ class Rentman {
 			"https://code.jquery.com/ui/1.11.1/jquery-ui.min.js",
 			array( 'jquery' )
 		);
-        wp_enqueue_script(
-            'jquery-ui-i18n',
-            "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/i18n/jquery-ui-i18n.min.js",
-            array( 'jquery' )
-        );
 		wp_enqueue_script(
 			'date_picker_base',
 			plugins_url('js/date_picker_base.js', __FILE__),
 			array( 'jquery' )
 		);
+        wp_enqueue_script(
+            'jquery-ui-i18n',
+            "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/i18n/jquery-ui-i18n.min.js",
+            array( 'jquery' )
+        );
+
 
 		$session_dates = $this->get_dates();
 		if ($session_dates !== false)

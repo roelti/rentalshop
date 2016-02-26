@@ -1,6 +1,6 @@
 jQuery(document).ready(function()
 {
-    jQuery.datepicker.setDefaults( jQuery.datepicker.regional[ "nl" ] );
+    jQuery.datepicker.setDefaults( jQuery.datepicker.regional[date_picker_localized.woocommerce_language] );
     hide_wc_elements();
 	create_datepicker();
 
