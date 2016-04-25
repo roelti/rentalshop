@@ -86,6 +86,8 @@ class JSON_Product_Import {
 				$term_id = $insertion["term_id"];
 			}
 			$rentman_categories = get_option( 'rentman_categories' , array() );
+			if(!is_array($rentman_categories))
+				$rentman_categories = [];
 
 			foreach($rentman_categories as $k => $rc)
 				if($rc == $id)
@@ -106,8 +108,9 @@ class JSON_Product_Import {
 
 
 		$rentman_categories = get_option( 'rentman_categories' , array() );
+		if(!is_array($rentman_categories))
+			$rentman_categories = [];
 		$current_categories = get_terms('product_cat', array('hide_empty' => 0));
-		//Debug::dump($current_categories);
 
 		// Add the new categories
 		foreach ( $new_categories as $new_category ) {
@@ -308,7 +311,7 @@ class JSON_Product_Import {
 		}
 
 		$all_products_arguments = array(
-			'post_type' => array('product', 'attachment'),
+			'post_type' => array('product'),
 			'posts_per_page' => -1,
 			'post_status' => 'any');
 		$all_products = get_posts( $all_products_arguments );
@@ -321,6 +324,9 @@ class JSON_Product_Import {
 		}
 
 		$dates_modified = get_option( 'rentman_products_modified');
+		if(!is_array($dates_modified))
+			$dates_modified = [];
+
         //check different taxes
 
 		// Add the new products
@@ -328,9 +334,13 @@ class JSON_Product_Import {
 		{
 			$product_id = intval( $product["id"] );
 
-			if ( is_array($dates_modified) &&
-					array_key_exists( $product_id , $dates_modified ) && 
-					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] )
+			if(!array_key_exists( $product_id , $dates_modified ) && in_array( $product_id, $existing_skus ))
+				die("product gevonden dat faalt!");
+
+			if (	array_key_exists( $product_id , $dates_modified ) &&
+					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] &&
+				    in_array( $product_id, $existing_skus )
+				)
             {
 				// Product is updated
 				$post_id = $dates_modified[$product_id]["wc_id"];
@@ -369,15 +379,16 @@ class JSON_Product_Import {
                     foreach($files as $fkey => $file)
                     {
                         foreach($attachments as $a)
-                            if(basename($a->guid) == ($file["id"] . $file["naam"]) && strlen(get_post_mime_type($a->ID)))
-                                unset($files[$fkey]);
-
-						if ($file['inShop'] && strlen(get_post_mime_type($a->ID)))
 						{
-							set_post_thumbnail( $post_id, $a->ID);
+							if (basename($a->guid) == ($file["id"] . $file["naam"]) && strlen(get_post_mime_type($a->ID)))
+								unset($files[$fkey]);
+
+							if ($file['inShop'] && strlen(get_post_mime_type($a->ID)))
+							{
+								set_post_thumbnail($post_id, $a->ID);
+							}
 						}
                     }
-
 
                     $files_upload_success = $this->add_attachments( $files, $post_id );
 					if (is_wp_error($files_upload_success)) {
@@ -411,16 +422,20 @@ class JSON_Product_Import {
 				update_post_meta( $post_id, '_sold_individually', "" );
 				update_post_meta( $post_id, '_manage_stock', "no" );
 				update_post_meta( $post_id, '_backorders', "no" );
-				update_post_meta( $post_id, '_stock', "aantal" );
+				update_post_meta( $post_id, '_stock', $product["aantal"]);
                 update_post_meta( $post_id, '_rental', $product["verhuur"]);
+				update_post_meta( $post_id, 'rentman_imported', true);
 
 				$dates_modified[$product_id]["modified"] = time();
 				update_option( 'rentman_products_modified', $dates_modified );
 
 				$category_lookup = get_option( 'rentman_categories', array() );
 				$category_slug = array_search( intval($product["parent"]) , $category_lookup );
+				$result2 = wp_set_object_terms($post_id, array($category_slug), "product_cat");
 
-			} else if ($product["naam"] && ! in_array( $product_id, $existing_skus ) ) {
+			}
+			else if ($product["naam"] && !in_array( $product_id, $existing_skus ) )  //new products
+			{
 				if ( empty( $product["shopDescriptionLong"] ) ) {
 					$content = __("Geen informatie beschikbaar");
 				} else {
@@ -435,9 +450,9 @@ class JSON_Product_Import {
 					"post_type" => "product"
 					);
 				$post_id = wp_insert_post($new_product, TRUE);
-				if (is_wp_error( $post_id )) {
-					//Debug::dump($post_id);
-					//Debug::dump($product);
+				if (is_wp_error( $post_id ))
+				{
+
 					$error_string = $post_id->get_error_message();
 					echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
 				} else {
@@ -450,8 +465,6 @@ class JSON_Product_Import {
 						}
 					}
 
-
-
 					// Add object to object list
 					//$this->object_list[$product["id"]] = $post_id;
 					// Set all other data
@@ -459,7 +472,7 @@ class JSON_Product_Import {
                     if($product["verhuur"])
                         wp_set_object_terms($post_id, 'rentable', 'product_type');
 
-                    add_post_meta($post_id, 'true', 'rentman_imported');
+                    add_post_meta($post_id, 'rentman_imported', true);
 					update_post_meta( $post_id, '_visibility', 'visible' );
 					update_post_meta( $post_id, '_stock_status', 'instock');
 					update_post_meta( $post_id, 'total_sales', '0');

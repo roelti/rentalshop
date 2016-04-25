@@ -180,7 +180,7 @@ class Rentman {
 
     function import_products($products,$van,$tot)
     {
-        $products = array_slice($products,$van,$tot-$van);
+        $products = array_slice($products,$van,$tot-($van-1));
 
         $json_product_import = new JSON_Product_Import();
         $json_product_import->import_products($products);
