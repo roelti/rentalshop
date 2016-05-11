@@ -294,7 +294,7 @@ class Rentman {
 			"client" => $rentman_user_id,
 			"location" => $rentman_user_id,
 			"cart" => json_encode($cart),
-			"notes" => $notes
+			"note" => $notes
 			);
 
 		$this->api_post_order($output);
