@@ -1,6 +1,6 @@
 jQuery(document).ready(function()
 {
-    jQuery.datepicker.setDefaults( jQuery.datepicker.regional[ "nl" ] );
+    jQuery.datepicker.setDefaults( jQuery.datepicker.regional[date_picker_localized.woocommerce_language] );
     hide_wc_elements();
 	create_datepicker();
 
@@ -73,7 +73,7 @@ function create_datepicker(cart) {
 				date_picked(date, this);
 			}
 		},
-        jQuery.datepicker.regional['nl']);
+        jQuery.datepicker.regional[date_picker_localized.woocommerce_language]);
 
 		// Get the date from object
 		jQuery("#datepicker-from-date").datepicker("setDate", from_date_object);

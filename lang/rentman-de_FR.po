@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2015-11-16 22:04+0100\n"
-"PO-Revision-Date: 2015-11-16 23:30+0100\n"
+"POT-Creation-Date: 2015-11-16 23:30+0100\n"
+"PO-Revision-Date: 2015-11-17 11:28+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: en_US\n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,72 +22,72 @@ msgstr ""
 
 #: includes/admin/rentman_product_rentable_admin.php:18
 msgid "Rentable Product"
-msgstr "Rentable Product"
+msgstr "Vermietbar Produkt"
 
 #: includes/checkout_fields.php:23 rentman.php:748
 msgid "Huurperiode"
-msgstr "Rental period"
+msgstr "Zeitraum"
 
 #: includes/checkout_fields.php:24 rentman.php:749
 msgid "Van:"
-msgstr "From:"
+msgstr "Von:"
 
 #: includes/checkout_fields.php:25 rentman.php:751
 msgid "Tot:"
-msgstr "Until:"
+msgstr "Bis:"
 
 #: includes/checkout_fields.php:53
 msgid "Begindatum verhuur:"
-msgstr "Rental start date:"
+msgstr "Startdatum Vermietung:"
 
 #: includes/checkout_fields.php:54
 msgid "Einddatum verhuur:"
-msgstr "Rental end date:"
+msgstr "Enddatum Vermietung:"
 
-#: includes/json_product_import.php:300 includes/json_product_import.php:365
+#: includes/json_product_import.php:300 includes/json_product_import.php:380
 msgid "Geen informatie beschikbaar"
-msgstr "No information available"
+msgstr "Keine Informationen verfügbar"
 
 #: includes/rental_period_cart_integration.php:34
 #: includes/rental_period_cart_integration.php:37
 msgid "De ingevoerde huurperiode is niet correct"
-msgstr "The rental period entered is not correct"
+msgstr "Der angegebene Vermietzeitraum ist nicht korrekt"
 
 #: includes/rental_period_cart_integration.php:121
 msgid "Beschikbaar"
-msgstr "Available"
+msgstr "Verfügbar"
 
 #: includes/rental_period_cart_integration.php:123
 msgid "Mogelijk beschikbaar"
-msgstr "May be available"
+msgstr "Eventuell verfügbar"
 
 #: includes/rental_period_cart_integration.php:125
 msgid "Niet beschikbaar"
-msgstr "Not available"
+msgstr "Nicht verfügbar"
 
 #: rentman.php:91
 msgid "Log hier in met uw Rentman API gegevens"
-msgstr "Log in here with your Rentman API data"
+msgstr "Loggen Sie sich hier mit Ihren Rentman API Daten ein"
 
 #: rentman.php:98
 msgid "Accountnaam"
-msgstr "Account name"
+msgstr "Accountname"
 
 #: rentman.php:106
 msgid "Wachtwoord"
-msgstr "Password"
+msgstr "Passwort"
 
 #: rentman.php:114
 msgid "Check beschikbaarheid voor versturen"
-msgstr "Check availability for sending"
+msgstr "Verfügbarkeit vor Verschicken überprüfen"
 
 #: rentman.php:122
 msgid "Korting contact uit Rentman overnemen"
-msgstr "Use discount from contact in Rentman"
+msgstr "Kontaktrabatt aus Rentman übernehmen"
 
 #: rentman.php:142
 msgid "Inloggegevens niet correct"
-msgstr "Sorry, those login credentials are incorrect."
+msgstr "Login-Daten nicht korrekt"
 
 #: rentman.php:173
 msgid ""
@@ -95,87 +95,85 @@ msgid ""
 "producten zijn waarbij u heeft aangegeven dat ze worden getoond in de "
 "webshop."
 msgstr ""
-"The categories could not be loaded. Please specify in Rentman that you have "
-"products for the webshop"
+"Die Kategorien konnten nicht geladen werden. Kontrollieren Sie in Rentman, "
+"ob es Produkte gibt, bei denen Sie angegeben haben, dass diese im Webshop "
+"nicht gezeigt werden sollen."
 
 #: rentman.php:654
 msgid "Producten importeren"
-msgstr "Importing products"
+msgstr "Produkte importieren"
 
 #: rentman.php:657
 msgid ""
 "Bezig met importeren. Het importeren van producten kan enkele minuten duren, "
 "sluit gedurende deze periode dit scherm niet af"
-msgstr "Import in progress. This process may take a few minutes."
+msgstr ""
+"Mit Importieren beschäftigt. Das Importieren von Produkten kann einige "
+"Minuten dauern. Bitte lassen Sie das Fenster während dieser Zeit geöffnet."
 
 #: rentman.php:728
 msgid "Product is beschikbaar"
-msgstr "Product is available"
+msgstr "Produkt ist verfügbar"
 
 #: rentman.php:729
 msgid "Het product is mogelijk beschikbaar, maar niet definitief"
-msgstr "The product may be available"
+msgstr "Das Produkt ist eventuell verfügbar, jedoch nicht definitiv"
 
 #: rentman.php:730
 msgid ""
 "Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode"
 msgstr ""
-"The product is not available in this quantity for the time period specified"
+"Das Produkt ist zum angegebenen Zeitraum nicht in der gewünschten Anzahl "
+"verfügbar"
 
 #: rentman.php:753
 msgid "Staffel:"
-msgstr "Factor"
+msgstr "Faktor:"
 
 #: rentman.php:755
 msgid "Periode bijwerken:"
-msgstr "Recalculate period"
+msgstr "Zeitraum bearbeiten:"
 
 #: rentman.php:772
 msgid "Geselecteerde data"
-msgstr "Selected dates"
+msgstr "Ausgewählte Daten"
 
 #: rentman.php:776
 msgid "Ga naar de winkelwagen om de huurperiode te wijzigen"
-msgstr "Go to the shopping cart to change the rental period"
+msgstr "Gehen Sie zum Warenkorb, um den Mietzeitraum zu ändern"
 
 #: rentman.php:821
 msgid "Bijgevoegde bestanden:"
-msgstr "Files attached"
+msgstr "Hinzugefügte Dateien:"
 
 #: rentman.php:941
 msgid "Extra"
-msgstr "Additional"
+msgstr "Extra"
 
 #: rentman.php:941
 msgid " dag(en)"
-msgstr "days"
+msgstr "Tag(e)"
 
 #: rentman.php:953
 msgid "% Korting verhuur"
-msgstr "% Discount rental"
+msgstr "% Rabatt Vermietung"
 
 #: rentman.php:957
 msgid "% Korting verkoop"
-msgstr "% Discount sale"
+msgstr "% Rabatt Verkauf"
 
 #: rentman.php:966 rentman.php:969
 msgid "Dagprijs"
-msgstr "daily rate"
+msgstr "Tagespreis"
 
 #. Plugin Name of the plugin/theme
 msgid "Rentman"
-msgstr "Rentman"
+msgstr ""
 
 #. Plugin URI of the plugin/theme
 msgid "http://www.rentman.nl"
-msgstr "http://onlinerentalsoftware.com"
+msgstr ""
 
 #. Description of the plugin/theme
 msgid "Integrates Rentman rental software into WooCommerce"
 msgstr ""
-
-#~ msgid "Extra "
-#~ msgstr "Extra"
-
-#~ msgid "% Korting"
-#~ msgstr "% discount"

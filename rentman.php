@@ -41,7 +41,7 @@ class Rentman {
         // Add JSON import
         include_once('includes/json_product_import.php');
         // Add Option field object
-        include_once('includes/options.php');
+        include_once('includes/rentman_options.php');
         // Add date fields for Checkout
         include_once('includes/checkout_fields.php');
 
@@ -134,7 +134,7 @@ class Rentman {
             );
 		}
 
-        if(isset($_GET["import"]) && in_array($_GET["import"],array("import_categories","import_products","import_delete_products","import_cross_sells")))
+        if(isset($_GET["import"]) && in_array($_GET["import"],array("import_categories","import_products","import_delete_products","import_cross_sells")) && method_exists($this, $_GET["import"]))
         {
             set_time_limit(600);
             if ( ! $this->login_credentials_correct() )
@@ -147,6 +147,7 @@ class Rentman {
             $tot = isset($_GET["tot"]) ? $_GET["tot"] : null;
 
             $products = $this->api_get_products();
+
             if (is_null($products))
             {
                 $error_string = "FATAL: Error parsing Rentman API JSON. Please check login settings and API availability";
@@ -155,7 +156,7 @@ class Rentman {
                 return false;
             }
 
-            $result = $this->$_GET["import"]($products, $van,$tot);
+            $result = $this->{$_GET["import"]}($products, $van,$tot);
 
             if ( is_wp_error( $result ) )
                 $status = array("status" => "error", "error" => $result->get_error_message());
@@ -179,7 +180,7 @@ class Rentman {
 
     function import_products($products,$van,$tot)
     {
-        $products = array_slice($products,$van,$tot-$van);
+        $products = array_slice($products,$van,$tot-($van-1));
 
         $json_product_import = new JSON_Product_Import();
         $json_product_import->import_products($products);
@@ -432,9 +433,9 @@ class Rentman {
 		return $staffel;	
 	}
 
-    function api_get_discount_user($userId)
+    function api_get_rental_discount_user($userId)
     {
-        $key = "discount_" . $userId;
+        $key = "discount_rental_" . $userId;
 
         if (wp_cache_get($key)) {
             return wp_cache_get($key);
@@ -442,6 +443,21 @@ class Rentman {
 
         $users = $this->api_get('api/v1/contact/ids/' . $userId);
         $discount = $users[0]["materiaalkorting"];
+        wp_cache_set($key,$discount);
+
+        return $discount;
+    }
+
+    function api_get_sale_discount_user($userId)
+    {
+        $key = "discount_sale_" . $userId;
+
+        if (wp_cache_get($key)) {
+            return wp_cache_get($key);
+        }
+
+        $users = $this->api_get('api/v1/contact/ids/' . $userId);
+        $discount = $users[0]["verkoopkorting"];
         wp_cache_set($key,$discount);
 
         return $discount;
@@ -667,16 +683,17 @@ class Rentman {
 			"https://code.jquery.com/ui/1.11.1/jquery-ui.min.js",
 			array( 'jquery' )
 		);
-        wp_enqueue_script(
-            'jquery-ui-i18n',
-            "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/i18n/jquery-ui-i18n.min.js",
-            array( 'jquery' )
-        );
 		wp_enqueue_script(
 			'date_picker_base',
 			plugins_url('js/date_picker_base.js', __FILE__),
 			array( 'jquery' )
 		);
+        wp_enqueue_script(
+            'jquery-ui-i18n',
+            "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/i18n/jquery-ui-i18n.min.js",
+            array( 'jquery' )
+        );
+
 
 		$session_dates = $this->get_dates();
 		if ($session_dates !== false)
@@ -704,6 +721,7 @@ class Rentman {
 	    	'to_date' => $to_date,
 	    	'cart_ids' => $cart_ids,
 	    	'product_id' => $product_id,
+	    	'woocommerce_language' => strstr(get_locale(),"_",true),
 	    	'server_utc_offset' => timezone_offset_get(timezone_open(date_default_timezone_get()), new DateTime()),
             'rm_checkAvailabilty' => $options['rentman_availabilityCheck']
 	    	); 
@@ -711,8 +729,8 @@ class Rentman {
 
         wp_localize_script( 'date_picker_base', 'rm_translate', array(
             'is_available' => __( 'Product is beschikbaar', 'rentman' ),
-            'not_available' => __( 'Het product is mogelijk beschikbaar, maar niet definitief', 'rentman' ),
-            'maybe_available' => __( 'Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode', 'rentman' )
+            'not_available' => __( 'Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode', 'rentman' ),
+            'maybe_available' => __( 'Het product is mogelijk beschikbaar, maar niet definitief', 'rentman' )
             ));
 		// CSS for jQuery UI
 		wp_enqueue_style(
@@ -725,6 +743,9 @@ class Rentman {
     {
 		global $woocommerce; global $rentman;
 
+        if(!$this->rentalInCart())
+            return;
+
 		?>
         <div class="cart_totals">
 		<h2><?php echo __('Huurperiode',"rentman"); ?></h2>
@@ -734,7 +755,7 @@ class Rentman {
 		<input type="text" id="datepicker-to-date" class="datepicker"><br>
         <label for="datepicker-from-date" style="display: inline-block; width: 60px;"><?php echo __('Staffel:',"rentman"); ?> </label>
         <span id="staffelweergave"><?php echo($rentman->get_staffel()); ?></span><br>
-        <input type="button" class="button" value="Periode bijwerken" id="changePeriod" style="margin-top: 20px;">
+        <input type="button" class="button" value="<?php echo __('Periode bijwerken:',"rentman"); ?>" id="changePeriod" style="margin-top: 20px;">
         </div>
 		<?php
 	}
@@ -826,9 +847,25 @@ class Rentman {
 
 	function cart_date_picker()
     {
-		$this->init_datepickers(TRUE);
+        if(!$this->rentalInCart())
+            return;
+
+        $this->init_datepickers(TRUE);
 		$this->cart_datepicker_template();
 	}
+
+    function rentalInCart()
+    {
+        global $woocommerce;
+
+        foreach ($woocommerce->cart->cart_contents as $cart_key => $cart_item)
+        {
+            if($cart_item['data']->product_type == "rentable")
+                return true;
+        }
+
+        return false;
+    }
 
 	function disable_comments()
     {
@@ -888,12 +925,23 @@ class Rentman {
     {
         global $woocommerce,$rentman;
 
-        $total = floatval( preg_replace( '#[^\d,]#', '', $woocommerce->cart->get_cart_subtotal() ) );
+        $totalSale = 0;
+        $totalRental = 0;
+        foreach ($woocommerce->cart->cart_contents as $cart_key => $cart_item)
+        {
+            if($cart_item['data']->product_type == "rentable")
+                $totalRental += $cart_item["line_total"];
+            else
+                $totalSale += $cart_item["line_total"];
+            //var_dump($cart_item_array);
+        }
+
+
         $days = $this->get_days();
 
-        $incl_staffel = $rentman->apply_staffel($total);
-        if($incl_staffel - $total > 0)
-            $woocommerce->cart->add_fee( __('Extra '.($days-1) .' dag(en)', 'woocommerce'), floatval ($incl_staffel - $total),true);
+        $incl_staffel = $rentman->apply_staffel($totalRental);
+        if($incl_staffel - $totalRental > 0)
+            $woocommerce->cart->add_fee( __('Extra', 'rentman'). " " .($days-1) .__(' dag(en)', 'rentman'), floatval ($incl_staffel - $totalRental),true);
 
         //Add discount:
         $options = get_option( 'rentman_settings' );
@@ -903,10 +951,13 @@ class Rentman {
 
             if ( is_numeric($db_data->rentman_id) )
             {
-                $discount = $this->api_get_discount_user($db_data->rentman_id);
-
+                $discount = $this->api_get_rental_discount_user($db_data->rentman_id);
                 if($discount > 0)
-                    $woocommerce->cart->add_fee($discount.__("% Korting","rentman"),($incl_staffel * ($discount * 0.01) * -1),true);
+                    $woocommerce->cart->add_fee($discount.__("% Korting verhuur","rentman"),($incl_staffel * ($discount * 0.01) * -1),true);
+
+                $discount = $this->api_get_rental_discount_user($db_data->rentman_id);
+                if($discount > 0)
+                    $woocommerce->cart->add_fee($discount.__("% Korting verkoop","rentman"),($totalSale * ($discount * 0.01) * -1),true);
             }
         }
     }

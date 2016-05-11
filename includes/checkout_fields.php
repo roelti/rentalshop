@@ -10,6 +10,9 @@ class Rentman_Checkout_Fields {
     {
 		global $rentman;
 
+        if(!$rentman->rentalInCart())
+            return;
+
         $dates = $rentman->get_dates();
 
         $van = new DateTime();
@@ -18,8 +21,8 @@ class Rentman_Checkout_Fields {
         $tot->setTimestamp($dates['to_date']);
 
         echo '<div id="rentman_checkout_fields"><h3>'. __('Huurperiode',"rentman").'</h3>';
-        echo '<span style="font-weight: bold;">'. __('Van:',"rentman"). $van->format("d-m-Y").'</span><br>';
-        echo '<span style="font-weight: bold;">'. __('Tot:',"rentman").$tot->format("d-m-Y").'</span><br>';
+        echo '<span style="font-weight: bold;">'. __('Van:',"rentman")." ". $van->format("d-m-Y").'</span><br>';
+        echo '<span style="font-weight: bold;">'. __('Tot:',"rentman")." ".$tot->format("d-m-Y").'</span><br>';
 
 		echo '</div>';
 

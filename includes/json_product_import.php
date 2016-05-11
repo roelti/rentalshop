@@ -50,34 +50,34 @@ class JSON_Product_Import {
 		}
 	}
 
-	public function add_category($category, $rentman_ids, $current_categories, $parent = 0) {
+	public function add_category($category, $rentman_ids, $current_categories, $parent = 0)
+	{
 		$id = intval($category["id"]);
 		$name = $category['naam'];
 		$children = $category["children"];
 		$this->new_rentman_category_ids[] = $id;
 
-		if ( in_array( $id, $rentman_ids ) ) {
+		if ( in_array( $id, $rentman_ids ) && term_exists(array_search( $id , $rentman_ids ), 'product_cat'))
+		{
 			$wc_id = array_search( $id , $rentman_ids );
 
 			// Item already exists
 			if ( ! $this->product_name_exists( $name, $current_categories ) ) {
 				// Name changed
-				if ($wc_id === false ) {
+				if ($wc_id === false )
+				{
 					Debug::dump('Error in category lookup');
-				} else {
+				} else
+				{
 					$new_data = array( 'name' => $name, 'slug' => $name );
 					wp_update_term( $wc_id, 'product_cat',  $new_data );
-					// Debug::dump($name);
-					// Debug::dump($current_categories);
 				}
 			}
-			if (! empty ( $children ) ) {
-				$term_id = $wc_id;
-				foreach ($children as $child) {
-					$this->add_category($child, $rentman_ids, $current_categories, $term_id);
-				}
-			}
-		} else {
+
+			//for update children
+			$term_id = $wc_id;
+		} else
+		{
 			// Item must be new
 			$insertion = wp_insert_term($category["naam"], "product_cat", array('parent' => $parent, 'slug' => $category["naam"]));
 			if (is_wp_error($insertion)) {
@@ -86,21 +86,32 @@ class JSON_Product_Import {
 				$term_id = $insertion["term_id"];
 			}
 			$rentman_categories = get_option( 'rentman_categories' , array() );
+			if(!is_array($rentman_categories))
+				$rentman_categories = [];
+
+			foreach($rentman_categories as $k => $rc)
+				if($rc == $id)
+					unset($rentman_categories[$k]);
+
 			$rentman_categories[ $term_id ] = $id;
 			update_option( 'rentman_categories', $rentman_categories );
-			if (! empty ( $children ) ) {
-				foreach ($children as $child) {
-					$this->add_category($child, $rentman_ids, $current_categories, $term_id);
-				}
+		}
+
+		if (! empty ( $children ) ) {
+			foreach ($children as $child) {
+				$this->add_category($child, $rentman_ids, $current_categories, $term_id);
 			}
 		}
 	}
 
 	public function import_categories_safe( $new_categories ) {
+
+
 		$rentman_categories = get_option( 'rentman_categories' , array() );
+		if(!is_array($rentman_categories))
+			$rentman_categories = [];
 		$current_categories = get_terms('product_cat', array('hide_empty' => 0));
-		//Debug::dump($current_categories);
-		
+
 		// Add the new categories
 		foreach ( $new_categories as $new_category ) {
 			$this->add_category( $new_category, $rentman_categories, $current_categories );
@@ -166,14 +177,18 @@ class JSON_Product_Import {
 		$this->object_list = $object_list;
 	}
 
-	public function add_cross_sells($products) {
+	public function add_cross_sells($products)
+	{
 		$this->generate_object_list();
 		$object_list = $this->object_list;
+
 		foreach ($products as $product) {
 			$values = array();
-			foreach($product as $cross_sell) {
+			foreach($product as $cross_sell)
+			{
 				// Parent ID is also an element but not an array
-				if (is_array($cross_sell)) {
+				if (is_array($cross_sell) && isset($object_list[$cross_sell["materiaal"]])) {
+
 					// Find the parent object in the object list
 					$values[] = $object_list[$cross_sell["materiaal"]];
 				}
@@ -202,16 +217,18 @@ class JSON_Product_Import {
 			}
 
 			$url = $file['url'];
+			$lowerUrl = strtolower($url);
+			$naam = $file['naam'];
+			if(!strpos($lowerUrl,".jpg") && !strpos($lowerUrl,".jpeg") && !strpos($lowerUrl,".gif")  && !strpos($lowerUrl,".png") && !strpos($lowerUrl,".pdf") && !strpos($lowerUrl,".zip"))
+			{
+				$naam = $naam.$this->getExtension($file["type"]);
+			}
 
 			try {
-			    $fh = fopen($url, 'r');
-
-			    if (! $fh) {
-			        throw new Exception("Could not open the file");
-			    }
+			    $fh = @fopen($url, 'r');
 
 				$file_save_success = file_put_contents(
-					$folder . $file["id"] . $file['naam'],
+					$folder . $file["id"] . urlencode($naam),
 					$fh
 					);
 				if ($file_save_success === false) {
@@ -220,25 +237,30 @@ class JSON_Product_Import {
 				}
 
 				// $filename should be the path to a file in the upload directory.
-				$filename = "rm_".$file["id"] . $file["naam"] ;
+				$filename = $file["id"] . $naam ;
 
 				// The ID of the post this attachment is for.
 				$parent_post_id = $attachment_post_id;
 
 				// Check the type of tile. We'll use this as the 'post_mime_type'.
-				$filetype = wp_check_filetype( basename( $filename ), null );
+				if(!is_string($file["type"]))
+				{
+					$filetype = wp_check_filetype( basename( $filename ), null );
+					$file["type"] = $filetype['type'];
+				}
+
 
 				// Prepare an array of post data for the attachment.
 				$attachment = array(
 					'guid'           => $wp_upload_dir['url'] . '/' . basename( $filename ),
-					'post_mime_type' => $filetype['type'],
-					'post_title'     => $file["naam"],
+					'post_mime_type' => $file['type'],
+					'post_title'     => $naam,
 					'post_content'   => '',
 					'post_status'    => 'inherit',
                     'post_name'      => $filename
 				);
 
-				$file_absolute_path = $wp_upload_dir['path'] . '/' . $file["id"] . $file["naam"];
+				$file_absolute_path = $wp_upload_dir['path'] . '/' .$file["id"] . $naam;
 
 				// Insert the attachment
 				$attach_id = wp_insert_attachment( $attachment, $file_absolute_path, $parent_post_id );
@@ -263,6 +285,24 @@ class JSON_Product_Import {
 		}
 	}
 
+	public function getExtension ($mime_type){
+
+		$extensions = array(
+				'image/jpeg' => '.jpg',
+				'image/gif' => '.gif',
+				'image/png' => '.png',
+				'image/x-png' => '.png',
+				'text/xml' => '.xml',
+				'application/pdf' => '.pdf',
+				'image/bmp' => '.bmp',
+				'image/x-ms-bmp' => '.bmp'
+		);
+
+
+		return $extensions[$mime_type];
+
+	}
+
 	public function import_products($decoded)
     {
 		// Check if the decoded JSON is a list of lists
@@ -271,7 +311,7 @@ class JSON_Product_Import {
 		}
 
 		$all_products_arguments = array(
-			'post_type' => array('product', 'attachment'),
+			'post_type' => array('product'),
 			'posts_per_page' => -1,
 			'post_status' => 'any');
 		$all_products = get_posts( $all_products_arguments );
@@ -283,16 +323,24 @@ class JSON_Product_Import {
 			}
 		}
 
-		$dates_modified = get_option( 'rentman_products_modified ');
+		$dates_modified = get_option( 'rentman_products_modified');
+		if(!is_array($dates_modified))
+			$dates_modified = [];
 
         //check different taxes
 
 		// Add the new products
-		foreach ($decoded as $product) {
+		foreach ($decoded as $product)
+		{
 			$product_id = intval( $product["id"] );
-			if ( is_array($dates_modified) &&
-					array_key_exists( $product_id , $dates_modified ) && 
-					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] )
+
+			if(!array_key_exists( $product_id , $dates_modified ) && in_array( $product_id, $existing_skus ))
+				die("product gevonden dat faalt!");
+
+			if (	array_key_exists( $product_id , $dates_modified ) &&
+					strtotime($product['modified']) > $dates_modified[$product_id]['modified'] &&
+				    in_array( $product_id, $existing_skus )
+				)
             {
 				// Product is updated
 				$post_id = $dates_modified[$product_id]["wc_id"];
@@ -310,17 +358,36 @@ class JSON_Product_Import {
 					"post_type" => "product"
 					));
 
-				//wp_delete_attachment($post_id, true);
-
 				if ( isset( $product["files"] ) )
                 {
-                    $attachments = get_attached_media( '', $post_id);
+					$attachments = get_attached_media( '', $post_id);
                     $files = $product["files"];
+
+                    //delete unused attachments
                     foreach($attachments as $a)
                     {
                         foreach($files as $fkey => $file)
-                            if($a->post_name == ("rm_".$file["id"] . $file["naam"]))
-                                unset($files[$fkey]);
+                            if(basename($a->guid) == ($file["id"] . $file["naam"]) && strtotime($a->post_modified) > strtotime($file["modified"]))
+                                continue(2);
+
+                        wp_delete_attachment($a->ID, true);
+                    }
+
+                    //add attachments
+                    $attachments = get_attached_media( '', $post_id);
+
+                    foreach($files as $fkey => $file)
+                    {
+                        foreach($attachments as $a)
+						{
+							if (basename($a->guid) == ($file["id"] . $file["naam"]) && strlen(get_post_mime_type($a->ID)))
+								unset($files[$fkey]);
+
+							if ($file['inShop'] && strlen(get_post_mime_type($a->ID)))
+							{
+								set_post_thumbnail($post_id, $a->ID);
+							}
+						}
                     }
 
                     $files_upload_success = $this->add_attachments( $files, $post_id );
@@ -329,6 +396,11 @@ class JSON_Product_Import {
 						Debug::dump('File upload failed');
 					}
 				}
+                else{
+                    $attachments = get_attached_media( '', $post_id);
+                    foreach($attachments as $a)
+                        wp_delete_attachment( $a->ID, true);
+                }
 
 				update_post_meta( $post_id, '_visibility', 'visible' );
 				update_post_meta( $post_id, '_stock_status', 'instock');
@@ -350,8 +422,9 @@ class JSON_Product_Import {
 				update_post_meta( $post_id, '_sold_individually', "" );
 				update_post_meta( $post_id, '_manage_stock', "no" );
 				update_post_meta( $post_id, '_backorders', "no" );
-				update_post_meta( $post_id, '_stock', "aantal" );
+				update_post_meta( $post_id, '_stock', $product["aantal"]);
                 update_post_meta( $post_id, '_rental', $product["verhuur"]);
+				update_post_meta( $post_id, 'rentman_imported', true);
 
 				$dates_modified[$product_id]["modified"] = time();
 				update_option( 'rentman_products_modified', $dates_modified );
@@ -360,7 +433,9 @@ class JSON_Product_Import {
 				$category_slug = array_search( intval($product["parent"]) , $category_lookup );
 				$result2 = wp_set_object_terms($post_id, array($category_slug), "product_cat");
 
-			} else if ($product["naam"] && ! in_array( $product_id, $existing_skus ) ) {
+			}
+			else if ($product["naam"] && !in_array( $product_id, $existing_skus ) )  //new products
+			{
 				if ( empty( $product["shopDescriptionLong"] ) ) {
 					$content = __("Geen informatie beschikbaar");
 				} else {
@@ -375,9 +450,9 @@ class JSON_Product_Import {
 					"post_type" => "product"
 					);
 				$post_id = wp_insert_post($new_product, TRUE);
-				if (is_wp_error( $post_id )) {
-					//Debug::dump($post_id);
-					//Debug::dump($product);
+				if (is_wp_error( $post_id ))
+				{
+
 					$error_string = $post_id->get_error_message();
 					echo '<div id="message" class="error"><p>' . $error_string . '</p></div>';
 				} else {
@@ -390,13 +465,14 @@ class JSON_Product_Import {
 						}
 					}
 
-
-
 					// Add object to object list
 					//$this->object_list[$product["id"]] = $post_id;
 					// Set all other data
-					wp_set_object_terms($post_id, 'rentable', 'product_type');
-					add_post_meta($post_id, 'true', 'rentman_imported');
+
+                    if($product["verhuur"])
+                        wp_set_object_terms($post_id, 'rentable', 'product_type');
+
+                    add_post_meta($post_id, 'rentman_imported', true);
 					update_post_meta( $post_id, '_visibility', 'visible' );
 					update_post_meta( $post_id, '_stock_status', 'instock');
 					update_post_meta( $post_id, 'total_sales', '0');

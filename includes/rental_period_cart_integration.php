@@ -98,6 +98,10 @@ class Rentman_Rental_Period {
         if(!is_array($dates))
             return;
 
+        $product = get_product( $cart_item["product_id"] );
+        if(!$product->is_type( 'rentable') )
+            return;
+
         $product_sku = get_post_meta($cart_item["product_id"], "_sku");
         $product_sku = $product_sku[0];
 
