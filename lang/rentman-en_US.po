@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Rentman\n"
+"POT-Creation-Date: 2015-11-16 21:55+0100\n"
+"PO-Revision-Date: 2015-11-16 21:57+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: rentman.php\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: includes/admin/rentman_product_rentable_admin.php:18
+msgid "Rentable Product"
+msgstr "Rentable Product"
+
+#: includes/checkout_fields.php:20 rentman.php:730
+msgid "Huurperiode"
+msgstr "Rental period"
+
+#: includes/checkout_fields.php:21 rentman.php:731
+msgid "Van:"
+msgstr "From:"
+
+#: includes/checkout_fields.php:22 rentman.php:733
+msgid "Tot:"
+msgstr "Until:"
+
+#: includes/checkout_fields.php:50
+msgid "Begindatum verhuur:"
+msgstr "Rental start date:"
+
+#: includes/checkout_fields.php:51
+msgid "Einddatum verhuur:"
+msgstr "Rental end date:"
+
+#: includes/json_product_import.php:300 includes/json_product_import.php:365
+msgid "Geen informatie beschikbaar"
+msgstr "No information available"
+
+#: includes/rental_period_cart_integration.php:34
+#: includes/rental_period_cart_integration.php:37
+msgid "De ingevoerde huurperiode is niet correct"
+msgstr "The rental period entered is not correct"
+
+#: includes/rental_period_cart_integration.php:117
+msgid "Beschikbaar"
+msgstr "Available"
+
+#: includes/rental_period_cart_integration.php:119
+msgid "Mogelijk beschikbaar"
+msgstr "May be available"
+
+#: includes/rental_period_cart_integration.php:121
+msgid "Niet beschikbaar"
+msgstr "Not available"
+
+#: rentman.php:91
+msgid "Log hier in met uw Rentman API gegevens"
+msgstr "Log in here with your Rentman API data"
+
+#: rentman.php:98
+msgid "Accountnaam"
+msgstr "Account name"
+
+#: rentman.php:106
+msgid "Wachtwoord"
+msgstr "Password"
+
+#: rentman.php:114
+msgid "Check beschikbaarheid voor versturen"
+msgstr "Check availability for sending"
+
+#: rentman.php:122
+msgid "Korting contact uit Rentman overnemen"
+msgstr "Use discount from contact in Rentman"
+
+#: rentman.php:142
+msgid "Inloggegevens niet correct"
+msgstr "Sorry, those login credentials are incorrect."
+
+#: rentman.php:173
+msgid ""
+"De categorieën konden niet worden geladen. Controleer in Rentman of er "
+"producten zijn waarbij u heeft aangegeven dat ze worden getoond in de "
+"webshop."
+msgstr ""
+"The categories could not be loaded. Please specify in Rentman that you have "
+"products for the webshop"
+
+#: rentman.php:639
+msgid "Producten importeren"
+msgstr "Importing products"
+
+#: rentman.php:642
+msgid ""
+"Bezig met importeren. Het importeren van producten kan enkele minuten duren, "
+"sluit gedurende deze periode dit scherm niet af"
+msgstr "Import in progress. This process may take a few minutes."
+
+#: rentman.php:713
+msgid "Product is beschikbaar"
+msgstr "Product is available"
+
+#: rentman.php:714
+msgid "Het product is mogelijk beschikbaar, maar niet definitief"
+msgstr "The product may be available"
+
+#: rentman.php:715
+msgid ""
+"Het product is niet beschikbaar in deze hoeveelheid voor de opgegeven periode"
+msgstr ""
+"The product is not available in this quantity for the time period specified"
+
+#: rentman.php:735
+msgid "Staffel:"
+msgstr "Factor"
+
+#: rentman.php:754
+msgid "Geselecteerde data"
+msgstr "Selected dates"
+
+#: rentman.php:758
+msgid "Ga naar de winkelwagen om de huurperiode te wijzigen"
+msgstr "Go to the shopping cart to change the rental period"
+
+#: rentman.php:803
+msgid "Bijgevoegde bestanden:"
+msgstr "Files attached"
+
+#: rentman.php:896
+msgid "Extra "
+msgstr "Additional"
+
+#: rentman.php:909
+msgid "% Korting"
+msgstr "% discount"
+
+#: rentman.php:918 rentman.php:921
+msgid "Dagprijs"
+msgstr "daily rate"
+
+#. Plugin Name of the plugin/theme
+msgid "Rentman"
+msgstr "Rentman"
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.rentman.nl"
+msgstr "http://onlinerentalsoftware.com"
+
+#. Description of the plugin/theme
+msgid "Integrates Rentman rental software into WooCommerce"
+msgstr ""
