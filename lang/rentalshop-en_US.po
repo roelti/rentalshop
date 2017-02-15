@@ -1,0 +1,328 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Rentman\n"
+"POT-Creation-Date: 2017-02-15 16:16+0100\n"
+"PO-Revision-Date: 2017-02-15 16:16+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e;translate\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: js/jquery-ui.min.js:7
+msgid "'"
+msgstr ""
+
+#: product_availability.php:30 product_availability.php:48
+msgid "Product is niet beschikbaar!"
+msgstr "Product is not available!"
+
+#: product_availability.php:52
+msgid "Product is misschien niet beschikbaar!"
+msgstr "Product might not be available!"
+
+#: product_availability.php:56
+msgid "Product is beschikbaar!"
+msgstr "Product is available!"
+
+#: product_availability.php:94 product_availability.php:131
+msgid "Van:"
+msgstr "From:"
+
+#: product_availability.php:96 product_availability.php:133
+msgid "Tot:"
+msgstr "To:"
+
+#: product_availability.php:98
+msgid ""
+"Let op: je kan de datums voor ander materiaal pas in de winkelwagen weer "
+"wijzigen!"
+msgstr ""
+"Important: You can change the rent dates for other materials that you want "
+"to rent in the cart!"
+
+#: product_availability.php:103
+msgid "<h3>Geselecteerde datums: </h3> <p><b>Van </b>"
+msgstr "<h3>Selected dates: </h3> <p><b>From </b>"
+
+#: product_availability.php:103
+msgid "<b> tot </b>"
+msgstr "<b> to </b>"
+
+#: product_availability.php:124
+msgid "<h2>VERHUURPERIODE</h2>"
+msgstr "<h2>RENT PERIOD</h2>"
+
+#: product_availability.php:138
+msgid "Update Huurperiode"
+msgstr "Update Dates"
+
+#: product_availability.php:161
+msgid "Reserveer"
+msgstr "Reserve"
+
+#: product_availability.php:164
+msgid "Aan winkelmandje toevoegen"
+msgstr "Add to cart"
+
+#: product_availability.php:279
+msgid "Er ging iets mis.. Kloppen de datums wel?"
+msgstr "Something went wrong.. Did you provide correct dates?"
+
+#: product_availability.php:316
+msgid "Er zijn slechts "
+msgstr "There are only "
+
+#: product_availability.php:316
+msgid " beschikbaar in die tijdsperiode."
+msgstr " available in that time period."
+
+#: product_availability.php:319
+msgid "Let op: "
+msgstr "Important:"
+
+#: product_availability.php:319
+msgid " van de "
+msgstr " out of "
+
+#: product_availability.php:319
+msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
+msgstr " might not be available in that time period.."
+
+#: product_availability.php:322
+msgid "Uw geselecteerde aantal "
+msgstr "Your selected amount of "
+
+#: product_availability.php:322
+msgid " is beschikbaar in die tijdsperiode!"
+msgstr " is available in that time period!"
+
+#: product_import.php:8
+msgid "<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>"
+msgstr "<h4>Import Failed! Did you provide the correct credentials?</h4>"
+
+#: product_import.php:49
+msgid "<b>Producten klaar:</b> "
+msgstr "<b>Products finished:</b> "
+
+#: product_import.php:50
+msgid "<br>Verwerken.."
+msgstr "<br>Processing.."
+
+#: product_import.php:51
+msgid "<br>Irrelevante producten en mappen zijn verwijderd"
+msgstr "<br>Removed irrelevant products and categories"
+
+#: product_import.php:52
+msgid "<h3>Importeren geslaagd!</h3>"
+msgstr "<h3>Import complete!</h3>"
+
+#: product_import.php:55
+msgid "<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> "
+msgstr "<br><b>No new Rentman products have been found!</b> "
+
+#: product_import.php:59
+msgid "<br>Er zijn geen producten gevonden op uw Rentman account..<br>"
+msgstr "<br>No products have been found on your Rentman Account..<br>"
+
+#: product_import.php:67
+msgid "<br><br><b>Geimporteerde Producten:</b><br>"
+msgstr "<br><br><b>Imported Products:</b><br>"
+
+#: product_import.php:163
+msgid "Geen informatie beschikbaar"
+msgstr "No information available"
+
+#: product_import.php:307
+msgid "<b>Producten verwijderd:</b> "
+msgstr "<b>Products deleted:</b> "
+
+#: product_import.php:308
+msgid "<br>Resetten was succesvol!"
+msgstr "<br>Reset was successful!"
+
+#: product_import.php:363
+msgid "Verder lezen"
+msgstr "Read more"
+
+#: product_prices.php:30 product_prices.php:49
+msgid "Prijs inclusief BTW: "
+msgstr "Price including taxes: "
+
+#: product_prices.php:48
+msgid "Kortingsprijs: "
+msgstr "Discount price: "
+
+#: product_prices.php:106
+msgid "BTW"
+msgstr "Tax"
+
+#: product_prices.php:152
+msgid "Klantkorting"
+msgstr "Customer Discount"
+
+#: rentman.php:75
+msgid "<h1>Rentman Product Import - v15.02.17</h1><hr><br>"
+msgstr ""
+
+#: rentman.php:77
+msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
+msgstr "<h3>Provide your Rentman 4G login credentials</h3>"
+
+#: rentman.php:83
+msgid "<strong>Gebruikersnaam</strong>"
+msgstr "<strong>Username</strong>"
+
+#: rentman.php:85
+msgid "<strong>Wachtwoord</strong>"
+msgstr "<strong>Password</strong>"
+
+#: rentman.php:87
+msgid "Gegevens controleren"
+msgstr "Submit Credentials"
+
+#: rentman.php:112
+msgid "<hr><h3>Instellingen</h3>"
+msgstr "<hr><h3>Settings</h3>"
+
+#: rentman.php:114
+msgid "<strong>Check beschikbaarheid voor sturen  </strong>"
+msgstr "<strong>Check availability for sending  </strong>"
+
+#: rentman.php:120
+msgid "<br><br><strong>Korting contact uit Rentman overnemen  </strong>"
+msgstr "<br><br><strong>Use discount from contact in Rentman  </strong>"
+
+#: rentman.php:127
+msgid "Wijzigingen Opslaan"
+msgstr "Save Changes"
+
+#: rentman.php:131
+msgid "Importeer materiaal uit Rentman"
+msgstr "Import products from Rentman"
+
+#: rentman.php:133
+msgid ""
+"Druk op de onderstaande knop om te zoeken naar nieuwe of gewijzigde "
+"producten en deze<br>\n"
+"                van je Rentman account naar je WooCommerce shop over te "
+"zetten."
+msgstr ""
+"Press the button below to check for new or updates products and transfer all "
+"webshop products<br>\n"
+"                from your Rentman account to your WooCommerce shop."
+
+#: rentman.php:135
+msgid "-- Meest recente check voor updates: "
+msgstr "-- Most recent check for updates: "
+
+#: rentman.php:141
+msgid "Producten Importeren"
+msgstr "Import Products"
+
+#: rentman.php:146
+msgid "Reset"
+msgstr "Reset"
+
+#: rentman.php:149
+msgid ""
+"<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze "
+"pagina niet!</h3>"
+msgstr ""
+"<h3>Starting import.. This might take a few minutes, so don't leave this "
+"page!</h3>"
+
+#: rentman.php:205
+msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
+msgstr "<strong>Please fill in all of the required fields</strong>"
+
+#: rentman.php:218
+msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
+msgstr "<h4>Connection with the Rentman API was successful!</h4>"
+
+#~ msgid "Tot en met:"
+#~ msgstr "To:"
+
+#~ msgid "<b>Oude producten verwijderd:</b> "
+#~ msgstr "<b>Old products deleted:</b> "
+
+#~ msgid "<br>Verwijderen was succesvol!"
+#~ msgstr "<br>Deletion was successful!"
+
+#~ msgid " Resetten was succesvol!<br>"
+#~ msgstr "Reset successful!<br>"
+
+#~ msgid "<h1>Rentman Product Import - v11.01.17</h1><hr><br>"
+#~ msgstr "<h1>Rentman Product Import - v11.01.17</h1><hr><br>"
+
+#~ msgid ""
+#~ "<b>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze "
+#~ "pagina niet!</b>"
+#~ msgstr ""
+#~ "<b>Starting import.. This might take a few minutes, so do not leave this "
+#~ "page!</b>"
+
+#~ msgid "<br>Aantal nieuwe/gewijzigde producten: "
+#~ msgstr "<br>Number of new or updated products found:  "
+
+#~ msgid "<br>Producten "
+#~ msgstr "<br>Products "
+
+#~ msgid " tot en met "
+#~ msgstr " up to and including "
+
+#~ msgid " klaar"
+#~ msgstr " finished"
+
+#~ msgid "<br>Klaar met importeren!"
+#~ msgstr "<br>Import complete!"
+
+#~ msgid "<b>Bezig met importeren.. Verlaat deze pagina niet!</b>"
+#~ msgstr "<b>Starting import.. Do not leave this page!</b>"
+
+#~ msgid "<b>Zoeken naar nieuwe en gewijzigde producten...</b>"
+#~ msgstr "<b>Checking for new and updated products...</b>"
+
+#~ msgid "<br><b>Aantal nieuwe/gewijzigde Rentman producten:</b> "
+#~ msgstr "<br><b>New/Updated Rentman Products found:</b> "
+
+#~ msgid "<br><br><b>Verwijderde Producten:</b>"
+#~ msgstr "<br><br><b>Deleted Products:</b>"
+
+#~ msgid " Geen<br>"
+#~ msgstr " None<br>"
+
+#~ msgid "<h1>Rentman Product Import - v1.00</h1><hr><br>"
+#~ msgstr "<h1>Rentman Product Import - v1.00</h1><hr><br>"
+
+#~ msgid "Contact bestaat nog niet<br>"
+#~ msgstr "Contact not exist yet<br>"
+
+#~ msgid "<h3>Geselecteerde datums: </h3> <p><b>Van</b>"
+#~ msgstr "<h3>Selected dates: </h3> <p><b>From</b>"
+
+#~ msgid "<b>tot</b>"
+#~ msgstr "<b>to</b>"
+
+#~ msgid "Opslaan"
+#~ msgstr "Save Changes"
+
+#~ msgid "<h3>Selected dates: </h3> <p><b>From</b>"
+#~ msgstr "<h3>Selected dates: </h3> <p><b>From</b>"
+
+#~ msgid "Wijzigingen opslaan"
+#~ msgstr "Save Changes"
+
+#~ msgid "Let op: je kan de datums pas in de winkelwagen weer wijzigen!"
+#~ msgstr ""
+#~ "Important: You can change the rent dates for other materials that you "
+#~ "want to rent in the cart!"
+
+#~ msgid "Add To Cart"
+#~ msgstr "Add To Cart"

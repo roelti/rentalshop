@@ -1,0 +1,93 @@
+RENTMAN PLUGIN FUNCTIONS OVERVIEW
+-----------
+rentman.php
+-----------
+completedata :: checks whether all user information was filled in
+do_request :: does the actual JSON request when given a message
+error_info :: displays error info of the request
+login_user :: handles the user login with an API request
+menu_display :: contains the main html code for the display of the Rentman menu
+receive_endpoint :: receives the latest endpoint of the rentman API
+register_settings :: registers Wordpress settings and their sanitization callback
+register_submenu :: adds the Rentman page to the Woocommerce menu
+setup_login_request :: sets up the login request ready to be encoded in JSON
+translatePlugin :: loads the 'rentalshop' text domain containing the translations of the plugin
+-------------------
+rentman_project.php
+-------------------
+add_project :: creates a new project in Rentman by using the API
+get_material_array :: generates an array containing all Rentman products in an order
+planmaterial_array :: combines two arrays to create a 'Planningmateriaal' array in the right format
+setup_newproject_request :: sets up the new project request ready to be encoded in JSON
+----------------
+rentman_user.php
+----------------
+export_users :: checks if a customer already exists as a contact in Rentman and adds them to Rentman if not
+setup_check_request :: sets up a request that receives the contact that is linked to a certain email address
+setup_newuser_request :: sets up a request that creates a new contact in Rentman
+------------------------
+product_availability.php
+------------------------
+add_custom_field :: adds the date fields for the availability check to the Rentman product pages in the store
+add_date_checkout :: adds the date fields to the checkout screen
+add_header_script :: adds javascript code for the dynamic availability check to the header
+add_to_cart_template :: adds a template for 'rentable' products that were imported from Rentman
+attachFunction :: javascript function that adds the availability function to the 'amount' field
+available_request :: sets up the availability request for a certain product
+check_available :: does the actual availability request and uses the response to generate the right message (i.e. not available / maybe available / available)
+quickCheck :: javascript function that applies the availability check when changes are made on the single product page
+update_amount :: applies the check_available function on updated products in the cart
+update_dates :: applies the availability check on all items in the cart for the updated dates
+woo_custom_cart_button_text :: changes the text of the 'add to cart' button depending on the type of product
+----------------------
+product_categories.php
+----------------------
+add_category :: creates a new product category
+arrange_folders :: arranges the folder data from the API response in a new array
+displayChildren :: recursive function that checks the item count of the child folders and deletes empty children
+remove_empty_categories :: remove all empty/unused product categories
+setup_folder_request :: sets up the folder request ready to be encoded in JSON
+------------------
+product_import.php
+------------------
+array_to_product :: imports five products from the product array
+check_updated :: checks whether the product has been updated by comparing the last modified date
+compare_and_delete :: deletes all rentable products that have been removed from Rentman
+convert_items :: arranges the product data from the API response in a new array
+delete_by_index :: deletes up to 15 rentable products from a given array
+get_product_list :: creates a list containing all rentable products
+import_product :: adds a product to Woocommerce using 'wp_insert_post'
+import_products :: receives a list of new/updated products from Rentman and calls a Javascript function to import them
+list_of_ids :: when given a list of products, returns a list of their identifiers
+register_rental_product_type :: registers the 'rentable' product type in WooCommerce
+reset_rentman :: calls a Javascript function that deletes all Rentman products and categories from Woocommerce
+setup_file_request :: sets up the files (i.e. product image) request ready to be encoded in JSON
+setup_import_request :: sets up the product import request ready to be encoded in JSON
+wp_exist_post_by_title :: checks whether a product already exists by using a database query
+-----------------
+product_media.php
+-----------------
+attach_media :: attaches the image file from Rentman to the right product in Woocommerce
+get_files :: returns a list of image file url's for every product
+------------------
+product_prices.php
+------------------
+apply_customer_discount :: adds a discount to the cart depending on the rentman contact
+apply_rentman_tax :: adds the product taxes imported from Rentman to the cart
+apply_staffel :: adds a fee to the cart depending on the staffels of the products in the cart
+calculate_discount :: calculates the total rentman customer discount of all products in the shopping cart
+calculate_fee :: calculates the total staffel fee of all rentman products in the shopping cart
+get_all_discounts :: generates an array that links products to discounts, to be used in the project export
+get_staffel :: receives the staffel from Rentman
+get_staffelgroup :: receives the staffelgroup of a product in the cart
+get_staffels :: generates an array that links products to staffels, to be used in the project export
+setup_discount_request :: sets up the discount request ready to be encoded in JSON
+setup_staffel_request :: sets up the staffel request ready to be encoded in JSON
+setup_staffelgroup_request :: sets up the staffelgroup request ready to be encoded in JSON
+show_discount :: displays the rentman customer discount on the product page
+---------------------------------
+admin_delete.js & admin_import.js
+---------------------------------
+applyAjax :: recursive function that sends product indices to PHP code until the whole product array has been covered
+removeFolders :: calls a PHP function that removes all empty/unused product categories from Woocommerce
+

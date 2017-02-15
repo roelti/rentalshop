@@ -1,10 +1,9 @@
-// ----- JavaScript functions for product import ----- \\
+// ----- JavaScript functions for product deletion ----- \\
 
 // Show import message in the menu
 jQuery().ready(function()
 {
-    jQuery("#importMelding").show();
-    jQuery("#importStatus").html(string1 + "0 / " + products.length);
+    jQuery("#deleteStatus").html(string1 + "0%");
     applyAjax();
 });
 
@@ -12,15 +11,16 @@ jQuery().ready(function()
 // whole array has been covered
 function applyAjax(){
     jQuery.ajax({
-        type: "POST",
-        url: 'admin.php?page=rentman-shop&import_products',
-        data: { prod_array : products, file_array : folders, array_index : arrayindex },
+        type: "GET",
+        url: 'admin.php?page=rentman-shop&delete_products',
+        data: { prod_array : products, array_index : arrayindex },
         success: function(){
-            var endindex = arrayindex + 5;
+            var endindex = arrayindex + 15;
             if (endindex > products.length)
                 endindex = products.length;
-            jQuery("#importStatus").html(string1 + endindex + " / " + products.length);
-            arrayindex += 5;
+            var percentage = Math.round((endindex / products.length) * 100);
+            jQuery("#deleteStatus").html(string1 + percentage + '%');
+            arrayindex += 15;
             if (arrayindex < products.length){
                 applyAjax();
             } else {
@@ -32,14 +32,12 @@ function applyAjax(){
 
 // Calls PHP function that removes all empty product categories from WooCommerce
 function removeFolders(){
-    jQuery("#importStatus").append(string2);
     jQuery.ajax({
         type: "GET",
         url: 'admin.php?page=rentman-shop&remove_folders',
         data: '',
         success: function(){
-            jQuery("#importStatus").append(string3);
-            jQuery("#importMelding").html(string4);
+            jQuery("#deleteStatus").append(string2);
         }
     });
 }
