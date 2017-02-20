@@ -103,8 +103,11 @@
                 <?php _e('<h3>Geselecteerde datums: </h3> <p><b>Van </b>','rentalshop'); echo get_option('plugin-startdate'); _e('<b> tot </b>','rentalshop'); echo get_option('plugin-enddate'); ?></p>
                 <?php
             }
-            ?><p class="availLog"></p>
-            <?php
+            if (get_option('plugin-checkavail') == 1){
+                echo '<p class="availLog"></p>';
+            } else {
+                echo '<p class="availLog" hidden></p>';
+            }
         }
     }
 

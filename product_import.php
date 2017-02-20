@@ -312,7 +312,7 @@
     # Delete up to 15 products from the array starting with a certain index
     function delete_by_index($posts, $startIndex){
         global $wpdb;
-        $endIndex = $startIndex + 14;
+        $endIndex = $startIndex + 9;
         for ($index = $startIndex; $index <= $endIndex; $index++) {
             if ($index >= sizeof($posts))
                 break;

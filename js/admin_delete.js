@@ -15,12 +15,12 @@ function applyAjax(){
         url: 'admin.php?page=rentman-shop&delete_products',
         data: { prod_array : products, array_index : arrayindex },
         success: function(){
-            var endindex = arrayindex + 15;
+            var endindex = arrayindex + 10;
             if (endindex > products.length)
                 endindex = products.length;
             var percentage = Math.round((endindex / products.length) * 100);
             jQuery("#deleteStatus").html(string1 + percentage + '%');
-            arrayindex += 15;
+            arrayindex += 10;
             if (arrayindex < products.length){
                 applyAjax();
             } else {
