@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-02-15 16:16+0100\n"
-"PO-Revision-Date: 2017-02-15 16:16+0100\n"
+"POT-Creation-Date: 2017-02-20 17:03+0100\n"
+"PO-Revision-Date: 2017-02-20 17:04+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -31,11 +31,11 @@ msgstr "Product might not be available!"
 msgid "Product is beschikbaar!"
 msgstr "Product is available!"
 
-#: product_availability.php:94 product_availability.php:131
+#: product_availability.php:94 product_availability.php:134
 msgid "Van:"
 msgstr "From:"
 
-#: product_availability.php:96 product_availability.php:133
+#: product_availability.php:96 product_availability.php:136
 msgid "Tot:"
 msgstr "To:"
 
@@ -55,51 +55,51 @@ msgstr "<h3>Selected dates: </h3> <p><b>From </b>"
 msgid "<b> tot </b>"
 msgstr "<b> to </b>"
 
-#: product_availability.php:124
+#: product_availability.php:127
 msgid "<h2>VERHUURPERIODE</h2>"
 msgstr "<h2>RENT PERIOD</h2>"
 
-#: product_availability.php:138
+#: product_availability.php:141
 msgid "Update Huurperiode"
 msgstr "Update Dates"
 
-#: product_availability.php:161
+#: product_availability.php:164
 msgid "Reserveer"
 msgstr "Reserve"
 
-#: product_availability.php:164
+#: product_availability.php:167
 msgid "Aan winkelmandje toevoegen"
 msgstr "Add to cart"
 
-#: product_availability.php:279
+#: product_availability.php:282
 msgid "Er ging iets mis.. Kloppen de datums wel?"
 msgstr "Something went wrong.. Did you provide correct dates?"
 
-#: product_availability.php:316
+#: product_availability.php:319
 msgid "Er zijn slechts "
 msgstr "There are only "
 
-#: product_availability.php:316
+#: product_availability.php:319
 msgid " beschikbaar in die tijdsperiode."
 msgstr " available in that time period."
 
-#: product_availability.php:319
+#: product_availability.php:322
 msgid "Let op: "
 msgstr "Important:"
 
-#: product_availability.php:319
+#: product_availability.php:322
 msgid " van de "
 msgstr " out of "
 
-#: product_availability.php:319
+#: product_availability.php:322
 msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
 msgstr " might not be available in that time period.."
 
-#: product_availability.php:322
+#: product_availability.php:325
 msgid "Uw geselecteerde aantal "
 msgstr "Your selected amount of "
 
-#: product_availability.php:322
+#: product_availability.php:325
 msgid " is beschikbaar in die tijdsperiode!"
 msgstr " is available in that time period!"
 
@@ -168,7 +168,7 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:75
-msgid "<h1>Rentman Product Import - v15.02.17</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v20.02.17</h1><hr><br>"
 msgstr ""
 
 #: rentman.php:77
@@ -243,6 +243,14 @@ msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
 msgstr "<strong>Please fill in all of the required fields</strong>"
 
 #: rentman.php:218
+msgid ""
+"<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
+"h4>"
+msgstr ""
+"<h4>Connection with the Rentman API failed! Did you provide the correct "
+"credentials?</h4>"
+
+#: rentman.php:221
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
 msgstr "<h4>Connection with the Rentman API was successful!</h4>"
 

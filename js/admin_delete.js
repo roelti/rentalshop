@@ -18,7 +18,10 @@ function applyAjax(){
             var endindex = arrayindex + 10;
             if (endindex > products.length)
                 endindex = products.length;
-            var percentage = Math.round((endindex / products.length) * 100);
+            if (products.length == 0)
+                var percentage = 100;
+            else
+                var percentage = Math.round((endindex / products.length) * 100);
             jQuery("#deleteStatus").html(string1 + percentage + '%');
             arrayindex += 10;
             if (arrayindex < products.length){
