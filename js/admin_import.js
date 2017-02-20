@@ -19,6 +19,9 @@ function applyAjax(){
         data: { prod_array : products, file_array : folders, array_index : arrayindex },
         success: function(){
             console.log('Ajax call success!');
+            console.log(products);
+            console.log(folders);
+            console.log(arrayindex);
             var endindex = arrayindex + 5;
             if (endindex > products.length)
                 endindex = products.length;
