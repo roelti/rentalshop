@@ -214,6 +214,8 @@
             #Set Token (is used in other API requests)
             $parsed = json_decode($received, true);
             $token = $parsed['response']['token'];
+            $test = json_encode(json_decode($received), JSON_PRETTY_PRINT);
+            echo $test;
 
             _e('<h4>De verbinding met de Rentman API was succesvol!</h4>','rentalshop');
         }
