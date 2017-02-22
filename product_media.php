@@ -5,7 +5,7 @@
     # Attach image file from Rentman to product in Woocommerce
     function attach_media($fileUrl, $post_id){
         global $wpdb;
-        $artDir = 'wp-content/uploads/woocommerce_uploads/';
+        $artDir = 'wp-content/uploads/rentman/';
         $fileUrl = str_replace(' ', '%20', $fileUrl);
 
         if(!file_exists(ABSPATH.$artDir)){
@@ -39,7 +39,7 @@
             );
 
             $uploads = wp_upload_dir();
-            $save_path = $uploads['basedir'].'/woocommerce_uploads/'.$new_file_name;
+            $save_path = $uploads['basedir'].'/rentman/'.$new_file_name;
 
             # Insert database record
             $attach_id = wp_insert_attachment($artdata, $save_path, $post_id);

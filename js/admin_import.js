@@ -5,14 +5,14 @@ jQuery().ready(function()
 {
     jQuery("#importMelding").show();
     jQuery("#importStatus").html(string1 + "0 / " + products.length);
+    console.log('Files Imported:');
+    console.log(folders);
     applyAjax();
 });
 
 // Recursive function that sends product indices to PHP until the
 // whole array has been covered
 function applyAjax(){
-    console.log('Imported Files List:');
-    console.log(folders);
     jQuery.ajax({
         type: "POST",
         url: 'admin.php?page=rentman-shop&import_products',
