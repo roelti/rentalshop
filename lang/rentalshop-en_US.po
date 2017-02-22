@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-02-20 17:03+0100\n"
-"PO-Revision-Date: 2017-02-20 17:04+0100\n"
+"POT-Creation-Date: 2017-02-22 20:19+0100\n"
+"PO-Revision-Date: 2017-02-22 20:19+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -107,47 +107,47 @@ msgstr " is available in that time period!"
 msgid "<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>"
 msgstr "<h4>Import Failed! Did you provide the correct credentials?</h4>"
 
-#: product_import.php:49
+#: product_import.php:45
 msgid "<b>Producten klaar:</b> "
 msgstr "<b>Products finished:</b> "
 
-#: product_import.php:50
+#: product_import.php:46
 msgid "<br>Verwerken.."
 msgstr "<br>Processing.."
 
-#: product_import.php:51
+#: product_import.php:47
 msgid "<br>Irrelevante producten en mappen zijn verwijderd"
 msgstr "<br>Removed irrelevant products and categories"
 
-#: product_import.php:52
+#: product_import.php:48
 msgid "<h3>Importeren geslaagd!</h3>"
 msgstr "<h3>Import complete!</h3>"
 
-#: product_import.php:55
+#: product_import.php:51
 msgid "<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> "
 msgstr "<br><b>No new Rentman products have been found!</b> "
 
-#: product_import.php:59
+#: product_import.php:55
 msgid "<br>Er zijn geen producten gevonden op uw Rentman account..<br>"
 msgstr "<br>No products have been found on your Rentman Account..<br>"
 
-#: product_import.php:67
+#: product_import.php:63
 msgid "<br><br><b>Geimporteerde Producten:</b><br>"
 msgstr "<br><br><b>Imported Products:</b><br>"
 
-#: product_import.php:163
+#: product_import.php:158
 msgid "Geen informatie beschikbaar"
 msgstr "No information available"
 
-#: product_import.php:307
+#: product_import.php:303
 msgid "<b>Producten verwijderd:</b> "
 msgstr "<b>Products deleted:</b> "
 
-#: product_import.php:308
+#: product_import.php:304
 msgid "<br>Resetten was succesvol!"
 msgstr "<br>Reset was successful!"
 
-#: product_import.php:363
+#: product_import.php:359
 msgid "Verder lezen"
 msgstr "Read more"
 
@@ -168,7 +168,7 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:75
-msgid "<h1>Rentman Product Import - v20.02.17</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v22.02.17</h1><hr><br>"
 msgstr ""
 
 #: rentman.php:77
