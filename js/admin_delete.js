@@ -10,8 +10,10 @@ jQuery().ready(function()
 // Recursive function that sends product indices to PHP until the
 // whole array has been covered
 function applyAjax(){
+    console.log('Delete List:');
+    console.log(products);
     jQuery.ajax({
-        type: "GET",
+        type: "POST",
         url: 'admin.php?page=rentman-shop&delete_products',
         data: { prod_array : products, array_index : arrayindex },
         success: function(){

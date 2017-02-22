@@ -12,26 +12,22 @@
 
             # Get the endpoint url
             $url = receive_endpoint();
-
             # First import Folders
             $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
             $received = do_request($url, $message);
-
             $parsed = json_decode($received, true);
-            $folder_arr = arrange_folders($parsed);
-
+			
+			$folder_arr = arrange_folders($parsed);
+			
             # Create new Categories by using the imported folder data
             foreach ($folder_arr as $folder) {
                 add_category($folder);
             }
-
             # Now import Products
             $message = json_encode(setup_import_request($token), JSON_PRETTY_PRINT);
-
             # Send Request & Receive Response
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
-
             # Receive id's of first and last ID in response
             $listLength = sizeof($parsed['response']['links']['Materiaal']);
             if ($listLength > 0){ # At least one product has been found
@@ -86,12 +82,13 @@
             # Get name, price, description, category and last modified date from current product
             $name = trim($parsed['response']['items']['Materiaal'][$x]['data'][0]);
             $cost = $parsed['response']['items']['Materiaal'][$x]['data'][1];
-            $desc = $parsed['response']['items']['Materiaal'][$x]['data'][2];
-            $modDate = $parsed['response']['items']['Materiaal'][$x]['data'][3];
+            $longdesc = $parsed['response']['items']['Materiaal'][$x]['data'][2];
+            $shortdesc = $parsed['response']['items']['Materiaal'][$x]['data'][3];
+            $modDate = $parsed['response']['items']['Materiaal'][$x]['data'][4];
             # Set correct folder data
-            $folderID = $parsed['response']['items']['Materiaal'][$x]['data'][4];
-            $weight = $parsed['response']['items']['Materiaal'][$x]['data'][5];
-            $btwcode = $parsed['response']['items']['Materiaal'][$x]['data'][6];
+            $folderID = $parsed['response']['items']['Materiaal'][$x]['data'][5];
+            $weight = $parsed['response']['items']['Materiaal'][$x]['data'][6];
+            $btwcode = $parsed['response']['items']['Materiaal'][$x]['data'][7];
             $btw = $parsed['response']['items']['Btwcode'][$btwcode]['data'][0];
             $parent_term = get_term_by('slug', $folderID, 'product_cat'); // array is returned if taxonomy is given
             $kate = $parent_term->name;
@@ -117,7 +114,7 @@
             if($noDiff){ # Product already exists and has not been updated
                 continue;
             } else { # Product does not exist yet or has been updated, so add it to the array
-                array_push($prodList, array($x, $name, $cost, $desc, $kate, $modDate, $weight, $btw));
+                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $kate, $modDate, $weight, $btw));
             }
         }
         # Delete products in woocommerce shop that are not in the product list
@@ -157,8 +154,6 @@
     # new products in WooCommerce
     function import_product($product, $file_list)
     {
-        echo $product[0] . ') ' . $product[1] . ',   $' . $product[2] . ',   Folder: ' . $product[4] . ',   Modified: ' . $product[5] . '<br>';
-
         if ( empty( $product[3] ) ) {
             $content = __('Geen informatie beschikbaar', 'rentalshop');
         } else {
@@ -170,14 +165,14 @@
             "post_name" => $product[1],
             "post_title" => $product[1],
             "post_content" => $content,
-            "post_excerpt" => $product[3],
-            "post_date" => $product[5],
+            "post_excerpt" => $product[4],
+            "post_date" => $product[6],
             "post_status" => "publish",
             "post_type" => "product"
         );
 
         # Check Category
-        $checkterm = get_term_by('name', $product[4], 'product_cat');
+        $checkterm = get_term_by('name', $product[5], 'product_cat');
 
         # Insert post
         $post_id = wp_insert_post($new_product, TRUE);
@@ -188,7 +183,7 @@
 
         # Add/update the post meta
         add_post_meta($post_id, 'rentman_imported', true);
-        add_post_meta($post_id, '_rentman_tax', $product[7]);
+        add_post_meta($post_id, '_rentman_tax', $product[8]);
         update_post_meta($post_id, '_visibility', 'visible');
         update_post_meta($post_id, '_stock_status', 'instock');
         update_post_meta($post_id, 'total_sales', '0');
@@ -197,7 +192,7 @@
         update_post_meta($post_id, '_regular_price', $product[2]);
         update_post_meta($post_id, '_purchase_note', "");
         update_post_meta($post_id, '_featured', "no");
-        update_post_meta($post_id, '_weight', $product[6]);
+        update_post_meta($post_id, '_weight', $product[7]);
         update_post_meta($post_id, '_length', "");
         update_post_meta($post_id, '_width', "");
         update_post_meta($post_id, '_height', "");
@@ -234,7 +229,8 @@
                 "Materiaal" => array(
                     "naam",
                     "verhuurprijs",
-                    "omschrijving",
+                    "shop_description_long",
+                    "shop_description_short",
                     "modified",
                     array(
                         "folder" => array(

@@ -25,12 +25,14 @@
         $folderList = array();
         $switch = true;
         $counter = 1;
+		$lastkey = end($parsed['response']['items']['Folder'])['data'][1];
+		
         while ($switch){
             $name = $parsed['response']['items']['Folder'][$counter]['data'][0];
             $id = $parsed['response']['items']['Folder'][$counter]['data'][1];
             $parent = $parsed['response']['items']['Folder'][$counter]['data'][2];
 
-            if ($name == 'Materialen')
+            if ($id == $lastkey)
                 $switch = false;
             else{
                 array_push($folderList, array($id, $name, $parent));
