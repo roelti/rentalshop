@@ -2,6 +2,7 @@ RENTMAN PLUGIN FUNCTIONS OVERVIEW
 -----------
 rentman.php
 -----------
+check_compatibility :: checks whether the php time limit is high enough and if images can be uploaded to the server
 completedata :: checks whether all user information was filled in
 do_request :: does the actual JSON request when given a message
 error_info :: displays error info of the request

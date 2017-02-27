@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-02-27 15:02+0100\n"
-"PO-Revision-Date: 2017-02-27 15:08+0100\n"
+"POT-Creation-Date: 2017-02-27 17:03+0100\n"
+"PO-Revision-Date: 2017-02-27 17:03+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -238,11 +238,15 @@ msgstr ""
 "<h3>Starting import.. This might take a few minutes, so don't leave this "
 "page!</h3>"
 
-#: rentman.php:205
+#: rentman.php:200
+msgid "Dit is geen Rentman 4 account! &#10005;<br>"
+msgstr "This is not a Rentman 4 account! &#10005;<br>"
+
+#: rentman.php:207
 msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
 msgstr "<strong>Please fill in all of the required fields</strong>"
 
-#: rentman.php:222
+#: rentman.php:224
 msgid ""
 "<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
 "h4>"
@@ -250,49 +254,78 @@ msgstr ""
 "<h4>Connection with the Rentman API failed! Did you provide the correct "
 "credentials?</h4>"
 
-#: rentman.php:225
+#: rentman.php:227
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
 msgstr "<h4>Connection with the Rentman API was successful!</h4>"
 
-#: rentman.php:234
+#: rentman.php:236
 msgid "<b>Compatibiliteitscontrole..</b><br>"
 msgstr "<b>Checking for compatibility errors..</b><br>"
 
-#: rentman.php:241
+#: rentman.php:244
 msgid ""
 "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
-"plugin hierdoor niet goed..<br>"
+"plugin hierdoor niet goed.. &#10005;<br>"
 msgstr ""
-"Important: the PHP time limit is lower than 30 seconds! The plugin might not "
-"work correctly..<br>"
+"Beware, the PHP time limit is lower than 30 seconds! The plugin might not "
+"work correctly.. &#10005;<br>"
 
-#: rentman.php:243
-msgid "PHP tijdlimiet is in orde<br>"
-msgstr "PHP time limit is okay<br>"
-
-#: rentman.php:248
-msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i><br>"
-msgstr "Folder created at <i>wp-content/uploads/rentman/</i><br>"
+#: rentman.php:246
+msgid "PHP tijdslimiet is in orde &#10003;<br>"
+msgstr "PHP time limit is okay &#10003;<br>"
 
 #: rentman.php:251
-msgid "De Rentman map voor afbeeldingen is aanwezig<br>"
-msgstr "The Rentman folder for images exists<br>"
+msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>"
+msgstr "Folder created at <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 
-#: rentman.php:260
-msgid "Afbeeldingen kunnen toegevoegd worden<br>"
-msgstr "No errors when adding images<br>"
+#: rentman.php:254
+msgid "De Rentman map voor afbeeldingen is aanwezig &#10003;<br>"
+msgstr "The Rentman folder for images exists &#10003;<br>"
 
-#: rentman.php:262
-msgid "Afbeeldingen toevoegen is mislukt..<br>"
-msgstr "Adding images has failed..<br>"
+#: rentman.php:263
+msgid "Afbeeldingen kunnen toegevoegd worden &#10003;<br>"
+msgstr "Images can be uploaded &#10003;<br>"
 
-#: rentman.php:266
+#: rentman.php:265
+msgid "Afbeeldingen toevoegen is mislukt.. &#10005;<br>"
+msgstr "Image upload has failed.. &#10005;<br>"
+
+#: rentman.php:269
 msgid ""
-"<i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te "
-"wijzigen en kijk of het probleem daarmee is opgelost.<br>"
+"&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer "
+"dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
 msgstr ""
-"<i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to change "
-"this and check whether the error has been resolved.<br>"
+"&bull; <i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to "
+"change this and check if the error has been resolved.<br>"
+
+#~ msgid ""
+#~ "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
+#~ "plugin hierdoor niet goed..<br>"
+#~ msgstr ""
+#~ "Important: the PHP time limit is lower than 30 seconds! The plugin might "
+#~ "not work correctly..<br>"
+
+#~ msgid "PHP tijdlimiet is in orde<br>"
+#~ msgstr "PHP time limit is okay<br>"
+
+#~ msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i><br>"
+#~ msgstr "Folder created at <i>wp-content/uploads/rentman/</i><br>"
+
+#~ msgid "De Rentman map voor afbeeldingen is aanwezig<br>"
+#~ msgstr "The Rentman folder for images exists<br>"
+
+#~ msgid "Afbeeldingen kunnen toegevoegd worden<br>"
+#~ msgstr "No errors when adding images<br>"
+
+#~ msgid "Afbeeldingen toevoegen is mislukt..<br>"
+#~ msgstr "Adding images has failed..<br>"
+
+#~ msgid ""
+#~ "<i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit "
+#~ "te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
+#~ msgstr ""
+#~ "<i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to change "
+#~ "this and check whether the error has been resolved.<br>"
 
 #~ msgid "Tot en met:"
 #~ msgstr "To:"
