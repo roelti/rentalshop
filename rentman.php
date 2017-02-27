@@ -216,20 +216,7 @@
             $token = $parsed['response']['token'];
 
             # Image functionality check
-            $artDir = 'wp-content/uploads/rentman/';
-            _e('<b>Compatibiliteitscontrole..</b><br>','rentalshop');
-            $timelimit = ini_get('max_execution_time');
-            if ($timelimit < 30)
-                _e('Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de plugin hierdoor niet goed..<br>','rentalshop');
-            else {
-                _e('PHP tijdlimiet is in orde<br>','rentalshop');
-            }
-            if(!file_exists(ABSPATH.$artDir)){
-                _e('Map aangemaakt op <i>wp-content/uploads/rentman/</i><br>','rentalshop');
-                mkdir(ABSPATH.$artDir);
-            } else {
-                _e('De Rentman map voor afbeeldingen is aanwezig<br>','rentalshop');
-            }
+            check_compatibility();
 
             if ($parsed['response']['login'] == false){
 				_e('<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</h4>','rentalshop');
@@ -240,6 +227,45 @@
         }
 
         return $token;
+    }
+
+    # Check multiple things that could go wrong in the plugin
+    function check_compatibility(){
+        _e('<b>Compatibiliteitscontrole..</b><br>','rentalshop');
+        $artDir = 'wp-content/uploads/rentman/';
+        $fileUrl = 'https://raw.githubusercontent.com/rentmanpublic/rentalshop/plugin4g_beta/img/test.png';
+
+        # Time Limit Check
+        $timelimit = ini_get('max_execution_time');
+        if ($timelimit < 30)
+            _e('Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de plugin hierdoor niet goed..<br>','rentalshop');
+        else {
+            _e('PHP tijdlimiet is in orde<br>','rentalshop');
+        }
+
+        # Does Rentman Folder exist?
+        if(!file_exists(ABSPATH.$artDir)){
+            _e('Map aangemaakt op <i>wp-content/uploads/rentman/</i><br>','rentalshop');
+            mkdir(ABSPATH.$artDir);
+        } else {
+            _e('De Rentman map voor afbeeldingen is aanwezig<br>','rentalshop');
+        }
+
+        # Does the copy function work?
+        $file_name = 'test.png';
+        $targetUrl = ABSPATH.$artDir.$file_name;
+        copy($fileUrl, $targetUrl);
+        $errors= error_get_last();
+        if (file_exists($targetUrl)) {
+            _e('Afbeeldingen kunnen toegevoegd worden<br>','rentalshop');
+        } else {
+            _e('Afbeeldingen toevoegen is mislukt..<br>','rentalshop');
+            echo "Copy Error: ".$errors['type'];
+            echo "<br />\n".$errors['message'].'<br>';
+            if(!ini_get('allow_url_fopen')) {
+                _e('<i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>','rentalshop');
+            }
+        }
     }
 
     # Check if given login data is complete

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-02-22 20:19+0100\n"
-"PO-Revision-Date: 2017-02-22 20:19+0100\n"
+"POT-Creation-Date: 2017-02-27 15:02+0100\n"
+"PO-Revision-Date: 2017-02-27 15:08+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -168,7 +168,7 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:75
-msgid "<h1>Rentman Product Import - v22.02.17</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.0.0</h1><hr><br>"
 msgstr ""
 
 #: rentman.php:77
@@ -242,7 +242,7 @@ msgstr ""
 msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
 msgstr "<strong>Please fill in all of the required fields</strong>"
 
-#: rentman.php:218
+#: rentman.php:222
 msgid ""
 "<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
 "h4>"
@@ -250,9 +250,49 @@ msgstr ""
 "<h4>Connection with the Rentman API failed! Did you provide the correct "
 "credentials?</h4>"
 
-#: rentman.php:221
+#: rentman.php:225
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
 msgstr "<h4>Connection with the Rentman API was successful!</h4>"
+
+#: rentman.php:234
+msgid "<b>Compatibiliteitscontrole..</b><br>"
+msgstr "<b>Checking for compatibility errors..</b><br>"
+
+#: rentman.php:241
+msgid ""
+"Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
+"plugin hierdoor niet goed..<br>"
+msgstr ""
+"Important: the PHP time limit is lower than 30 seconds! The plugin might not "
+"work correctly..<br>"
+
+#: rentman.php:243
+msgid "PHP tijdlimiet is in orde<br>"
+msgstr "PHP time limit is okay<br>"
+
+#: rentman.php:248
+msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i><br>"
+msgstr "Folder created at <i>wp-content/uploads/rentman/</i><br>"
+
+#: rentman.php:251
+msgid "De Rentman map voor afbeeldingen is aanwezig<br>"
+msgstr "The Rentman folder for images exists<br>"
+
+#: rentman.php:260
+msgid "Afbeeldingen kunnen toegevoegd worden<br>"
+msgstr "No errors when adding images<br>"
+
+#: rentman.php:262
+msgid "Afbeeldingen toevoegen is mislukt..<br>"
+msgstr "Adding images has failed..<br>"
+
+#: rentman.php:266
+msgid ""
+"<i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te "
+"wijzigen en kijk of het probleem daarmee is opgelost.<br>"
+msgstr ""
+"<i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to change "
+"this and check whether the error has been resolved.<br>"
 
 #~ msgid "Tot en met:"
 #~ msgstr "To:"
