@@ -59,7 +59,7 @@
                         }
                     }
                     var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-                        "version":"2"},"account":account,"token":token,"module":"Availability","parameters":{
+                        "version":"4.0.0"},"account":account,"token":token,"module":"Availability","parameters":{
                         "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":amount},"method":"is_available"});
                     xhr.send(data);
                 }
@@ -211,7 +211,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "2"
+                "version" => "4.0.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

@@ -6,7 +6,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 1.0.0
+     * Version: 4.0.0
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -72,7 +72,7 @@
     # Display Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v22.02.17</h1><hr><br>','rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.0.0</h1><hr><br>','rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>','rentalshop')?>
         <form method="post", action ="options.php">
@@ -211,9 +211,26 @@
             # Do API request
             $received = do_request($url, $message);
 
-            #Set Token (is used in other API requests)
+            # Set Token (is used in other API requests)
             $parsed = json_decode($received, true);
             $token = $parsed['response']['token'];
+
+            # Image functionality check
+            $artDir = 'wp-content/uploads/rentman/';
+            _e('<b>Compatibiliteitscontrole..</b><br>','rentalshop');
+            $timelimit = ini_get('max_execution_time');
+            if ($timelimit < 30)
+                _e('Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de plugin hierdoor niet goed..<br>','rentalshop');
+            else {
+                _e('PHP tijdlimiet is in orde<br>','rentalshop');
+            }
+            if(!file_exists(ABSPATH.$artDir)){
+                _e('Map aangemaakt op <i>wp-content/uploads/rentman/</i><br>','rentalshop');
+                mkdir(ABSPATH.$artDir);
+            } else {
+                _e('De Rentman map voor afbeeldingen is aanwezig<br>','rentalshop');
+            }
+
             if ($parsed['response']['login'] == false){
 				_e('<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</h4>','rentalshop');
 			}	
@@ -241,7 +258,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "2"
+                "version" => "4.0.0"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

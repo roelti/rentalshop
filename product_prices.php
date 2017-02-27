@@ -297,7 +297,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "2"
+                "version" => "4.0.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -341,7 +341,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "2"
+                "version" => "4.0.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -366,7 +366,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "2"
+                "version" => "4.0.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
