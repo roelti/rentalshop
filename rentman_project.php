@@ -3,12 +3,13 @@
     // ------------- API Request Functions ------------- \\
 
     # Handles API Request
-    function add_project($order_id, $contact_id, $fees){
+    # PASS LOCATION CONTACT ID AS WELL TO ADD_PROJECT!
+    function add_project($order_id, $contact_id, $transport_id, $fees){
         $url = receive_endpoint();
         $token = get_option('plugin-token');
 
         # Setup New Project Request to send JSON
-        $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $fees), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees), JSON_PRETTY_PRINT);
 
         # Send Request & Receive Response
         do_request($url, $message);
@@ -17,7 +18,7 @@
     # Returns API request ready to be encoded in Json
     # Used for sending new project data to Rentman
     # Includes contact, relevant materials & rent dates
-    function setup_newproject_request($token, $order_id, $contact_id, $fees){
+    function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees){
         # Get Order data and rent dates
         $order = new WC_Order($order_id);
         $comp = $order->billing_company;
@@ -31,9 +32,10 @@
 
         # Get List of Materials and create arrays by using
         # that list for the json request
+        $shippingbtw = ($order->order_shipping) / 1.21;
         $materials = get_material_array($order_id);
         $materialsize = sizeof($materials);
-        $count = -6;
+        $count = -7;
         $planarray = array('Planningmateriaal' => array());
         for ($x = 0; $x < $materialsize; $x++){
             array_push($planarray['Planningmateriaal'], $count);
@@ -47,7 +49,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -62,7 +64,7 @@
                             "id" => "-1",
                             "naam" => $proj,
                             "opdrachtgever" => $contact_id,
-                            "locatie" => $contact_id,
+                            "locatie" => $transport_id,
                             "gebruiksperiode" => -2,
                             "planperiode" => -2
                         ),
@@ -78,6 +80,9 @@
                             ),
                             "Projectnotitie" => array(
                                 -5
+                            ),
+                            "Functie" => array(
+                                -6
                             )
                         )
                     )
@@ -98,7 +103,7 @@
                         "values" => array(
                             "van" => $startdate,
                             "tot" => $enddate,
-                            "naam" => "Bouwdag",
+                            "naam" => __("Huurperiode",'rentalshop'),
                             "subproject" => -4
                         )
                     )
@@ -123,6 +128,16 @@
                             "subproject" => -4,
                             "naam" => 'WebShop',
                             "omschrijving" => $notitie
+                        )
+                    )
+                ),
+                "Functie" => array(
+                    "-6" => array(
+                        "values" => array(
+                            "subproject" => -4,
+                            "naamintern" => 'Shipping',
+                            "prijs_vast" => $shippingbtw,
+                            "type" => "T"
                         )
                     )
                 ),
@@ -152,7 +167,6 @@
                     $product->get_sku()));
             }
         }
-
         return $matarr;
     }
 
@@ -161,7 +175,7 @@
         $staffels = get_staffels($order_id);
         $discounts = get_all_discounts($order_id, $contact_id);
         $planmatarr = array_fill_keys($planarray['Planmateriaal'], 'Test');
-        $counter = -6;
+        $counter = -7;
         foreach ($materials as $item){
             $planmatarr[$counter] = array(
                 'values' => array(

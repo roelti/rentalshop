@@ -18,6 +18,8 @@
                 'description' => 'Rentman'
             )
         );
+        $receive_term = get_term_by('slug', $folder[0], 'product_cat');
+        add_term_meta($receive_term->term_id, "source", 'Rentman'); // add Rentman as source
     }
 
     # Arranges folder data from API response
@@ -59,7 +61,8 @@
                 $children = get_categories(array('taxonomy' => 'product_cat', 'parent' => $cat->term_id, 'hide_empty' => 0));
                 $itemCount = max($cat->count, displayChildren($children));
                 if ($itemCount == 0){
-                    if ($cat->description == 'Rentman'){
+                    $source = get_term_meta($cat->term_id, 'source', true);
+                    if ($source == 'Rentman'){
                         wp_delete_term($cat->term_id, 'product_cat');
                     }
                 }
@@ -93,7 +96,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

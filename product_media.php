@@ -3,7 +3,7 @@
     // ------------- Image File Attachment Functions ------------- \\
 
     # Attach image file from Rentman to product in Woocommerce
-    function attach_media($fileUrl, $post_id){
+    function attach_media($fileUrl, $post_id, $sku){
         global $wpdb;
         $artDir = 'wp-content/uploads/rentman/';
         $fileUrl = str_replace(' ', '%20', $fileUrl);
@@ -14,9 +14,11 @@
         $ext = array_pop(explode(".", $fileUrl));
         if ($ext == '')
             return;
-        $new_file_name = 'media-'.$post_id.'.'.$ext;
+        $new_file_name = 'media-'.$sku.'.'.$ext;
         $targetUrl = ABSPATH.$artDir.$new_file_name;
-		copy($fileUrl, $targetUrl);
+        if(!file_exists($targetUrl)) {
+            copy($fileUrl, $targetUrl);
+        }
 		$siteurl = get_option('siteurl');
 		$file_info = getimagesize($targetUrl);
 

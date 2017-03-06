@@ -6,7 +6,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.0.0
+     * Version: 4.1.0
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -45,6 +45,7 @@
     add_filter('woocommerce_add_to_cart_validation', 'check_available', 10, 5);
     add_filter('woocommerce_product_single_add_to_cart_text', 'woo_custom_cart_button_text');
     add_filter('woocommerce_update_cart_validation', 'update_amount', 10, 5);
+    add_filter( 'woocommerce_cart_needs_shipping', '__return_true' );
 
     # Register the plugin settings
     function register_settings(){
@@ -72,7 +73,7 @@
     # Display Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.0.0</h1><hr><br>','rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.1.0</h1><hr><br>','rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>','rentalshop')?>
         <form method="post", action ="options.php">
@@ -260,14 +261,22 @@
         copy($fileUrl, $targetUrl);
         $errors= error_get_last();
         if (file_exists($targetUrl)) {
-            _e('Afbeeldingen kunnen toegevoegd worden &#10003;<br>','rentalshop');
+            _e('Toevoegen van afbeeldingen is gelukt &#10003;<br>','rentalshop');
         } else {
-            _e('Afbeeldingen toevoegen is mislukt.. &#10005;<br>','rentalshop');
+            _e('Toevoegen van afbeeldingen is mislukt.. &#10005;<br>','rentalshop');
             echo "&bull; Copy Error: ".$errors['type'];
             echo "<br />\n&bull; ".$errors['message'].'<br>';
             if(!ini_get('allow_url_fopen')) {
                 _e('&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>','rentalshop');
             }
+        }
+        $artDir = 'wp-content/uploads/rentman/';
+        $new_file_name = '.htaccess';
+        $targetUrl = ABSPATH.$artDir.$new_file_name;
+        if(!file_exists($targetUrl)) {
+            _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>','rentalshop');
+        } else {
+            _e('Afbeeldingen kunnen weergegeven worden &#10003;<br>','rentalshop');
         }
     }
 
@@ -287,7 +296,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

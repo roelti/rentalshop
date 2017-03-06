@@ -207,7 +207,7 @@
         update_post_meta($post_id, '_stock', "aantal");
 
         # Attach Media File
-        attach_media($file_list[$product[0]], $post_id);
+        attach_media($file_list[$product[0]], $post_id, $product[0]);
     }
 
     // ------------- API Requests ------------- \\
@@ -220,7 +220,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -261,7 +261,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -318,6 +318,12 @@
             if ($material->product_type == 'rentable'){
                 # Delete Product
                 wp_delete_post($product_id);
+                $attached = get_post($product_id + 1);
+                $title = $attached->post_title;
+                if ($result = substr($title, 0, 5) == 'media'){
+                    # Delete attached media
+                    wp_delete_post($product_id + 1);
+                }
             }
         }
     }

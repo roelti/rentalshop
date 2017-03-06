@@ -56,6 +56,12 @@
                         return;
                     echo '<h4 style="color:#8b0000">' . $notice . '€' . number_format(round($discountprice, 2), 2) . '</h4>';
                 }
+            } else {
+                $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
+                # Display price including tax
+                $taxprice = $product->get_price() * $tax;
+                echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';
+                return;
             }
         }
     }
@@ -297,7 +303,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -341,7 +347,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -366,7 +372,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.0.0"
+                "version" => "4.1.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

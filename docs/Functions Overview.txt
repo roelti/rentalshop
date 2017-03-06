@@ -25,6 +25,8 @@ rentman_user.php
 ----------------
 export_users :: checks if a customer already exists as a contact in Rentman and adds them to Rentman if not
 setup_check_request :: sets up a request that receives the contact that is linked to a certain email address
+setup_location_request :: sets up a request that receives the contact that is linked to a certain location
+setup_newlocation_request :: sets up a request that creates a new contact representing a location in Rentman
 setup_newuser_request :: sets up a request that creates a new contact in Rentman
 ------------------------
 product_availability.php
@@ -37,6 +39,7 @@ attachFunction :: javascript function that adds the availability function to the
 available_request :: sets up the availability request for a certain product
 check_available :: does the actual availability request and uses the response to generate the right message (i.e. not available / maybe available / available)
 quickCheck :: javascript function that applies the availability check when changes are made on the single product page
+set_functions :: unused function for testing the availability javascript functions
 update_amount :: applies the check_available function on updated products in the cart
 update_dates :: applies the availability check on all items in the cart for the updated dates
 woo_custom_cart_button_text :: changes the text of the 'add to cart' button depending on the type of product
