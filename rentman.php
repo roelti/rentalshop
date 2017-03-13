@@ -45,7 +45,8 @@
     add_filter('woocommerce_add_to_cart_validation', 'check_available', 10, 5);
     add_filter('woocommerce_product_single_add_to_cart_text', 'woo_custom_cart_button_text');
     add_filter('woocommerce_update_cart_validation', 'update_amount', 10, 5);
-    add_filter( 'woocommerce_cart_needs_shipping', '__return_true' );
+    add_filter('woocommerce_cart_needs_shipping', '__return_true');
+    add_filter('product_type_selector', 'add_rentable_product');
 
     # Register the plugin settings
     function register_settings(){

@@ -54,6 +54,7 @@ setup_folder_request :: sets up the folder request ready to be encoded in JSON
 ------------------
 product_import.php
 ------------------
+add_rentable_product :: makes new product type selectable
 array_to_product :: imports five products from the product array
 check_updated :: checks whether the product has been updated by comparing the last modified date
 compare_and_delete :: deletes all rentable products that have been removed from Rentman

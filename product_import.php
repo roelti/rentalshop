@@ -377,6 +377,12 @@
         }
     }
 
+    # Make new product type selectable
+    function add_rentable_product( $types ){
+        $types[ 'rentable' ] = __('Rentable');
+        return $types;
+    }
+
     # Use database query to check if the product that
     # is going to be imported already exists
     function wp_exist_post_by_title($title){

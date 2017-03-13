@@ -14,8 +14,7 @@
             'product_cat', # Taxonomy
             array(
                 'slug' => $folder[0],
-                'parent' => $parent_term_id,
-                'description' => 'Rentman'
+                'parent' => $parent_term_id
             )
         );
         $receive_term = get_term_by('slug', $folder[0], 'product_cat');
