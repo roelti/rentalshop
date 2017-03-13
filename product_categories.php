@@ -17,7 +17,7 @@
                 'parent' => $parent_term_id
             )
         );
-        $receive_term = get_term_by('slug', $folder[0], 'product_cat');
+        $receive_term = get_term_by('name', $folder[1], 'product_cat');
         add_term_meta($receive_term->term_id, "source", 'Rentman'); // add Rentman as source
     }
 
@@ -78,11 +78,11 @@
             $thiscount = displayChildren($grandchildren);
             $itemCount = max($itemCount, $thiscount);
             if (max($thiscount, $child->count) == 0){
-                if ($child->description == 'Rentman'){
+                $source = get_term_meta($child->term_id, 'source', true);
+                if ($source == 'Rentman') {
                     wp_delete_term($child->term_id, 'product_cat');
                 }
             }
-
         }
         return $itemCount;
     }
@@ -95,7 +95,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.1"
+                "version" => "4.1.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
