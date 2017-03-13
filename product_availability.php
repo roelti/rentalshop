@@ -2,71 +2,6 @@
 
     // ------------- Adding the date fields ------------- \\
 
-    # Add the dynamic availability script to the header
-    function add_header_script(){
-        ?>
-        <script> // JAVASCRIPT FOR THE AVAILABILITY CHECK
-            // Adds availability function to the 'amount' field
-            function attachFunction() {
-                var input = document.getElementsByClassName("input-text qty text")[0];
-                input.addEventListener ("change", quickCheck, false);
-            }
-
-            // Function that applies the availability check when changes are made on the page
-            function quickCheck() {
-                if (document.contains(document.getElementsByName("start-date")[0])) {
-                    var fromDate = document.getElementsByName("start-date")[0].value;
-                    var toDate = document.getElementsByName("end-date")[0].value;
-                    var incDate = new Date(toDate);
-                    incDate.setDate(incDate.getDate() + 1);
-                    toDate = incDate.toISOString().substring(0,19);
-                } else {
-                    var fromDate = "<?php echo get_option('plugin-startdate');?>";
-                    <?php $enddate = get_option('plugin-enddate');
-                    $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));?>
-                    var toDate = "<?php echo $enddate;?>";
-                }
-                if (fromDate > toDate){
-                    document.getElementsByClassName("availLog")[0].innerHTML = "<?php _e("Product is niet beschikbaar!", "rentalshop")?>";
-                    document.getElementsByClassName("availLog")[0].style = "color:red";
-                }
-                else {
-                    var productID = document.getElementsByClassName("sku")[0].innerText;
-                    var amount = document.getElementsByClassName("input-text qty text")[0].value;
-                    xhr = new XMLHttpRequest();
-                    var url = "<?php echo receive_endpoint();?>";
-                    var account = "<?php echo get_option('plugin-account');?>";
-                    var token = "<?php echo get_option('plugin-token');?>";
-                    xhr.open("POST", url, true);
-                    xhr.setRequestHeader("Content-type", "application/json");
-                    xhr.onreadystatechange = function () {
-                        if (xhr.readyState == 4 && xhr.status == 200) {
-                            var json = JSON.parse(xhr.responseText);
-                            var maxcon = json.response.value.maxconfirmed;
-                            var maxopt = json.response.value.maxoption;
-                            if (maxcon < 0){
-                                document.getElementsByClassName("availLog")[0].innerHTML = "<?php _e("Product is niet beschikbaar!", "rentalshop")?>";
-                                document.getElementsByClassName("availLog")[0].style = "color:red";
-                            }
-                            else if (maxcon >= 0 & maxopt < 0){
-                                document.getElementsByClassName("availLog")[0].innerHTML = "<?php _e("Product is misschien niet beschikbaar!", "rentalshop")?>";
-                                document.getElementsByClassName("availLog")[0].style = "color:orange";
-                            }
-                            else{
-                                document.getElementsByClassName("availLog")[0].innerHTML = "<?php _e("Product is beschikbaar!", "rentalshop")?>";
-                                document.getElementsByClassName("availLog")[0].style = "color:green";
-                            }
-                        }
-                    }
-                    var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-                        "version":"4.0.0"},"account":account,"token":token,"module":"Availability","parameters":{
-                        "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":amount},"method":"is_available"});
-                    xhr.send(data);
-                }
-            }
-        </script> <?php
-    }
-
     # Adds date fields to 'Rentable' products in the store
     function add_custom_field(){
         global $post;
@@ -211,7 +146,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.0"
+                "version" => "4.1.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -254,7 +189,32 @@
 
     # Set the availability functions
     function set_functions(){
-        echo '<script>attachFunction(); quickCheck();</script>';
+        # Check if product is already in the cart
+        global $product;
+        $quantity = 0;
+        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
+            $cartproduct = $cart_item['data'];
+            if ($cartproduct->get_title() == $product->get_title()){
+                $quantity += $cart_item['quantity'];
+                break;
+            }
+        }
+        # Adjust the ending date
+        $enddate = get_option('plugin-enddate');
+        $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
+
+        # Add the file containing the availability script
+        wp_register_script('admin_availability', plugins_url('js/admin_available.js', __FILE__ ));
+        wp_localize_script('admin_availability', 'startDate', get_option('plugin-startdate'));
+        wp_localize_script('admin_availability', 'endDate', $enddate);
+        wp_localize_script('admin_availability', 'endPoint', receive_endpoint());
+        wp_localize_script('admin_availability', 'rm_account', get_option('plugin-account'));
+        wp_localize_script('admin_availability', 'rm_token', get_option('plugin-token'));
+        wp_localize_script('admin_availability', 'cart_amount', $quantity);
+        wp_localize_script('admin_availability', 'unavailable', __("Product is niet beschikbaar!", "rentalshop"));
+        wp_localize_script('admin_availability', 'maybe', __("Product is misschien niet beschikbaar!", "rentalshop"));
+        wp_localize_script('admin_availability', 'available', __("Product is beschikbaar!", "rentalshop"));
+        wp_enqueue_script('admin_availability');
     }
 
     # Main function for the availability check and relevant API requests

@@ -94,4 +94,9 @@ admin_delete.js & admin_import.js
 ---------------------------------
 applyAjax :: recursive function that sends product indices to PHP code until the whole product array has been covered
 removeFolders :: calls a PHP function that removes all empty/unused product categories from Woocommerce
-
+------------------
+admin_available.js
+------------------
+attachFunction :: attaches the quickCheck function to the 'amount' field
+quickCheck :: receives the starting date, ending date and amount from the product page and receives the availability
+of the product using an API request

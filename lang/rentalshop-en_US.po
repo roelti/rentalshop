@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-03-06 15:51+0100\n"
-"PO-Revision-Date: 2017-03-06 15:52+0100\n"
+"POT-Creation-Date: 2017-03-13 14:40+0100\n"
+"PO-Revision-Date: 2017-03-13 14:41+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -19,27 +19,15 @@ msgstr ""
 msgid "'"
 msgstr ""
 
-#: product_availability.php:30 product_availability.php:48
-msgid "Product is niet beschikbaar!"
-msgstr "Product is not available!"
-
-#: product_availability.php:52
-msgid "Product is misschien niet beschikbaar!"
-msgstr "Product might not be available!"
-
-#: product_availability.php:56
-msgid "Product is beschikbaar!"
-msgstr "Product is available!"
-
-#: product_availability.php:94 product_availability.php:134
+#: product_availability.php:29 product_availability.php:69
 msgid "Van:"
 msgstr "From:"
 
-#: product_availability.php:96 product_availability.php:136
+#: product_availability.php:31 product_availability.php:71
 msgid "Tot:"
 msgstr "To:"
 
-#: product_availability.php:98
+#: product_availability.php:33
 msgid ""
 "Let op: je kan de datums voor ander materiaal pas in de winkelwagen weer "
 "wijzigen!"
@@ -47,59 +35,71 @@ msgstr ""
 "Important: You can change the rent dates for other materials that you want "
 "to rent in the cart!"
 
-#: product_availability.php:103
+#: product_availability.php:38
 msgid "<h3>Geselecteerde datums: </h3> <p><b>Van </b>"
 msgstr "<h3>Selected dates: </h3> <p><b>From </b>"
 
-#: product_availability.php:103
+#: product_availability.php:38
 msgid "<b> tot </b>"
 msgstr "<b> to </b>"
 
-#: product_availability.php:127
+#: product_availability.php:62
 msgid "<h2>VERHUURPERIODE</h2>"
 msgstr "<h2>RENT PERIOD</h2>"
 
-#: product_availability.php:141
+#: product_availability.php:76
 msgid "Update Huurperiode"
 msgstr "Update Dates"
 
-#: product_availability.php:164
+#: product_availability.php:99
 msgid "Reserveer"
 msgstr "Reserve"
 
-#: product_availability.php:167
+#: product_availability.php:102
 msgid "Aan winkelmandje toevoegen"
 msgstr "Add to cart"
 
-#: product_availability.php:282
+#: product_availability.php:214
+msgid "Product is niet beschikbaar!"
+msgstr "Product is not available!"
+
+#: product_availability.php:215
+msgid "Product is misschien niet beschikbaar!"
+msgstr "Product might not be available!"
+
+#: product_availability.php:216
+msgid "Product is beschikbaar!"
+msgstr "Product is available!"
+
+#: product_availability.php:242
 msgid "Er ging iets mis.. Kloppen de datums wel?"
 msgstr "Something went wrong.. Did you provide correct dates?"
 
-#: product_availability.php:319
+#: product_availability.php:279
 msgid "Er zijn slechts "
 msgstr "There are only "
 
-#: product_availability.php:319
+#: product_availability.php:279
 msgid " beschikbaar in die tijdsperiode."
 msgstr " available in that time period."
 
-#: product_availability.php:322
+#: product_availability.php:282
 msgid "Let op: "
 msgstr "Important:"
 
-#: product_availability.php:322
+#: product_availability.php:282
 msgid " van de "
 msgstr " out of "
 
-#: product_availability.php:322
+#: product_availability.php:282
 msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
 msgstr " might not be available in that time period.."
 
-#: product_availability.php:325
+#: product_availability.php:285
 msgid "Uw geselecteerde aantal "
 msgstr "Your selected amount of "
 
-#: product_availability.php:325
+#: product_availability.php:285
 msgid " is beschikbaar in die tijdsperiode!"
 msgstr " is available in that time period!"
 
@@ -168,7 +168,7 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:76
-msgid "<h1>Rentman Product Import - v4.1.0</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.1.1</h1><hr><br>"
 msgstr ""
 
 #: rentman.php:78
