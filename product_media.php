@@ -15,6 +15,7 @@
         if ($ext == '')
             return;
         $new_file_name = 'media-'.$sku.'.'.$ext;
+        $post_file_name = 'media-'.$sku;
         $targetUrl = ABSPATH.$artDir.$new_file_name;
         if(!file_exists($targetUrl)) {
             copy($fileUrl, $targetUrl);
@@ -27,11 +28,11 @@
 			'post_author' => 1,
 			'post_date' => current_time('mysql'),
 			'post_date_gmt' => current_time('mysql'),
-			'post_title' => $new_file_name,
+			'post_title' => $post_file_name,
 			'post_status' => 'inherit',
 			'comment_status' => 'closed',
 			'ping_status' => 'closed',
-			'post_name' => sanitize_title_with_dashes(str_replace("_", "-", $new_file_name)),
+			'post_name' => sanitize_title_with_dashes(str_replace("_", "-", $post_file_name)),
 			'post_modified_gmt' => current_time('mysql'),
 			'post_parent' => $post_id,
 			'post_type' => 'attachment',
@@ -59,13 +60,17 @@
     }
 
     # Returns list of image file url's for every product
-    function get_files($prodList, $token, $url){
+    function get_files($prodList, $token, $url, $globalimages = false){
         $fileList = array();
-        $message = json_encode(setup_file_request($token, $prodList), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_file_request($token, $prodList, $globalimages), JSON_PRETTY_PRINT);
         $received = do_request($url, $message);
 
         # Get the list of files and return
         $parsed = json_decode($received, true);
+        /*
+        echo "<b>Response:</b><br><pre>";
+        echo json_encode(json_decode($received), JSON_PRETTY_PRINT);
+        echo '</pre>';*/
         foreach ($parsed['response']['items']['Files'] as $imgFile){
             $fileList[$imgFile['data'][1]] = $imgFile['data'][0];
         }

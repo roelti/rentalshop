@@ -57,6 +57,29 @@
         }
     }
 
+    # Function that updates the images of products
+    function update_images($token){
+        global $wpdb;
+        # Get the endpoint url
+        $url = receive_endpoint();
+        # Update the images of all imported products
+        $current_files = get_files(Array(), $token, $url, true);
+        if (sizeof($current_files) == 0){
+            _e('<b>Er zijn geen Rentman producten in je webshop!</b>','rentalshop');
+            return;
+        }
+        foreach ($current_files as $key => $file) {
+            $post_id = wc_get_product_id_by_sku($key);
+            # Delete old image
+            $ext = array_pop(explode(".", $file));
+            $new_file_name = 'media-'.$key;
+            $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $new_file_name . "'");
+            wp_delete_post($postID);
+            attach_media($file, $post_id, $key);
+        }
+        _e('<b>Afbeeldingen voor bestaande producten zijn bijgewerkt!</b>','rentalshop');
+    }
+
     # Imports five products from the product array
     function array_to_product($prod_array, $file_array, $startIndex){
         if (sizeof($prod_array) > 0){
@@ -84,11 +107,12 @@
             $cost = $parsed['response']['items']['Materiaal'][$x]['data'][1];
             $longdesc = $parsed['response']['items']['Materiaal'][$x]['data'][2];
             $shortdesc = $parsed['response']['items']['Materiaal'][$x]['data'][3];
-            $modDate = $parsed['response']['items']['Materiaal'][$x]['data'][4];
+            $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data'][4];
+            $modDate = $parsed['response']['items']['Materiaal'][$x]['data'][5];
             # Set correct folder data
-            $folderID = $parsed['response']['items']['Materiaal'][$x]['data'][5];
-            $weight = $parsed['response']['items']['Materiaal'][$x]['data'][6];
-            $btwcode = $parsed['response']['items']['Materiaal'][$x]['data'][7];
+            $folderID = $parsed['response']['items']['Materiaal'][$x]['data'][6];
+            $weight = $parsed['response']['items']['Materiaal'][$x]['data'][7];
+            $btwcode = $parsed['response']['items']['Materiaal'][$x]['data'][8];
             $btw = $parsed['response']['items']['Btwcode'][$btwcode]['data'][0];
             $parent_term = get_term_by('slug', $folderID, 'product_cat'); // array is returned if taxonomy is given
             $kate = $parent_term->name;
@@ -114,6 +138,8 @@
             if($noDiff){ # Product already exists and has not been updated
                 continue;
             } else { # Product does not exist yet or has been updated, so add it to the array
+                if ($longdesc == '')
+                    $longdesc = $fulldesc;
                 array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $kate, $modDate, $weight, $btw));
             }
         }
@@ -220,7 +246,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.2"
+                "version" => "4.1.3"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -231,6 +257,7 @@
                     "verhuurprijs",
                     "shop_description_long",
                     "shop_description_short",
+                    "omschrijving",
                     "modified",
                     array(
                         "folder" => array(
@@ -254,14 +281,18 @@
 
     # Returns API request ready to be encoded in Json
     # For getting image files for every product
-    function setup_file_request($token, $prodList){
+    function setup_file_request($token, $prodList, $globalimages = false){
+        if ($globalimages)
+            $idList = rentman_ids();
+        else
+            $idList = list_of_ids($prodList);
         $file_data = array(
             "requestType" => "query",
             "apiVersion" => 1,
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.2"
+                "version" => "4.1.3"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -278,7 +309,7 @@
                         "linkedTo" => "Materiaal",
                         "reverse" => false,
                         "query" => array(
-                            "id" => list_of_ids($prodList)
+                            "id" => $idList
                         )
                     ),
                     array(
@@ -316,14 +347,12 @@
             $product_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $object . "'" );
             $material = wc_get_product($product_id);
             if ($material->product_type == 'rentable'){
-                # Delete Product
+                # Delete product and attached image
+                $sku = $material->sku;
+                $image_name = 'media-'.$sku;
+                $image_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $image_name . "'" );
+                wp_delete_post($image_id);
                 wp_delete_post($product_id);
-                $attached = get_post($product_id + 1);
-                $title = $attached->post_title;
-                if ($result = substr($title, 0, 5) == 'media'){
-                    # Delete attached media
-                    wp_delete_post($product_id + 1);
-                }
             }
         }
     }
@@ -350,6 +379,20 @@
             array_push($id_list, $item[0]);
         }
         return $id_list;
+    }
+
+    # Returns list of identifiers of all imported Rentman products
+    function rentman_ids(){
+        $full_product_list = array();
+        $args = array('post_type' => 'product', 'posts_per_page' => -1, 'product_type' => 'rentable');
+        $pf = new WC_Product_Factory();
+        $posts = get_posts($args);
+        for ($x = 0; $x < sizeof($posts); $x++) {
+            $post = $posts[$x];
+            $product = $pf->get_product($post->ID);
+            array_push($full_product_list, $product->get_sku());
+        }
+        return $full_product_list;
     }
 
     # Register 'Rentable' Product Type for imported products

@@ -6,7 +6,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.1.2
+     * Version: 4.1.3
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -74,7 +74,7 @@
     # Display Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.1.2</h1><hr><br>','rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.1.3</h1><hr><br>','rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>','rentalshop')?>
         <form method="post", action ="options.php">
@@ -129,7 +129,16 @@
         <input type="submit" class="button button-primary" value="<?php _e('Wijzigingen Opslaan','rentalshop')?>">
         </form>
         <br>
-
+        <hr><h3><?php _e('Update afbeeldingen van producten', 'rentalshop')?></h3>
+        <ul>
+            <li><?php _e('Druk op de onderstaande knop wanneer je afbeeldingen in Rentman hebt gewijzigd<br>
+                om de wijzigingen toe te passen in WooCommerce.','rentalshop')?></li>
+        </ul>
+        <p> <!-- Button that handles image import and update -->
+        <form method="post">
+            <input type="hidden" name="image-rentman">
+            <input type="submit" class="button button-primary" value="<?php _e('Afbeeldingen Updaten','rentalshop')?>">
+        </form><br><p id="imageStatus"></p>
         <hr><h3><?php _e('Importeer materiaal uit Rentman', 'rentalshop')?></h3>
         <ul>
             <li><?php _e('Druk op de onderstaande knop om te zoeken naar nieuwe of gewijzigde producten en deze<br>
@@ -163,6 +172,11 @@
         # If 'Import Products' button has been pressed, call function from product_import.php
         if ( isset ( $_POST['import-rentman'])){
             import_products($token);
+        }
+
+        # If 'Update Images' button has been pressed, call function from product_import.php
+        if ( isset ( $_POST['image-rentman'])){
+            update_images($token);
         }
 
         # Import Products with certain index in array
@@ -297,7 +311,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.2"
+                "version" => "4.1.3"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

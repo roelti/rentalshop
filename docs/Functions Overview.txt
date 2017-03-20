@@ -65,9 +65,11 @@ import_product :: adds a product to Woocommerce using 'wp_insert_post'
 import_products :: receives a list of new/updated products from Rentman and calls a Javascript function to import them
 list_of_ids :: when given a list of products, returns a list of their identifiers
 register_rental_product_type :: registers the 'rentable' product type in WooCommerce
+rentman_ids :: returns a list of all identifiers of imported Rentman products
 reset_rentman :: calls a Javascript function that deletes all Rentman products and categories from Woocommerce
 setup_file_request :: sets up the files (i.e. product image) request ready to be encoded in JSON
 setup_import_request :: sets up the product import request ready to be encoded in JSON
+update_images :: function that updates all product images to their latest version
 wp_exist_post_by_title :: checks whether a product already exists by using a database query
 -----------------
 product_media.php
