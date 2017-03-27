@@ -6,7 +6,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.1.3
+     * Version: 4.2.0
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -74,7 +74,7 @@
     # Display Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.1.3</h1><hr><br>','rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.2.0</h1><hr><br>','rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>','rentalshop')?>
         <form method="post", action ="options.php">
@@ -138,7 +138,9 @@
         <form method="post">
             <input type="hidden" name="image-rentman">
             <input type="submit" class="button button-primary" value="<?php _e('Afbeeldingen Updaten','rentalshop')?>">
-        </form><br><p id="imageStatus"></p>
+        </form><br>
+        <div id="imageMelding" style="display: none;"><?php _e('<h3>De afbeeldingen worden opgehaald..</h3>','rentalshop'); ?></div>
+        <p id="imageStatus"></p>
         <hr><h3><?php _e('Importeer materiaal uit Rentman', 'rentalshop')?></h3>
         <ul>
             <li><?php _e('Druk op de onderstaande knop om te zoeken naar nieuwe of gewijzigde producten en deze<br>
@@ -185,6 +187,21 @@
             $file_array = $_REQUEST['file_array'];
             $array_index = $_REQUEST['array_index'];
             array_to_product($prod_array, $file_array, $array_index);
+        }
+
+        # Update images with certain index in array
+        if(isset($_GET['update_images'])){
+            $image_array = $_REQUEST['image_array'];
+            $array_index = $_REQUEST['array_index'];
+            global $wpdb;
+            $current_image = $image_array[$array_index];
+            $post_id = wc_get_product_id_by_sku($array_index);
+            for ($x = 0; $x < sizeof($current_image); $x++){
+                $new_file_name = 'media-'.$array_index.'-'.$x;
+                $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $new_file_name . "'");
+                wp_delete_post($postID);
+                attach_media($current_image[$x], $post_id, $array_index, $x);
+            }
         }
 
         # Delete certain amount of posts
@@ -311,7 +328,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),
@@ -321,6 +338,31 @@
     }
 
     // ------------- API Request Functions ------------- \\
+
+    # Function that parses the response to a clear format
+    function parseResponse($response)
+    {
+        $columnNames = array();
+        # Get column names
+        foreach ($response['response']['columns'] as $key => $file){
+            array_push($columnNames, $key);
+        }
+        # Parse keynames of each column
+        foreach($columnNames as $column){
+            $currentCol = $response['response']['items'][$column];
+            # For every item in the column, change the keys
+            foreach ($currentCol as $identifier => $item){
+                for ($x = 0; $x < sizeof($item['data']); $x++){
+                    $keyname = $response['response']['columns'][$column][$x]['id'];
+                    $item['data'][$keyname] = $item['data'][$x];
+                    unset($item['data'][$x]);
+                }
+                # Adjust the response accordingly
+                $response['response']['items'][$column][$identifier]['data'] = $item['data'];
+            }
+        }
+        return $response;
+    }
 
     # Does a JSON request with a given message
     function do_request($url, $message){

@@ -26,12 +26,12 @@
         $folderList = array();
         $switch = true;
         $counter = 1;
-		$lastkey = end($parsed['response']['items']['Folder'])['data'][1];
+		$lastkey = end($parsed['response']['items']['Folder'])['data']['id'];
 		
         while ($switch){
-            $name = $parsed['response']['items']['Folder'][$counter]['data'][0];
-            $id = $parsed['response']['items']['Folder'][$counter]['data'][1];
-            $parent = $parsed['response']['items']['Folder'][$counter]['data'][2];
+            $name = $parsed['response']['items']['Folder'][$counter]['data']['naam'];
+            $id = $parsed['response']['items']['Folder'][$counter]['data']['id'];
+            $parent = $parsed['response']['items']['Folder'][$counter]['data']['parent'];
 
             if ($id == $lastkey)
                 $switch = false;
@@ -95,7 +95,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

@@ -24,6 +24,7 @@
                 # Send request and receive response
                 $received = do_request($url, $message);
                 $parsed = json_decode($received, true);
+                $parsed = parseResponse($parsed);
                 $contactarr = $parsed['response']['items']['Contact'];
 
                 if (empty($contactarr)){ # User not found, so don't add the discount
@@ -35,13 +36,14 @@
                 } else { # Calculate the total customer discount
                     # Get contact and relevant materials
                     $contact = current($contactarr);
-                    $contact_id = $contact['data'][1];
+                    $contact_id = $contact['data']['id'];
                     $materials = array($product->get_sku());
 
                     # Setup request, send request and receive response
                     $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
                     $received = do_request($url, $message);
                     $parsed = json_decode($received, true);
+                    $parsed = parseResponse($parsed);
 
                     # Receive array of discounts
                     $discounts = $parsed['response']['value'];
@@ -129,6 +131,7 @@
             # Send request and receive response
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
+            $parsed = parseResponse($parsed);
             $contactarr = $parsed['response']['items']['Contact'];
 
             if (empty($contactarr)){ # User not found, so don't add the discount
@@ -136,7 +139,7 @@
             } else { # Calculate the total customer discount
                 # Get contact and relevant materials
                 $contact = current($contactarr);
-                $contact_id = $contact['data'][1];
+                $contact_id = $contact['data']['id'];
                 $materials = array();
                 $items = WC()->cart->get_cart();
                 $pf = new WC_Product_Factory();
@@ -150,10 +153,11 @@
                 $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
                 $received = do_request($url, $message);
                 $parsed = json_decode($received, true);
+                $parsed = parseResponse($parsed);
 
                 # Receive array of discounts
                 $discounts = $parsed['response']['value'];
-                $totaldiscount = $contact['data'][3];
+                $totaldiscount = $contact['data']['totaalkorting'];
                 $discount = calculate_discount($discounts, $staffels, $totaldiscount);
                 WC()->cart->add_fee(__('Klantkorting','rentalshop'), $discount, true, 'standard');
             }
@@ -171,9 +175,10 @@
         $received = do_request($url, $message);
 
         $parsed = json_decode($received, true);
+        $parsed = parseResponse($parsed);
         $stafObject = current($parsed['response']['items']['Staffel']);
 
-        return $stafObject['data'][2];
+        return $stafObject['data']['staffel'];
     }
 
     # Get staffelgroup of products in cart
@@ -187,13 +192,14 @@
         $received = do_request($url, $message);
 
         $parsed = json_decode($received, true);
+        $parsed = parseResponse($parsed);
         $stafObject = current($parsed['response']['items']['Materiaal']);
 
         # If product is only for sale
-        if ($stafObject['data'][3] == false)
+        if ($stafObject['data']['verhuur'] == false)
             return null;
 
-        return $stafObject['data'][2];
+        return $stafObject['data']['staffelgroep'];
     }
 
     # Get staffel array for project export
@@ -247,6 +253,7 @@
         $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
         $received = do_request($url, $message);
         $parsed = json_decode($received, true);
+        $parsed = parseResponse($parsed);
 
         # Receive array of discounts
         $discounts = $parsed['response']['value'];
@@ -303,7 +310,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -347,7 +354,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -372,7 +379,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

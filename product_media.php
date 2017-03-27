@@ -3,7 +3,7 @@
     // ------------- Image File Attachment Functions ------------- \\
 
     # Attach image file from Rentman to product in Woocommerce
-    function attach_media($fileUrl, $post_id, $sku){
+    function attach_media($fileUrl, $post_id, $sku, $count = 0){
         global $wpdb;
         $artDir = 'wp-content/uploads/rentman/';
         $fileUrl = str_replace(' ', '%20', $fileUrl);
@@ -14,8 +14,8 @@
         $ext = array_pop(explode(".", $fileUrl));
         if ($ext == '')
             return;
-        $new_file_name = 'media-'.$sku.'.'.$ext;
-        $post_file_name = 'media-'.$sku;
+        $new_file_name = 'media-'.$sku.'-'.$count.'.'.$ext;
+        $post_file_name = 'media-'.$sku.'-'.$count;
         $targetUrl = ABSPATH.$artDir.$new_file_name;
         if(!file_exists($targetUrl)) {
             copy($fileUrl, $targetUrl);
@@ -52,11 +52,23 @@
 			wp_update_attachment_metadata($attach_id, $attach_data);
 		}
 
-		# Make it the featured image of the post it is attached to
-		$wpdb->insert($wpdb->prefix.'postmeta', array(
-			'post_id' => $post_id,
-			'meta_key' => '_thumbnail_id',
-			'meta_value' => $attach_id));
+        # Check the amount of images
+        # If there are more than one, add them to the image galery
+        if ($count > 0){
+            $gallery = get_post_meta($post_id,'_product_image_gallery');
+            $newgallery = $attach_id;
+            for ($y = 0; $y < sizeof($gallery); $y++){
+                $newgallery = $newgallery . ',' . $gallery[$y];
+            }
+            update_post_meta($post_id,'_product_image_gallery',$newgallery);
+        }
+        else {
+            # Make it the featured image of the post it is attached to
+            $wpdb->insert($wpdb->prefix.'postmeta', array(
+                'post_id' => $post_id,
+                'meta_key' => '_thumbnail_id',
+                'meta_value' => $attach_id));
+        }
     }
 
     # Returns list of image file url's for every product
@@ -67,12 +79,13 @@
 
         # Get the list of files and return
         $parsed = json_decode($received, true);
-        /*
-        echo "<b>Response:</b><br><pre>";
-        echo json_encode(json_decode($received), JSON_PRETTY_PRINT);
-        echo '</pre>';*/
+        $parsed = parseResponse($parsed);
+
         foreach ($parsed['response']['items']['Files'] as $imgFile){
-            $fileList[$imgFile['data'][1]] = $imgFile['data'][0];
+            if ($fileList[$imgFile['data']['item']] == null)
+                $fileList[$imgFile['data']['item']] = array($imgFile['data']['url']);
+            else
+                array_push($fileList[$imgFile['data']['item']], $imgFile['data']['url']);
         }
         return $fileList;
     }

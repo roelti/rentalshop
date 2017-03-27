@@ -146,7 +146,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -264,6 +264,7 @@
                     # Send Request & Receive Response
                     $received = do_request($url, $message);
                     $parsed = json_decode($received, true);
+                    $parsed = parseResponse($parsed);
 
                     # Get values from parsed response
                     $maxconfirmed = $parsed['response']['value']['maxconfirmed'];

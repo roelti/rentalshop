@@ -16,6 +16,7 @@
             $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
+            $parsed = parseResponse($parsed);
 			
 			$folder_arr = arrange_folders($parsed);
 			
@@ -28,6 +29,7 @@
             # Send Request & Receive Response
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
+            $parsed = parseResponse($parsed);
             # Receive id's of first and last ID in response
             $listLength = sizeof($parsed['response']['links']['Materiaal']);
             if ($listLength > 0){ # At least one product has been found
@@ -59,25 +61,22 @@
 
     # Function that updates the images of products
     function update_images($token){
-        global $wpdb;
         # Get the endpoint url
         $url = receive_endpoint();
         # Update the images of all imported products
         $current_files = get_files(Array(), $token, $url, true);
         if (sizeof($current_files) == 0){
-            _e('<b>Er zijn geen Rentman producten in je webshop!</b>','rentalshop');
+            _e('<b>Er zijn geen afbeeldingen gevonden..</b>','rentalshop');
             return;
         }
-        foreach ($current_files as $key => $file) {
-            $post_id = wc_get_product_id_by_sku($key);
-            # Delete old image
-            $ext = array_pop(explode(".", $file));
-            $new_file_name = 'media-'.$key;
-            $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $new_file_name . "'");
-            wp_delete_post($postID);
-            attach_media($file, $post_id, $key);
-        }
-        _e('<b>Afbeeldingen voor bestaande producten zijn bijgewerkt!</b>','rentalshop');
+        # Call javascript function
+        wp_register_script('admin_add_images', plugins_url('js/admin_images.js', __FILE__ ));
+        wp_localize_script('admin_add_images', 'images', $current_files);
+        wp_localize_script('admin_add_images', 'arrayindex', key($current_files));
+        wp_localize_script('admin_add_images', 'totalsize', sizeof($current_files));
+        wp_localize_script('admin_add_images', 'string1', __('<b>Afbeeldingen klaar:</b> ','rentalshop'));
+        wp_localize_script('admin_add_images', 'string2', __('<b>Afbeeldingen updaten geslaagd!</b> ','rentalshop'));
+        wp_enqueue_script('admin_add_images');
     }
 
     # Imports five products from the product array
@@ -103,17 +102,17 @@
 
         for ($x = $lower; $x <= $higher; $x++) {
             # Get name, price, description, category and last modified date from current product
-            $name = trim($parsed['response']['items']['Materiaal'][$x]['data'][0]);
-            $cost = $parsed['response']['items']['Materiaal'][$x]['data'][1];
-            $longdesc = $parsed['response']['items']['Materiaal'][$x]['data'][2];
-            $shortdesc = $parsed['response']['items']['Materiaal'][$x]['data'][3];
-            $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data'][4];
-            $modDate = $parsed['response']['items']['Materiaal'][$x]['data'][5];
+            $name = trim($parsed['response']['items']['Materiaal'][$x]['data']['naam']);
+            $cost = $parsed['response']['items']['Materiaal'][$x]['data']['verhuurprijs'];
+            $longdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_long'];
+            $shortdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_short'];
+            $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data']['omschrijving'];
+            $modDate = $parsed['response']['items']['Materiaal'][$x]['data']['modified'];
             # Set correct folder data
-            $folderID = $parsed['response']['items']['Materiaal'][$x]['data'][6];
-            $weight = $parsed['response']['items']['Materiaal'][$x]['data'][7];
-            $btwcode = $parsed['response']['items']['Materiaal'][$x]['data'][8];
-            $btw = $parsed['response']['items']['Btwcode'][$btwcode]['data'][0];
+            $folderID = $parsed['response']['items']['Materiaal'][$x]['data']['folder'];
+            $weight = $parsed['response']['items']['Materiaal'][$x]['data']['gewicht'];
+            $btwcode = $parsed['response']['items']['Materiaal'][$x]['data']['btwcode'];
+            $btw = $parsed['response']['items']['Btwcode'][$btwcode]['data']['tarief'];
             $parent_term = get_term_by('slug', $folderID, 'product_cat'); // array is returned if taxonomy is given
             $kate = $parent_term->name;
 
@@ -233,7 +232,9 @@
         update_post_meta($post_id, '_stock', "aantal");
 
         # Attach Media File
-        attach_media($file_list[$product[0]], $post_id, $product[0]);
+        for ($x = 0; $x < sizeof($file_list[$product[0]]); $x++){
+            attach_media($file_list[$product[0]][$x], $post_id, $product[0], $x);
+        }
     }
 
     // ------------- API Requests ------------- \\
@@ -246,7 +247,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -292,7 +293,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -349,7 +350,7 @@
             if ($material->product_type == 'rentable'){
                 # Delete product and attached image
                 $sku = $material->sku;
-                $image_name = 'media-'.$sku;
+                $image_name = 'media-'.$sku.'-0';
                 $image_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $image_name . "'" );
                 wp_delete_post($image_id);
                 wp_delete_post($product_id);

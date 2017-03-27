@@ -35,6 +35,7 @@
             $received = do_request($url, $message);
 
             $parsed = json_decode($received, true);
+            $parsed = parseResponse($parsed);
 
             $contactarr = $parsed['response']['items']['Contact'];
             if (empty($contactarr)) {
@@ -44,6 +45,7 @@
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
                 $parsed = json_decode($received, true);
+                $parsed = parseResponse($parsed);
                 $contact_id = current($parsed['response']['items']['Contact']);
                 $fees = array();
                 for ($x = 0; $x <= 2; $x++){
@@ -52,9 +54,9 @@
             } else { # Get discounts from Rentman 4G account
                 $contact_id = current($parsed['response']['items']['Contact']);
                 $fees = array();
-                for ($x = 0; $x <= 2; $x++){
-                    array_push($fees, $contact_id['data'][$x+2]);
-                }
+                array_push($fees, $contact_id['data']['personeelkorting']);
+                array_push($fees, $contact_id['data']['totaalkorting']);
+                array_push($fees, $contact_id['data']['transportkorting']);
             }
 
             if ($billing != $shipping){ # Get Rentman Contact for location
@@ -64,6 +66,7 @@
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
                 $parsed = json_decode($received, true);
+                $parsed = parseResponse($parsed);
 
                 $contactarr = $parsed['response']['items']['Contact'];
                 if (empty($contactarr)) {
@@ -73,6 +76,7 @@
                     # Send Request & Receive Response
                     $received = do_request($url, $message);
                     $parsed = json_decode($received, true);
+                    $parsed = parseResponse($parsed);
                     $transport_id = current($parsed['response']['items']['Contact']);
                 } else {
                     $transport_id = current($parsed['response']['items']['Contact']);
@@ -81,7 +85,7 @@
             else # Billing and shipping addresses are exactly the same
                 $transport_id = $contact_id;
 
-            add_project($order_id, $contact_id['data'][1], $transport_id['data'][1], $fees);
+            add_project($order_id, $contact_id['data']['id'], $transport_id['data']['id'], $fees);
         }
     }
 
@@ -96,7 +100,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -124,7 +128,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -150,7 +154,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -191,7 +195,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.1.3"
+                "version" => "4.2.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
