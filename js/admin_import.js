@@ -5,8 +5,8 @@ jQuery().ready(function()
 {
     jQuery("#importMelding").show();
     jQuery("#importStatus").html(string1 + "0 / " + products.length);
-    console.log('Files Imported:');
-    console.log(folders);
+    console.log('Products Imported:');
+    console.log(products);
     applyAjax();
 });
 
@@ -16,8 +16,12 @@ function applyAjax(){
     jQuery.ajax({
         type: "POST",
         url: 'admin.php?page=rentman-shop&import_products',
-        data: { prod_array : products, file_array : folders, array_index : arrayindex },
+        datatype: "json",
+        data: JSON.stringify({ file_array : folders, array_index : arrayindex, prod_array : products}),
+    	contentType: 'application/json; charset=utf-8',
         success: function(){
+        	console.log('Current Array Index:');
+    		console.log(arrayindex);
             var endindex = arrayindex + 5;
             if (endindex > products.length)
                 endindex = products.length;

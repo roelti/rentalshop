@@ -15,7 +15,9 @@ function applyAjax(){
     jQuery.ajax({
         type: "POST",
         url: 'admin.php?page=rentman-shop&delete_products',
-        data: { prod_array : products, array_index : arrayindex },
+        datatype: "json",
+        data: JSON.stringify({ prod_array : products, array_index : arrayindex }),
+        contentType: 'application/json; charset=utf-8',
         success: function(){
             var endindex = arrayindex + 10;
             if (endindex > products.length)

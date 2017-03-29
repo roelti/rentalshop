@@ -146,7 +146,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

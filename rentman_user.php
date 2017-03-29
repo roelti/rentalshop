@@ -100,7 +100,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -128,7 +128,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -148,13 +148,35 @@
     # For sending new user data to Rentman
     function setup_newuser_request($token, $order_id){
         $order = new WC_Order($order_id);
+        $company = $order->billing_company;
+        $attachperson = array();
+        $attached = false;
+
+        # Check if the new contact is a company or not
+        if ($company == ''){
+            $type = "particulier";
+            $firstname = $order->billing_first_name;
+            $lastname = $order->billing_last_name;
+        } else {
+            $type = "bedrijf";
+            $firstname = $order->billing_first_name;
+            $lastname = $order->billing_last_name;
+            if ($firstname != '' && $lastname != ''){
+                $attachperson = array("Person" => array(-2));
+                $attached = true;
+                $firstname = '';
+                $lastname = '';
+            }
+        }
+
+        # Setup of the request
         $object_data = array(
             "requestType" => "create",
             "apiVersion" => 1,
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -167,21 +189,52 @@
                     "-1" => array(
                         "values" => array(
                             "id" => "-1",
-                            "naam" => $order->billing_last_name,
+                            "voornaam" => $firstname,
+                            "naam" => $lastname,
                             "bedrijf" => $order->billing_company,
                             "email" => $order->billing_email,
                             "bezoekstraat" => $order->billing_address_1,
                             "bezoekstad" => $order->billing_city,
                             "bezoekpostcode" => $order->billing_postcode,
-                            "telefoon" => $order->billing_phone
+                            "factuurstraat" => $order->billing_address_1,
+                            "factuurstad" => $order->billing_city,
+                            "factuurpostcode" => $order->billing_postcode,
+                            "poststraat" => $order->billing_address_1,
+                            "poststad" => $order->billing_city,
+                            "postpostcode" => $order->billing_postcode,
+                            "telefoon" => $order->billing_phone,
+                            "type" => $type
                         ),
-                        "links" => array()
+                        "links" => $attachperson
                     )
-                )
+                ),
+                "Person" => array()
             ),
             "parentId" => 900,
             "parenType" => "Contact"
         );
+
+        # Attach the Person data for companies
+        if ($attached){
+            $person = array(
+                "-2" => array(
+                    "values" => array(
+                        "id" => -2,
+                        "voornaam" => $order->billing_first_name,
+                        "achternaam" => $order->billing_last_name,
+                        "postcode" => $order->billing_postcode,
+                        "stad" => $order->billing_city,
+                        "straat" => $order->billing_address_1,
+                        "telefoon" => $order->billing_phone,
+                        "email" => $order->billing_email
+                    )
+                )
+            );
+            $object_data['items']['Person'] = $person;
+        } else { # Remove the Person data from the request
+            unset($object_data['items']['Person']);
+        }
+
         return $object_data;
     }
 
@@ -189,13 +242,35 @@
     # For sending new location data as a user to Rentman
     function setup_newlocation_request($token, $order_id){
         $order = new WC_Order($order_id);
+        $company = $order->shipping_company;
+        $attachperson = array();
+        $attached = false;
+
+        # Check if the new contact is a company or not
+        if ($company == ''){
+            $type = "particulier";
+            $firstname = $order->shipping_first_name;
+            $lastname = $order->shipping_last_name;
+        } else {
+            $type = "bedrijf";
+            $firstname = $order->shipping_first_name;
+            $lastname = $order->shipping_last_name;
+            if ($firstname != '' && $lastname != ''){
+                $attachperson = array("Person" => array(-2));
+                $attached = true;
+                $firstname = '';
+                $lastname = '';
+            }
+        }
+
+        # Setup of the request
         $object_data = array(
             "requestType" => "create",
             "apiVersion" => 1,
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -208,21 +283,51 @@
                     "-1" => array(
                         "values" => array(
                             "id" => "-1",
+                            "voornaam" => $order->shipping_first_name,
                             "naam" => $order->shipping_last_name,
                             "bedrijf" => $order->shipping_company,
                             "email" => $order->billing_email,
                             "bezoekstraat" => $order->shipping_address_1,
                             "bezoekstad" => $order->shipping_city,
                             "bezoekpostcode" => $order->shipping_postcode,
+                            "factuurstraat" => $order->shipping_address_1,
+                            "factuurstad" => $order->shipping_city,
+                            "factuurpostcode" => $order->shipping_postcode,
+                            "poststraat" => $order->shipping_address_1,
+                            "poststad" => $order->shipping_city,
+                            "postpostcode" => $order->shipping_postcode,
                             "telefoon" => $order->billing_phone
                         ),
-                        "links" => array()
+                        "links" => $attachperson
                     )
-                )
+                ),
+                "Person" => array()
             ),
             "parentId" => 900,
             "parenType" => "Contact"
         );
+
+        # Attach the Person data for companies
+        if ($attached){
+            $person = array(
+                "-2" => array(
+                    "values" => array(
+                        "id" => -2,
+                        "voornaam" => $order->shipping_first_name,
+                        "achternaam" => $order->shipping_last_name,
+                        "postcode" => $order->shipping_postcode,
+                        "stad" => $order->shipping_city,
+                        "straat" => $order->shipping_address_1,
+                        "telefoon" => $order->billing_phone,
+                        "email" => $order->billing_email
+                    )
+                )
+            );
+            $object_data['items']['Person'] = $person;
+        } else { # Remove the Person data from the request
+            unset($object_data['items']['Person']);
+        }
+
         return $object_data;
     }
 ?>

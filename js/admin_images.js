@@ -16,7 +16,9 @@ function applyAjax(counter){
     jQuery.ajax({
         type: "POST",
         url: 'admin.php?page=rentman-shop&update_images',
-        data: { image_array : images, array_index : arrayindex },
+        datatype: "json",
+        data: JSON.stringify({ image_array : images, array_index : arrayindex }),
+        contentType: 'application/json; charset=utf-8',
         success: function(){
             console.log(arrayindex);
             delete images[arrayindex];

@@ -6,7 +6,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.2.0
+     * Version: 4.3.0
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -74,7 +74,7 @@
     # Display Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.2.0</h1><hr><br>','rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.3.0</h1><hr><br>','rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>','rentalshop')?>
         <form method="post", action ="options.php">
@@ -183,6 +183,7 @@
 
         # Import Products with certain index in array
         if(isset($_GET['import_products'])){
+            $_REQUEST = array_merge($_GET,json_decode(file_get_contents('php://input'), true));
             $prod_array = $_REQUEST['prod_array'];
             $file_array = $_REQUEST['file_array'];
             $array_index = $_REQUEST['array_index'];
@@ -191,6 +192,7 @@
 
         # Update images with certain index in array
         if(isset($_GET['update_images'])){
+            $_REQUEST = array_merge($_GET,json_decode(file_get_contents('php://input'), true));
             $image_array = $_REQUEST['image_array'];
             $array_index = $_REQUEST['array_index'];
             global $wpdb;
@@ -206,6 +208,7 @@
 
         # Delete certain amount of posts
         if(isset($_GET['delete_products'])){
+            $_REQUEST = array_merge($_GET,json_decode(file_get_contents('php://input'), true));
             $posts = $_REQUEST['prod_array'];
             $index = $_REQUEST['array_index'];
             delete_by_index($posts, $index);
@@ -328,7 +331,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

@@ -89,6 +89,7 @@
                 if ($index >= sizeof($prod_array))
                     break;
                 import_product($prod_array[$index], $file_array);
+                echo 'Index of Product:' . $prod_array[$index][0];
             }
         }
     }
@@ -247,7 +248,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -293,7 +294,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.2.0"
+                "version" => "4.3.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
