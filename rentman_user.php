@@ -1,18 +1,16 @@
-<?php // FUNCTIONS REGARDING EXPORT OF CONTACTS
-
+<?php
     // ------------- Main User Export Function ------------- \\
 
     # Checks if customer from new order already exists
     # in Rentman and adds them to Rentman if not
-    function export_users($order_id)
-    {
+    function export_users($order_id){
         # Check for rentable products in the order
         global $wpdb;
         $order = new WC_Order($order_id);
         $rentableProduct = false;
         foreach($order->get_items() as $key => $lineItem){
             $name = $lineItem['name'];
-            $product_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'" );
+            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
             $product = wc_get_product($product_id);
             if ($product->product_type == 'rentable'){
                 $rentableProduct = true;
@@ -22,7 +20,7 @@
 
         # If it contains rentable products, add customer as contact to Rentman and create a new project
         # Check if alternative shipping address has been filled in and create a separate contact
-        if ($rentableProduct) {
+        if ($rentableProduct){
             $url = receive_endpoint();
             $token = get_option('plugin-token');
             $billing = $order->billing_address_1;
@@ -38,10 +36,11 @@
             $parsed = parseResponse($parsed);
 
             $contactarr = $parsed['response']['items']['Contact'];
-            if (empty($contactarr)) {
+            if (empty($contactarr)){
                 # Contact doesn't exist yet, so do a create request
                 # Setup Request to send JSON
                 $message = json_encode(setup_newuser_request($token, $order_id), JSON_PRETTY_PRINT);
+
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
                 $parsed = json_decode($received, true);
@@ -51,7 +50,7 @@
                 for ($x = 0; $x <= 2; $x++){
                     array_push($fees, 0);
                 }
-            } else { # Get discounts from Rentman 4G account
+            } else{ # Get discounts from Rentman 4G account
                 $contact_id = current($parsed['response']['items']['Contact']);
                 $fees = array();
                 array_push($fees, $contact_id['data']['personeelkorting']);
@@ -69,7 +68,7 @@
                 $parsed = parseResponse($parsed);
 
                 $contactarr = $parsed['response']['items']['Contact'];
-                if (empty($contactarr)) {
+                if (empty($contactarr)){
                     # Contact doesn't exist yet, so do a create request
                     # Setup Request to send JSON
                     $message = json_encode(setup_newlocation_request($token, $order_id), JSON_PRETTY_PRINT);
@@ -78,7 +77,7 @@
                     $parsed = json_decode($received, true);
                     $parsed = parseResponse($parsed);
                     $transport_id = current($parsed['response']['items']['Contact']);
-                } else {
+                } else{
                     $transport_id = current($parsed['response']['items']['Contact']);
                 }
             }
@@ -100,7 +99,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -128,7 +127,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -157,7 +156,7 @@
             $type = "particulier";
             $firstname = $order->billing_first_name;
             $lastname = $order->billing_last_name;
-        } else {
+        } else{
             $type = "bedrijf";
             $firstname = $order->billing_first_name;
             $lastname = $order->billing_last_name;
@@ -176,7 +175,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -214,7 +213,8 @@
             "parenType" => "Contact"
         );
 
-        # Attach the Person data for companies
+        # Attach the Person data for companies where the names have also
+        # been filled in
         if ($attached){
             $person = array(
                 "-2" => array(
@@ -231,10 +231,9 @@
                 )
             );
             $object_data['items']['Person'] = $person;
-        } else { # Remove the Person data from the request
+        } else { # Remove the Person data from the request if not
             unset($object_data['items']['Person']);
         }
-
         return $object_data;
     }
 
@@ -251,7 +250,7 @@
             $type = "particulier";
             $firstname = $order->shipping_first_name;
             $lastname = $order->shipping_last_name;
-        } else {
+        } else{
             $type = "bedrijf";
             $firstname = $order->shipping_first_name;
             $lastname = $order->shipping_last_name;
@@ -270,7 +269,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -283,8 +282,8 @@
                     "-1" => array(
                         "values" => array(
                             "id" => "-1",
-                            "voornaam" => $order->shipping_first_name,
-                            "naam" => $order->shipping_last_name,
+                            "voornaam" => $firstname,
+                            "naam" => $lastname,
                             "bedrijf" => $order->shipping_company,
                             "email" => $order->billing_email,
                             "bezoekstraat" => $order->shipping_address_1,
@@ -296,7 +295,8 @@
                             "poststraat" => $order->shipping_address_1,
                             "poststad" => $order->shipping_city,
                             "postpostcode" => $order->shipping_postcode,
-                            "telefoon" => $order->billing_phone
+                            "telefoon" => $order->billing_phone,
+                            "type" => $type
                         ),
                         "links" => $attachperson
                     )
@@ -307,7 +307,7 @@
             "parenType" => "Contact"
         );
 
-        # Attach the Person data for companies
+        # Attach the Person data for companies where the names have also been filled in
         if ($attached){
             $person = array(
                 "-2" => array(
@@ -324,7 +324,7 @@
                 )
             );
             $object_data['items']['Person'] = $person;
-        } else { # Remove the Person data from the request
+        } else{ # Remove the Person data from the request
             unset($object_data['items']['Person']);
         }
 

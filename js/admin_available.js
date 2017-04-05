@@ -1,6 +1,6 @@
 // ----- JavaScript functions for availability ----- \\
 
-// Show import message in the menu
+// Initiate the availability functions
 jQuery().ready(function()
 {
     attachFunction();
@@ -42,8 +42,10 @@ function quickCheck() {
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);
+                console.log(json);
                 var maxcon = json.response.value.maxconfirmed;
                 var maxopt = json.response.value.maxoption;
+                // Show correct message depending on the values of maxconfirmed and maxoption
                 if (maxcon < 0){
                     document.getElementsByClassName("availLog")[0].innerHTML = unavailable;
                     document.getElementsByClassName("availLog")[0].style = "color:red";
@@ -59,7 +61,7 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.3.0"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.3.1"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);

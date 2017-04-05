@@ -1,12 +1,11 @@
-<?php // MAIN PLUGIN FILE
-
+<?php
     // ------------- Plugin Setup Functions ------------- \\
 
     /**
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.3.0
+     * Version: 4.3.1
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -25,7 +24,7 @@
         add_option('plugin-settings');
     }
 
-    # Add actions for Admin Initialization, Admin Menu and
+    # Add actions for Admin Initialization, Admin Menu, Fee Calculation and
     # Woocommerce Checkout to the right hooks
     add_action('wp_print_scripts', 'add_header_script');
     add_action('admin_init', 'register_settings');
@@ -36,19 +35,19 @@
     add_action('woocommerce_before_add_to_cart_form', 'show_discount', 9, 1);
     add_action('woocommerce_before_add_to_cart_button', 'add_custom_field', 10, 1);
     add_action('woocommerce_before_cart_totals', 'add_date_checkout');
-    add_action('woocommerce_cart_calculate_fees','apply_staffel');
-    add_action('woocommerce_cart_calculate_fees','apply_rentman_tax');
+    add_action('woocommerce_cart_calculate_fees', 'apply_staffel');
+    add_action('woocommerce_cart_calculate_fees', 'apply_rentman_tax');
     add_action('woocommerce_single_product_summary', 'add_to_cart_template', 30 );
     add_action('woocommerce_thankyou', 'export_users', 10, 1);
 
-    # Add filters for buttons
+    # Add filters for certain buttons and texts
     add_filter('woocommerce_add_to_cart_validation', 'check_available', 10, 5);
     add_filter('woocommerce_product_single_add_to_cart_text', 'woo_custom_cart_button_text');
     add_filter('woocommerce_update_cart_validation', 'update_amount', 10, 5);
     add_filter('woocommerce_cart_needs_shipping', '__return_true');
     add_filter('product_type_selector', 'add_rentable_product');
 
-    # Register the plugin settings
+    # Register the plugin settings for a specific user
     function register_settings(){
         register_setting('plugin-settings', 'plugin-account');
         register_setting('plugin-settings', 'plugin-checkavail');
@@ -68,29 +67,29 @@
 
     # Load text domain used for translation of the plugin
     function translatePlugin(){
-        load_plugin_textdomain('rentalshop', false, dirname(plugin_basename(__FILE__)) . '/lang' );
+        load_plugin_textdomain('rentalshop', false, dirname(plugin_basename(__FILE__)) . '/lang');
     }
 
-    # Display Rentman Plugin Menu in Wordpress Admin Panel
+    # Display and initialize Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.3.0</h1><hr><br>','rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.3.1</h1><hr><br>', 'rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
-        <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>','rentalshop')?>
+        <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop')?>
         <form method="post", action ="options.php">
-            <?php settings_fields('plugin-settings'); ?>
-            <?php do_settings_sections('plugin-settings'); ?>
+            <?php settings_fields('plugin-settings');?>
+            <?php do_settings_sections('plugin-settings');?>
             <strong>Rentman Account</strong>
-            <input type="text" name="plugin-account" value="<?php echo get_option('plugin-account'); ?>"/><br>
-            <?php _e('<strong>Gebruikersnaam</strong>','rentalshop')?>
-            <input type="text" name="plugin-username" value="<?php echo get_option('plugin-username'); ?>"/><br>
-            <?php _e('<strong>Wachtwoord</strong>','rentalshop')?>
-            <input type="password" name="plugin-password" value="<?php echo get_option('plugin-password'); ?>"/><br>
-            <?php submit_button(__('Gegevens controleren','rentalshop')); ?>
+            <input type="text" name="plugin-account" value="<?php echo get_option('plugin-account');?>"/><br>
+            <?php _e('<strong>Gebruikersnaam</strong>', 'rentalshop');?>
+            <input type="text" name="plugin-username" value="<?php echo get_option('plugin-username');?>"/><br>
+            <?php _e('<strong>Wachtwoord</strong>', 'rentalshop');?>
+            <input type="password" name="plugin-password" value="<?php echo get_option('plugin-password');?>"/><br>
+            <?php submit_button(__('Gegevens controleren', 'rentalshop'));?>
         </form>
 
-        <?php
-            if (get_option('plugin-startdate') == '') {
+        <?php # If no dates are set, they are set to the current date
+            if (get_option('plugin-startdate') == ''){
                 $today = date("Y-m-j");
                 update_option('plugin-startdate', $today);
                 update_option('plugin-enddate', $today);
@@ -102,64 +101,63 @@
             else
                 $lastTime = get_option('plugin-lasttime');
         ?>
-        <!-- Buttons for availability check and discount -->
-        <?php
+
+        <?php # Buttons for availability check and discount
         $availCheck = get_option('plugin-checkavail');
         $discountCheck = get_option('plugin-checkdisc');
         if ($availCheck == '' or $discountCheck == ''){
             update_option('plugin-checkdisc', 0);
             update_option('plugin-checkavail', 0);
-        }
-        ?>
-        <?php _e('<hr><h3>Instellingen</h3>', 'rentalshop')?>
+        } ?>
+        <?php _e('<hr><h3>Instellingen</h3>', 'rentalshop');?>
         <form method="post"><!-- If checked, applies availability check in the shop -->
-        <?php _e('<strong>Check beschikbaarheid voor sturen  </strong>','rentalshop')?>
+        <?php _e('<strong>Check beschikbaarheid voor sturen  </strong>', 'rentalshop');?>
         <select name='plugin-checkavail'>
             <option value="1" <?php if(get_option('plugin-checkavail') == 1){echo"selected";} ?>>Yes</option>
             <option value="0" <?php if(get_option('plugin-checkavail') == 0){echo"selected";} ?>>No</option>
         </select>
-        <!-- This doesn't do anything yet because of the complexity of all discount calculations -->
-        <?php _e('<br><br><strong>Korting contact uit Rentman overnemen  </strong>','rentalshop')?>
+        <!-- If checked, specific customer discounts in Rentman are loaded and applied -->
+        <?php _e('<br><br><strong>Korting contact uit Rentman overnemen  </strong>', 'rentalshop');?>
         <select name='plugin-checkdisc'>
             <option value="1" <?php if(get_option('plugin-checkdisc') == 1){echo"selected";} ?>>Yes</option>
             <option value="0" <?php if(get_option('plugin-checkdisc') == 0){echo"selected";} ?>>No</option>
         </select>
-        <!-- Button that handles product import -->
+        <!-- Button that saves the changes to the settings -->
         <p><input type="hidden" name="change-settings">
-        <input type="submit" class="button button-primary" value="<?php _e('Wijzigingen Opslaan','rentalshop')?>">
+        <input type="submit" class="button button-primary" value="<?php _e('Wijzigingen Opslaan', 'rentalshop')?>">
         </form>
         <br>
-        <hr><h3><?php _e('Update afbeeldingen van producten', 'rentalshop')?></h3>
+        <hr><h3><?php _e('Update afbeeldingen van producten', 'rentalshop');?></h3>
         <ul>
             <li><?php _e('Druk op de onderstaande knop wanneer je afbeeldingen in Rentman hebt gewijzigd<br>
-                om de wijzigingen toe te passen in WooCommerce.','rentalshop')?></li>
+                om de wijzigingen toe te passen in WooCommerce.', 'rentalshop');?></li>
         </ul>
         <p> <!-- Button that handles image import and update -->
         <form method="post">
             <input type="hidden" name="image-rentman">
-            <input type="submit" class="button button-primary" value="<?php _e('Afbeeldingen Updaten','rentalshop')?>">
+            <input type="submit" class="button button-primary" value="<?php _e('Afbeeldingen Updaten', 'rentalshop')?>">
         </form><br>
-        <div id="imageMelding" style="display: none;"><?php _e('<h3>De afbeeldingen worden opgehaald..</h3>','rentalshop'); ?></div>
+        <div id="imageMelding" style="display: none;"><?php _e('<h3>De afbeeldingen worden opgehaald..</h3>', 'rentalshop');?></div>
         <p id="imageStatus"></p>
-        <hr><h3><?php _e('Importeer materiaal uit Rentman', 'rentalshop')?></h3>
+        <hr><h3><?php _e('Importeer materiaal uit Rentman', 'rentalshop');?></h3>
         <ul>
             <li><?php _e('Druk op de onderstaande knop om te zoeken naar nieuwe of gewijzigde producten en deze<br>
-                van je Rentman account naar je WooCommerce shop over te zetten.','rentalshop')?></li>
-            <li><?php _e('-- Meest recente check voor updates: ','rentalshop'); echo $lastTime;?></li>
+                van je Rentman account naar je WooCommerce shop over te zetten.', 'rentalshop');?></li>
+            <li><?php _e('-- Meest recente check voor updates: ', 'rentalshop'); echo $lastTime;?></li>
         </ul>
 
         <p> <!-- Button that handles product import -->
         <form method="post">
             <input type="hidden" name="import-rentman">
-            <input type="submit" class="button button-primary" value="<?php _e('Producten Importeren','rentalshop')?>">
+            <input type="submit" class="button button-primary" value="<?php _e('Producten Importeren', 'rentalshop');?>">
         </form>
         <br> <!-- Button for total reset -->
         <form method="post">
             <input type="hidden" name="reset-rentman">
-            <input type="submit" class="button button-primary" value="<?php _e('Reset','rentalshop')?>">
+            <input type="submit" class="button button-primary" value="<?php _e('Reset', 'rentalshop');?>">
         </form>
         <br> <!-- Message that appears when you start the product import -->
-        <div id="importMelding" style="display: none;"><?php _e('<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze pagina niet!</h3>','rentalshop'); ?></div>
+        <div id="importMelding" style="display: none;"><?php _e('<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze pagina niet!</h3>', 'rentalshop');?></div>
         <p id="deleteStatus"></p>
         <p id="importStatus"></p>
         <?php
@@ -181,7 +179,7 @@
             update_images($token);
         }
 
-        # Import Products with certain index in array
+        # Import Products with certain index in array (called by admin_import.js)
         if(isset($_GET['import_products'])){
             $_REQUEST = array_merge($_GET,json_decode(file_get_contents('php://input'), true));
             $prod_array = $_REQUEST['prod_array'];
@@ -190,12 +188,12 @@
             array_to_product($prod_array, $file_array, $array_index);
         }
 
-        # Update images with certain index in array
+        # Update images with certain index in array (called by admin_images.js)
         if(isset($_GET['update_images'])){
-            $_REQUEST = array_merge($_GET,json_decode(file_get_contents('php://input'), true));
+            global $wpdb;
+            $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $image_array = $_REQUEST['image_array'];
             $array_index = $_REQUEST['array_index'];
-            global $wpdb;
             $current_image = $image_array[$array_index];
             $post_id = wc_get_product_id_by_sku($array_index);
             for ($x = 0; $x < sizeof($current_image); $x++){
@@ -208,7 +206,7 @@
 
         # Delete certain amount of posts
         if(isset($_GET['delete_products'])){
-            $_REQUEST = array_merge($_GET,json_decode(file_get_contents('php://input'), true));
+            $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $posts = $_REQUEST['prod_array'];
             $index = $_REQUEST['array_index'];
             delete_by_index($posts, $index);
@@ -232,8 +230,8 @@
         $url = "https://intern.rentman.nl/rmversion.php?account=" . $account;
         $received = do_request($url, '');
         $parsed = json_decode($received, true);
-        if ($parsed['version'] != 4)
-            _e('Dit is geen Rentman 4 account! &#10005;<br>','rentalshop');
+        if ($parsed['version'] != 4) # Check whether it is a Rentman 4 account
+            _e('Dit is geen Rentman 4 account! &#10005;<br>', 'rentalshop');
         return $parsed['endpoint'] . '/api.php';
     }
 
@@ -242,7 +240,7 @@
         if (false == completedata()){
             _e('<strong>Niet alle verplichte velden zijn ingevuld</strong>', 'rentalshop');
             $token = "fail"; # User has not filled in all required fields yet
-        } else {
+        } else{
             $url = receive_endpoint();
             $message = json_encode(setup_login_request(), JSON_PRETTY_PRINT);
 
@@ -257,61 +255,63 @@
             check_compatibility();
 
             if ($parsed['response']['login'] == false){
-				_e('<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</h4>','rentalshop');
+				_e('<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</h4>', 'rentalshop');
 			}	
-			else {
-				_e('<h4>De verbinding met de Rentman API was succesvol!</h4>','rentalshop');
+			else{
+				_e('<h4>De verbinding met de Rentman API was succesvol!</h4>', 'rentalshop');
 			}
         }
 
         return $token;
     }
 
-    # Check multiple things that could go wrong in the plugin
+    # Check the compatibility with the plugin
     function check_compatibility(){
-        _e('<b>Compatibiliteitscontrole..</b><br>','rentalshop');
-        echo 'Current PHP version: ' . phpversion() . '<br>';
+        _e('<b>Compatibiliteitscontrole..</b><br>', 'rentalshop');
+        echo 'Current PHP version: ' . phpversion() . '<br>'; # Get current PHP version
         $artDir = 'wp-content/uploads/rentman/';
         $fileUrl = 'https://raw.githubusercontent.com/rentmanpublic/rentalshop/plugin4g_beta/img/test.png';
 
-        # Time Limit Check
+        # Check the PHP time limit
         $timelimit = ini_get('max_execution_time');
         if ($timelimit < 30)
             _e('Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de plugin hierdoor niet goed.. &#10005;<br>','rentalshop');
-        else {
+        else{
             _e('PHP tijdslimiet is in orde &#10003;<br>','rentalshop');
         }
 
-        # Does Rentman Folder exist?
+        # Does Rentman image Folder exist?
         if(!file_exists(ABSPATH.$artDir)){
-            _e('Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>','rentalshop');
-            mkdir(ABSPATH.$artDir);
-        } else {
-            _e('De Rentman map voor afbeeldingen is aanwezig &#10003;<br>','rentalshop');
+            _e('Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>', 'rentalshop');
+            mkdir(ABSPATH.$artDir); # Create one if it doesn't
+        } else{
+            _e('De Rentman map voor afbeeldingen is aanwezig &#10003;<br>', 'rentalshop');
         }
 
-        # Does the copy function work?
+        # Does the copy function for images work?
         $file_name = 'test.png';
         $targetUrl = ABSPATH.$artDir.$file_name;
         copy($fileUrl, $targetUrl);
         $errors= error_get_last();
-        if (file_exists($targetUrl)) {
-            _e('Toevoegen van afbeeldingen is gelukt &#10003;<br>','rentalshop');
-        } else {
-            _e('Toevoegen van afbeeldingen is mislukt.. &#10005;<br>','rentalshop');
+        if (file_exists($targetUrl)){
+            _e('Toevoegen van afbeeldingen is gelukt &#10003;<br>', 'rentalshop');
+        } else{
+            _e('Toevoegen van afbeeldingen is mislukt.. &#10005;<br>', 'rentalshop');
             echo "&bull; Copy Error: ".$errors['type'];
-            echo "<br />\n&bull; ".$errors['message'].'<br>';
-            if(!ini_get('allow_url_fopen')) {
-                _e('&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>','rentalshop');
+            echo "<br />\n&bull; " . $errors['message'] . '<br>';
+            if(!ini_get('allow_url_fopen')){ # Show possible solution if the copy function fails
+                _e('&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>', 'rentalshop');
             }
         }
         $artDir = 'wp-content/uploads/rentman/';
         $new_file_name = '.htaccess';
+
+        # Check if images can be displayed
         $targetUrl = ABSPATH.$artDir.$new_file_name;
-        if(!file_exists($targetUrl)) {
-            _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>','rentalshop');
-        } else {
-            _e('Afbeeldingen kunnen weergegeven worden &#10003;<br>','rentalshop');
+        if(!file_exists($targetUrl)){
+            _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
+        } else{
+            _e('Afbeeldingen kunnen weergegeven worden &#10003;<br>', 'rentalshop');
         }
     }
 
@@ -331,7 +331,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),
@@ -343,14 +343,13 @@
     // ------------- API Request Functions ------------- \\
 
     # Function that parses the response to a clear format
-    function parseResponse($response)
-    {
+    function parseResponse($response){
         $columnNames = array();
         # Get column names
         foreach ($response['response']['columns'] as $key => $file){
             array_push($columnNames, $key);
         }
-        # Parse keynames of each column
+        # Parse key names of each column
         foreach($columnNames as $column){
             $currentCol = $response['response']['items'][$column];
             # For every item in the column, change the keys

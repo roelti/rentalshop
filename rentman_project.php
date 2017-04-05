@@ -1,9 +1,7 @@
-<?php // FUNCTIONS REGARDING ADDITION OF NEW PROJECTS TO RENTMAN
-
+<?php
     // ------------- API Request Functions ------------- \\
 
-    # Handles API Request
-    # PASS LOCATION CONTACT ID AS WELL TO ADD_PROJECT!
+    # Handles API Request for project creation
     function add_project($order_id, $contact_id, $transport_id, $fees){
         $url = receive_endpoint();
         $token = get_option('plugin-token');
@@ -49,7 +47,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -157,9 +155,9 @@
         $matarr = array();
         foreach($order->get_items() as $key => $lineItem){
             $name = $lineItem['name'];
-            $product_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'" );
+            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
             $product = wc_get_product($product_id);
-            if ($product->product_type == 'rentable'){
+            if ($product->product_type == 'rentable'){ # Only rentable products must be added to the request
                 array_push($matarr, array(
                     $name,
                     $lineItem['qty'],

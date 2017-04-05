@@ -8,6 +8,7 @@ do_request :: does the actual JSON request when given a message
 error_info :: displays error info of the request
 login_user :: handles the user login with an API request
 menu_display :: contains the main html code for the display of the Rentman menu
+parseResponse :: adjusts the key names of the items in the response
 receive_endpoint :: receives the latest endpoint of the rentman API
 register_settings :: registers Wordpress settings and their sanitization callback
 register_submenu :: adds the Rentman page to the Woocommerce menu
@@ -50,6 +51,7 @@ add_category :: creates a new product category
 arrange_folders :: arranges the folder data from the API response in a new array
 displayChildren :: recursive function that checks the item count of the child folders and deletes empty children
 remove_empty_categories :: remove all empty/unused product categories
+set_parents :: sets the right parent to the product category
 setup_folder_request :: sets up the folder request ready to be encoded in JSON
 ------------------
 product_import.php
@@ -97,6 +99,10 @@ admin_delete.js & admin_import.js
 ---------------------------------
 applyAjax :: recursive function that sends product indices to PHP code until the whole product array has been covered
 removeFolders :: calls a PHP function that removes all empty/unused product categories from Woocommerce
+------------------
+admin_available.js
+------------------
+applyAjax :: recursive function that sends image indices to PHP code until the whole image array has been covered
 ------------------
 admin_available.js
 ------------------

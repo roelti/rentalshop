@@ -1,5 +1,4 @@
-<?php // FUNCTIONS REGARDING PRICES AND FEES OF PRODUCTS
-
+<?php
     // ------------- Main Product Price Functions ------------- \\
 
     # Show the customer discount and tax on the product page
@@ -14,7 +13,7 @@
         $token = get_option('plugin-token');
 
         if ($product->product_type == 'rentable'){
-            if (get_option('plugin-checkdisc') == 1) {
+            if (get_option('plugin-checkdisc') == 1){
                 global $user_email;
                 get_currentuserinfo();
 
@@ -33,7 +32,7 @@
                     $taxprice = $product->get_price() * $tax;
                     echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';
                     return;
-                } else { # Calculate the total customer discount
+                } else{ # Calculate the total customer discount
                     # Get contact and relevant materials
                     $contact = current($contactarr);
                     $contact_id = $contact['data']['id'];
@@ -80,7 +79,7 @@
         $totaldays = ceil($totaldays / (3600*24)) + 1;
         $token = get_option('plugin-token');
 
-        # Fill staffel-array with data from the cart
+        # Fill staffel array with data from the cart
         $items = WC()->cart->get_cart();
         foreach ($items as $item => $values){
             $_product = $values['data']->post;
@@ -103,7 +102,7 @@
         $items = WC()->cart->get_cart();
         $pf = new WC_Product_Factory();
         $taxtotal = 0;
-        foreach ($items as $item => $values) {
+        foreach ($items as $item => $values){
             $amount = $items[$item]["quantity"];
             $_product = $values['data']->post;
             $product = $pf->get_product($_product->ID);
@@ -117,7 +116,7 @@
     # Apply customer discount on the prices of the products
     function apply_customer_discount($staffels){
         # Check if discount check is enabled
-        if (get_option('plugin-checkdisc') == 1) {
+        if (get_option('plugin-checkdisc') == 1){
             global $user_email;
             get_currentuserinfo();
 
@@ -136,7 +135,7 @@
 
             if (empty($contactarr)){ # User not found, so don't add the discount
                 return;
-            } else { # Calculate the total customer discount
+            } else{ # Calculate the total customer discount
                 # Get contact and relevant materials
                 $contact = current($contactarr);
                 $contact_id = $contact['data']['id'];
@@ -218,14 +217,14 @@
         # Get staffel data for all items
         foreach($order->get_items() as $key => $lineItem){
             $name = $lineItem['name'];
-            $product_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'" );
+            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
             $product = wc_get_product($product_id);
+            # Receive the right staffel depending on the staffelgroup
             $staffelgroup = get_staffelgroup($token, $product->get_sku());
             if ($staffelgroup == null)
                 $staffels[$product->get_sku()] = '1,0';
             else
                 $staffels[$product->get_sku()] = get_staffel($token, $totaldays, $staffelgroup);
-
         }
         return $staffels;
     }
@@ -242,7 +241,7 @@
         $token = get_option('plugin-token');
 
         # Create array with all materials from the order
-        foreach($order->get_items() as $key => $lineItem) {
+        foreach($order->get_items() as $key => $lineItem){
             $name = $lineItem['name'];
             $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
             $product = $pf->get_product($product_id);
@@ -310,7 +309,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -354,7 +353,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -379,7 +378,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

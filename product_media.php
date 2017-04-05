@@ -1,5 +1,4 @@
-<?php // FUNCTIONS REGARDING MEDIA ATTACHMENT
-
+<?php
     // ------------- Image File Attachment Functions ------------- \\
 
     # Attach image file from Rentman to product in Woocommerce
@@ -8,16 +7,20 @@
         $artDir = 'wp-content/uploads/rentman/';
         $fileUrl = str_replace(' ', '%20', $fileUrl);
 
+        # Create Rentman image directory if it somehow still
+        # doesn't exist yet
         if(!file_exists(ABSPATH.$artDir)){
             mkdir(ABSPATH.$artDir);
         }
+
+        # Get the extension and return when the image url is incorrect
         $ext = array_pop(explode(".", $fileUrl));
         if ($ext == '')
             return;
-        $new_file_name = 'media-'.$sku.'-'.$count.'.'.$ext;
-        $post_file_name = 'media-'.$sku.'-'.$count;
-        $targetUrl = ABSPATH.$artDir.$new_file_name;
-        if(!file_exists($targetUrl)) {
+        $new_file_name = 'media-' . $sku . '-' . $count . '.' . $ext;
+        $post_file_name = 'media-' . $sku . '-' . $count;
+        $targetUrl = ABSPATH.$artDir . $new_file_name;
+        if(!file_exists($targetUrl)){
             copy($fileUrl, $targetUrl);
         }
 		$siteurl = get_option('siteurl');
@@ -47,7 +50,6 @@
 
 		# Insert database record
 		$attach_id = wp_insert_attachment($artdata, $save_path, $post_id);
-
 		if ($attach_data = wp_generate_attachment_metadata($attach_id, $save_path)){
 			wp_update_attachment_metadata($attach_id, $attach_data);
 		}
@@ -62,7 +64,7 @@
             }
             update_post_meta($post_id,'_product_image_gallery',$newgallery);
         }
-        else {
+        else{
             # Make it the featured image of the post it is attached to
             $wpdb->insert($wpdb->prefix.'postmeta', array(
                 'post_id' => $post_id,

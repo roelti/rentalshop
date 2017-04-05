@@ -1,24 +1,35 @@
-<?php // FUNCTIONS REGARDING THE IMPORTED PRODUCT CATEGORIES HERE
-
+<?php
     // ------------- Rentman Product Category Functions ------------- \\
 
     # Names of (sub)folders have been imported
     # Create the categories in Wordpress
     function add_category($folder){
-        $parent_term = get_term_by('slug', $folder[2], 'product_cat'); // array is returned if taxonomy is given
-        $parent_term_id = $parent_term->term_id;
-
         # Insert WooCommerce Term
         wp_insert_term(
             $folder[1], # Name of term
             'product_cat', # Taxonomy
             array(
-                'slug' => $folder[0],
+                'slug' => $folder[0]
+            )
+        );
+        $receive_term = get_term_by('slug', $folder[0], 'product_cat');
+        add_term_meta($receive_term->term_id, "source", 'Rentman'); // add Rentman as source
+    }
+
+    # Sets the right parents of the product categories
+    function set_parents($folder){
+        $parent_term = get_term_by('slug', $folder[2], 'product_cat'); // array is returned if taxonomy is given
+        $this_term = get_term_by('slug', $folder[0], 'product_cat');
+        $parent_term_id = $parent_term->term_id;
+        $this_term_id = $this_term->term_id;
+        # Edit the term
+        wp_update_term(
+            $this_term_id, # Name of term
+            'product_cat', # Taxonomy
+            array(
                 'parent' => $parent_term_id
             )
         );
-        $receive_term = get_term_by('name', $folder[1], 'product_cat');
-        add_term_meta($receive_term->term_id, "source", 'Rentman'); // add Rentman as source
     }
 
     # Arranges folder data from API response
@@ -27,12 +38,12 @@
         $switch = true;
         $counter = 1;
 		$lastkey = end($parsed['response']['items']['Folder'])['data']['id'];
-		
+
+        # Continue until the last folder in the API response has been finished
         while ($switch){
             $name = $parsed['response']['items']['Folder'][$counter]['data']['naam'];
             $id = $parsed['response']['items']['Folder'][$counter]['data']['id'];
             $parent = $parsed['response']['items']['Folder'][$counter]['data']['parent'];
-
             if ($id == $lastkey)
                 $switch = false;
             else{
@@ -43,7 +54,7 @@
         return $folderList;
     }
 
-    # Hide all irrelevant product subcategories in the webshop (so the empty ones)
+    # Hide all irrelevant product subcategories in the webshop (in other words, the empty ones)
     function remove_empty_categories(){
         $args = array(
             'taxonomy'     => 'product_cat',
@@ -57,11 +68,13 @@
         $all_categories = get_categories($args);
         foreach($all_categories as $cat){
             if($cat->category_parent == 0){
+                # Check the children of the category
                 $children = get_categories(array('taxonomy' => 'product_cat', 'parent' => $cat->term_id, 'hide_empty' => 0));
                 $itemCount = max($cat->count, displayChildren($children));
+                # Delete term if the category and all children are empty
                 if ($itemCount == 0){
                     $source = get_term_meta($cat->term_id, 'source', true);
-                    if ($source == 'Rentman'){
+                    if ($source == 'Rentman'){ # Check if the category originates from Rentman
                         wp_delete_term($cat->term_id, 'product_cat');
                     }
                 }
@@ -74,12 +87,14 @@
         $itemCount = 0;
         foreach ($children as $child){
             $itemCount = max($itemCount, $child->count);
-            $grandchildren = get_categories( array ('taxonomy' => 'product_cat', 'parent' => $child->term_id, 'hide_empty' => 0));
+            # Recursively keep checking the size of all children
+            $grandchildren = get_categories(array('taxonomy' => 'product_cat', 'parent' => $child->term_id, 'hide_empty' => 0));
             $thiscount = displayChildren($grandchildren);
             $itemCount = max($itemCount, $thiscount);
+            # Delete term if the category and all children are empty
             if (max($thiscount, $child->count) == 0){
                 $source = get_term_meta($child->term_id, 'source', true);
-                if ($source == 'Rentman') {
+                if ($source == 'Rentman') { # Check if the category originates from Rentman
                     wp_delete_term($child->term_id, 'product_cat');
                 }
             }
@@ -95,7 +110,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

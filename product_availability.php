@@ -1,6 +1,5 @@
-<?php // FUNCTIONS REGARDING THE AVAILABILITY CHECK OF PRODUCTS
-
-    // ------------- Adding the date fields ------------- \\
+<?php
+    // ------------- Adding the date fields for the rental period ------------- \\
 
     # Adds date fields to 'Rentable' products in the store
     function add_custom_field(){
@@ -9,6 +8,7 @@
         $product = $pf->get_product($post->ID);
         if ($product->product_type == 'rentable'){
             $rentableProduct = false;
+            # Checks if there already is a 'Rentable' product in the shopping cart
             foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
                 $product = $cart_item['data'];
                 if ($product->product_type == 'rentable'){
@@ -16,40 +16,44 @@
                     break;
                 }
             }
+            # If there isn't, display the date input fields
             if ($rentableProduct == false){
-                # If shopping cart is empty, display the date input fields
                 $fromDate = get_option('plugin-startdate');
                 $toDate = get_option('plugin-enddate');
                 $today = date("Y-m-d");
+                # Check if the 'from' date is earlier than the 'to' date
                 if (strtotime($fromDate) < strtotime($today))
                     $fromDate = $today;
                 if (strtotime($toDate) < strtotime($today))
                     $toDate = $today;
                 ?>
-                <?php _e('Van:','rentalshop')?>
+                <!-- actual HTML code for the date input fields -->
+                <?php _e('Van:', 'rentalshop');?>
                 <input type="date" name="start-date" onchange="quickCheck()" value="<?php echo $fromDate;?>" min="<?php echo $today;?>">
-                <?php _e('Tot:','rentalshop')?>
+                <?php _e('Tot:', 'rentalshop');?>
                 <input type="date" name="end-date" onchange="quickCheck()" value="<?php echo $toDate;?>" min="<?php echo $today;?>">
-                <p><?php _e('Let op: je kan de datums voor ander materiaal pas in de winkelwagen weer wijzigen!', 'rentalshop')?></p>
+                <p><?php _e('Let op: je kan de datums voor ander materiaal pas in de winkelwagen weer wijzigen!', 'rentalshop');?></p>
                 <?php
             }
             else{ # Else, display the dates from the products in your shopping cart
                 ?>
-                <?php _e('<h3>Geselecteerde datums: </h3> <p><b>Van </b>','rentalshop'); echo get_option('plugin-startdate'); _e('<b> tot </b>','rentalshop'); echo get_option('plugin-enddate'); ?></p>
+                <?php _e('<h3>Geselecteerde datums: </h3> <p><b>Van </b>', 'rentalshop'); echo get_option('plugin-startdate'); _e('<b> tot </b>', 'rentalshop'); echo get_option('plugin-enddate');?></p>
                 <?php
             }
+            # Only show the availability messages when 'check availability for sending' is allowed
             if (get_option('plugin-checkavail') == 1){
                 echo '<p class="availLog"></p>';
-            } else {
+            } else{
                 echo '<p class="availLog" hidden></p>';
             }
         }
     }
 
-    # Adds date fields to the checkout screen
+    # Also adds date fields to the checkout screen
     function add_date_checkout(){
         $rentableProduct = false;
         $today = date("Y-m-d");
+        # Again check if the shopping cart contains any 'Rentable' products
         foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
             $product = $cart_item['data'];
             if ($product->product_type == 'rentable'){
@@ -57,6 +61,7 @@
                 break;
             }
         }
+        # If it does, add the date fields
         if ($rentableProduct){
             ?><p>
             <?php _e('<h2>VERHUURPERIODE</h2>','rentalshop');
@@ -66,20 +71,20 @@
             $edate =& $enddate;
             ?>
             <form method="post">
-            <?php _e('Van:','rentalshop')?>
-            <input type="date" name="start-date" value="<?php echo $startdate?>" min="<?php echo $today;?>">
-            <?php _e('Tot:','rentalshop')?>
+            <?php _e('Van:', 'rentalshop');?>
+            <input type="date" name="start-date" value="<?php echo $startdate;?>" min="<?php echo $today;?>">
+            <?php _e('Tot:', 'rentalshop');?>
             <input type="date" name="end-date" value="<?php echo $enddate;?>" min="<?php echo $today;?>"><br>
 
             <!-- Update Button --></p>
             <input type="hidden" name="rm-update-dates">
-            <input type="submit" class="button button-primary" value="<?php _e('Update Huurperiode','rentalshop')?>">
-            <input type="hidden" name="backup-start" value="<?php echo $sdate?>">
-            <input type="hidden" name="backup-end" value="<?php echo $edate?>">
+            <input type="submit" class="button button-primary" value="<?php _e('Update Huurperiode', 'rentalshop');?>">
+            <input type="hidden" name="backup-start" value="<?php echo $sdate;?>">
+            <input type="hidden" name="backup-end" value="<?php echo $edate;?>">
             </form>
             <?php
 
-            # If 'Import Products' button has been pressed, call import_products function
+            # If 'Update Dates' button has been pressed, call update_dates function
             if (isset($_POST['rm-update-dates'])){
                 update_dates();
             }
@@ -95,14 +100,14 @@
 
         $product = $pf->get_product($post->ID);
 
-        if ($product->product_type == 'rentable') {
+        if ($product->product_type == 'rentable'){
             return __('Reserveer', 'rentalshop');
         }
 
         return __('Aan winkelmandje toevoegen', 'rentalshop');
     }
 
-    # Adds a template for rentable products
+    # Adds a template for 'Rentable' products
     function add_to_cart_template(){
         global $post;
         $pf = new WC_Product_Factory();
@@ -111,27 +116,27 @@
 
         if ($product->product_type == 'rentable')
         {
-            do_action( 'woocommerce_before_add_to_cart_form' ); ?>
+            do_action('woocommerce_before_add_to_cart_form');?>
 
             <form class="cart rentman-extra-margin" method="post" enctype='multipart/form-data'>
-                <?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
+                <?php do_action('woocommerce_before_add_to_cart_button');?>
 
                 <?php
-                if ( ! $product->is_sold_individually() )
-                    woocommerce_quantity_input( array(
-                        'min_value' => apply_filters( 'woocommerce_quantity_input_min', 1, $product ),
-                        'max_value' => apply_filters( 'woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product )
-                    ) );
+                if (!$product->is_sold_individually())
+                    woocommerce_quantity_input(array(
+                        'min_value' => apply_filters('woocommerce_quantity_input_min', 1, $product),
+                        'max_value' => apply_filters('woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product)
+                    ));
                 ?>
 
-                <input type="hidden" name="add-to-cart" value="<?php echo esc_attr( $product->id ); ?>" />
+                <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->id);?>" />
 
-                <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
+                <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text();?></button>
 
-                <?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
+                <?php do_action('woocommerce_after_add_to_cart_button');?>
             </form>
 
-            <?php do_action( 'woocommerce_after_add_to_cart_form' );
+            <?php do_action('woocommerce_after_add_to_cart_form');
         }
     }
 
@@ -146,7 +151,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -178,12 +183,11 @@
                 if ($checkergroup == false)
                     break;
             }
-        } # Updates the dates when all materials are available in the new time period
+        } # Only update the dates when all materials are available in the new time period
         if ($checkergroup == false){
             update_option('plugin-startdate', $_POST['backup-start']);
             update_option('plugin-enddate', $_POST['backup-end']);
         }
-
         echo "<meta http-equiv='refresh' content='0'>";
     }
 
@@ -199,11 +203,12 @@
                 break;
             }
         }
-        # Adjust the ending date
+
+        # Adjust the ending date to 00:00 on the following day
         $enddate = get_option('plugin-enddate');
         $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
 
-        # Add the file containing the availability script
+        # Register and localize the availability script
         wp_register_script('admin_availability', plugins_url('js/admin_available.js', __FILE__ ));
         wp_localize_script('admin_availability', 'startDate', get_option('plugin-startdate'));
         wp_localize_script('admin_availability', 'endDate', $enddate);
@@ -232,13 +237,14 @@
 
         # Only apply availability check on products that were
         # imported from Rentman
-        if ($product->product_type == 'rentable') {
+        if ($product->product_type == 'rentable'){
             update_option('plugin-startdate', $startDate);
             update_option('plugin-enddate', $endDate);
             $sdate = get_option('plugin-startdate');
             $edate = get_option('plugin-enddate');
+            # Check if any of the input dates are wrong
             if ($sdate == '' or $edate == '' or (strtotime($edate) < strtotime($sdate))){
-                $passed = false; # Dates from input are wrong
+                $passed = false;
                 wc_add_notice(__('Er ging iets mis.. Kloppen de datums wel?', 'rentalshop'), 'error');
             } else{
                 # Continue with the check if 'Check availability for sending' is set to yes
@@ -273,16 +279,16 @@
                     $residual = $quantity + $maxconfirmed; # Total amount of available items
                     $possible = $maxoption*(-1); # Amount of items that are definitely available
 
-                    # ~~ Availability Check
+                    # ~~ The actual Availability Check
                     # Comparing values of 'maxconfirmed' and 'maxoption'
-                    if ($maxconfirmed < 0) { # Products are definitely not available
+                    if ($maxconfirmed < 0){ # Products are definitely not available
                         $passed = false;
                         $notice = __('Er zijn slechts ','rentalshop') . $residual . ' ' . $product->get_title() . __(' beschikbaar in die tijdsperiode.','rentalshop');
                         wc_add_notice($notice, 'error');
-                    } else if ($maxconfirmed >= 0 and $maxoption < 0) { # Products might be available
+                    } else if ($maxconfirmed >= 0 and $maxoption < 0){ # Products might be available, depending on confirmation of other orders
                         $notice = __('Let op: ','rentalshop') . $possible . __(' van de ','rentalshop') . $quantity . ' ' . $product->get_title() . __(' zijn misschien niet beschikbaar in die tijdsperiode..','rentalshop');
                         wc_add_notice($notice, 'error');
-                    } else { # Products are available and are added to the cart
+                    } else{ # Products are available and are added to the cart
                         $notice = __('Uw geselecteerde aantal ','rentalshop') . $product->get_title() . __(' is beschikbaar in die tijdsperiode!','rentalshop');
                         wc_add_notice($notice, 'success');
                     }

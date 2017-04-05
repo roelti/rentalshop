@@ -1,30 +1,36 @@
-<?php // FUNCTIONS REGARDING IMPORT OF PRODUCTS
-
+<?php
     // ------------- Main Product Import Functions ------------- \\
 
     # Handles import of products from Rentman to your WooCommerce Shop
     function import_products($token){
         if ($token == "fail"){
-            _e('<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>','rentalshop');
+            _e('<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>', 'rentalshop');
         } else{
             $date = date('l jS \of F Y h:i:s A');
             update_option('plugin-lasttime', $date);
-
             # Get the endpoint url
             $url = receive_endpoint();
-            # First import Folders
+
+            # Firstly, import the product folders
             $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
             $parsed = parseResponse($parsed);
-			
+
+			# Arrange the response data in a new clear array
 			$folder_arr = arrange_folders($parsed);
 			
             # Create new Categories by using the imported folder data
-            foreach ($folder_arr as $folder) {
+            foreach ($folder_arr as $folder){
                 add_category($folder);
             }
-            # Now import Products
+
+            # Attach the Categories to the right parent
+            foreach ($folder_arr as $folder){
+                set_parents($folder);
+            }
+
+            # Secondly, start importing the products
             $message = json_encode(setup_import_request($token), JSON_PRETTY_PRINT);
             # Send Request & Receive Response
             $received = do_request($url, $message);
@@ -35,26 +41,26 @@
             if ($listLength > 0){ # At least one product has been found
                 $firstItem = $parsed['response']['links']['Materiaal'][0];
                 $lastItem = $parsed['response']['links']['Materiaal'][$listLength-1];
-                # Array containing all imported products & array containing image files
+                # Build arrays containing all imported products and image files
                 $prod_array = convert_items($parsed, $firstItem, $lastItem);
                 $file_array = get_files($prod_array, $token, $url);
-                # If one or more products have been found, call javascript function
+                # If one or more products have been found, register and localize the admin_import.js file
                 if (sizeof($prod_array) > 0){ # Prepare Script
                     wp_register_script('admin_add_product', plugins_url('js/admin_import.js', __FILE__ ));
                     wp_localize_script('admin_add_product', 'products', $prod_array);
                     wp_localize_script('admin_add_product', 'folders', $file_array);
                     wp_localize_script('admin_add_product', 'arrayindex', 0);
-                    wp_localize_script('admin_add_product', 'string1', __('<b>Producten klaar:</b> ','rentalshop'));
-                    wp_localize_script('admin_add_product', 'string2', __('<br>Verwerken..','rentalshop'));
-                    wp_localize_script('admin_add_product', 'string3', __('<br>Irrelevante producten en mappen zijn verwijderd','rentalshop'));
-                    wp_localize_script('admin_add_product', 'string4', __('<h3>Importeren geslaagd!</h3>','rentalshop'));
+                    wp_localize_script('admin_add_product', 'string1', __('<b>Producten klaar:</b> ', 'rentalshop'));
+                    wp_localize_script('admin_add_product', 'string2', __('<br>Verwerken..', 'rentalshop'));
+                    wp_localize_script('admin_add_product', 'string3', __('<br>Irrelevante producten en mappen zijn verwijderd', 'rentalshop'));
+                    wp_localize_script('admin_add_product', 'string4', __('<h3>Importeren geslaagd!</h3>', 'rentalshop'));
                     wp_enqueue_script('admin_add_product');
-                } else{
-                    _e('<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> ','rentalshop');
+                } else{ # No new products have been added and the existing ones haven't been updated
+                    _e('<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> ', 'rentalshop');
                     remove_empty_categories();
                 }
-            } else { # No rentable products have been found
-                _e('<br>Er zijn geen producten gevonden op uw Rentman account..<br>','rentalshop');
+            } else{ # No rentable products have been found
+                _e('<br>Er zijn geen producten gevonden op uw Rentman account..<br>', 'rentalshop');
             }
         }
     }
@@ -66,23 +72,23 @@
         # Update the images of all imported products
         $current_files = get_files(Array(), $token, $url, true);
         if (sizeof($current_files) == 0){
-            _e('<b>Er zijn geen afbeeldingen gevonden..</b>','rentalshop');
+            _e('<b>Er zijn geen afbeeldingen gevonden..</b>', 'rentalshop');
             return;
         }
-        # Call javascript function
+        # Register and localize the admin_images.js file, which handles the image update
         wp_register_script('admin_add_images', plugins_url('js/admin_images.js', __FILE__ ));
         wp_localize_script('admin_add_images', 'images', $current_files);
         wp_localize_script('admin_add_images', 'arrayindex', key($current_files));
         wp_localize_script('admin_add_images', 'totalsize', sizeof($current_files));
-        wp_localize_script('admin_add_images', 'string1', __('<b>Afbeeldingen klaar:</b> ','rentalshop'));
-        wp_localize_script('admin_add_images', 'string2', __('<b>Afbeeldingen updaten geslaagd!</b> ','rentalshop'));
+        wp_localize_script('admin_add_images', 'string1', __('<b>Afbeeldingen klaar:</b> ', 'rentalshop'));
+        wp_localize_script('admin_add_images', 'string2', __('<b>Afbeeldingen updaten geslaagd!</b> ', 'rentalshop'));
         wp_enqueue_script('admin_add_images');
     }
 
-    # Imports five products from the product array
+    # Imports five products from the product array, starting from the received index
     function array_to_product($prod_array, $file_array, $startIndex){
         if (sizeof($prod_array) > 0){
-            _e('<br><br><b>Geimporteerde Producten:</b><br>','rentalshop');
+            _e('<br><br><b>Geimporteerde Producten:</b><br>', 'rentalshop');
             # Import the products in the WooCommerce webshop
             $endIndex = $startIndex + 4;
             for ($index = $startIndex; $index <= $endIndex; $index++){
@@ -94,10 +100,9 @@
         }
     }
 
-    # Converts products in API response to arrays and
-    # adds them to one long list
-    function convert_items($parsed, $lower, $higher)
-    {
+    # Parses the products in the API response, then checks whether they have been
+    # updated and adds them to a list
+    function convert_items($parsed, $lower, $higher){
         $prodList = array(); # array that stores new/updates products
         $checkList = array(); # array containing id's of all checked products
 
@@ -143,7 +148,7 @@
                 array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $kate, $modDate, $weight, $btw));
             }
         }
-        # Delete products in woocommerce shop that are not in the product list
+        # Delete products in WooCommerce shop that are not in the product list
         compare_and_delete($checkList);
 
         return $prodList; # Return array of objects for later use
@@ -155,21 +160,21 @@
         global $wpdb;
         $all_products = get_product_list();
         $remainder = array_diff($all_products, $checkList);
-        if (sizeof($remainder) > 0) {
+        if (sizeof($remainder) > 0){
             # Now delete the posts in the remainder array
-            foreach ($remainder as $item) {
+            foreach ($remainder as $item){
                 $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $item . "'");
                 wp_delete_post($postID);
             }
         }
     }
 
-    # Get all rentable products from Woocommerce shop
-    function get_product_list() {
+    # Get all 'Rentable' products stored in WooCommerce
+    function get_product_list(){
         $full_product_list = array();
         $args = array('post_type' => 'product', 'posts_per_page' => -1, 'product_type' => 'rentable');
         $posts = get_posts($args);
-        for ($x = 0; $x < sizeof($posts); $x++) {
+        for ($x = 0; $x < sizeof($posts); $x++){
             $product = $posts[$x];
             array_push($full_product_list, $product->post_title);
         }
@@ -178,11 +183,10 @@
 
     # Use the array of imported projects from Rentman to create
     # new products in WooCommerce
-    function import_product($product, $file_list)
-    {
-        if ( empty( $product[3] ) ) {
+    function import_product($product, $file_list){
+        if (empty($product[3])){
             $content = __('Geen informatie beschikbaar', 'rentalshop');
-        } else {
+        } else{
             $content = $product[3];
         }
 
@@ -232,7 +236,7 @@
         update_post_meta($post_id, '_backorders', "no");
         update_post_meta($post_id, '_stock', "aantal");
 
-        # Attach Media File
+        # Attach Media Files
         for ($x = 0; $x < sizeof($file_list[$product[0]]); $x++){
             attach_media($file_list[$product[0]][$x], $post_id, $product[0], $x);
         }
@@ -248,7 +252,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -294,7 +298,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.0"
+                "version" => "4.3.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -330,11 +334,12 @@
     # Delete products with a javascript function
     function reset_rentman(){
         $posts = get_product_list();
+        # Register and localize the admin_delete.js file, which handles the reset
         wp_register_script('admin_del_product', plugins_url('js/admin_delete.js', __FILE__ ));
         wp_localize_script('admin_del_product', 'products', $posts);
         wp_localize_script('admin_del_product', 'arrayindex', 0);
-        wp_localize_script('admin_del_product', 'string1', __('<b>Producten verwijderd:</b> ','rentalshop'));
-        wp_localize_script('admin_del_product', 'string2', __('<br>Resetten was succesvol!','rentalshop'));
+        wp_localize_script('admin_del_product', 'string1', __('<b>Producten verwijderd:</b> ', 'rentalshop'));
+        wp_localize_script('admin_del_product', 'string2', __('<br>Resetten was succesvol!', 'rentalshop'));
         wp_enqueue_script('admin_del_product');
     }
 
@@ -342,17 +347,17 @@
     function delete_by_index($posts, $startIndex){
         global $wpdb;
         $endIndex = $startIndex + 9;
-        for ($index = $startIndex; $index <= $endIndex; $index++) {
+        for ($index = $startIndex; $index <= $endIndex; $index++){
             if ($index >= sizeof($posts))
                 break;
             $object = $posts[$index];
-            $product_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $object . "'" );
+            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $object . "'");
             $material = wc_get_product($product_id);
             if ($material->product_type == 'rentable'){
-                # Delete product and attached image
+                # Delete product and the attached image
                 $sku = $material->sku;
                 $image_name = 'media-'.$sku.'-0';
-                $image_id = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $image_name . "'" );
+                $image_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $image_name . "'");
                 wp_delete_post($image_id);
                 wp_delete_post($product_id);
             }
@@ -363,8 +368,8 @@
     function check_updated($name, $lastmodified){
         global $wpdb;
         $newestdate = substr($lastmodified, 0, 10) . ' ' . substr($lastmodified, 11, 8);
-        $postdate = $wpdb->get_var( "SELECT post_date FROM $wpdb->posts WHERE post_title = '" . $name . "'" );
-        $postID = $wpdb->get_var( "SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'" );
+        $postdate = $wpdb->get_var("SELECT post_date FROM $wpdb->posts WHERE post_title = '" . $name . "'");
+        $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
 
         if ($postdate == $newestdate)
             return false; # Has not been updated
@@ -389,7 +394,7 @@
         $args = array('post_type' => 'product', 'posts_per_page' => -1, 'product_type' => 'rentable');
         $pf = new WC_Product_Factory();
         $posts = get_posts($args);
-        for ($x = 0; $x < sizeof($posts); $x++) {
+        for ($x = 0; $x < sizeof($posts); $x++){
             $post = $posts[$x];
             $product = $pf->get_product($post->ID);
             array_push($full_product_list, $product->get_sku());
@@ -398,21 +403,21 @@
     }
 
     # Register 'Rentable' Product Type for imported products
-    function register_rental_product_type() {
-        class WC_Product_Rentable extends WC_Product { # Extending Product Class
+    function register_rental_product_type(){
+        class WC_Product_Rentable extends WC_Product{ # Extending Product Class
 
-            public function __construct( $product ) {
+            public function __construct($product){
                 $this->product_type = 'rentable';
                 parent::__construct($product);
             }
 
-            public function add_to_cart_text() {
+            public function add_to_cart_text(){
                 return apply_filters('woocommerce_product_add_to_cart_text', __('Verder lezen','rentalshop'), $this);
             }
 
-            public function add_to_cart_url() {
+            public function add_to_cart_url(){
                 $url = get_permalink($this->id);
-                return apply_filters( 'woocommerce_product_add_to_cart_url', $url, $this );
+                return apply_filters('woocommerce_product_add_to_cart_url', $url, $this);
             }
 
             public function needs_shipping()
@@ -423,8 +428,8 @@
     }
 
     # Make new product type selectable
-    function add_rentable_product( $types ){
-        $types[ 'rentable' ] = __('Rentable');
+    function add_rentable_product($types){
+        $types['rentable'] = __('Rentable');
         return $types;
     }
 
@@ -434,10 +439,9 @@
         global $wpdb;
         $query = $wpdb->get_row("SELECT ID FROM wp_posts WHERE post_title = '" . $title . "' && post_status = 'publish'
             && post_type = 'product' ", 'ARRAY_N');
-
         if (empty($query)){
             return false; # Product does not exist
-        } else {
+        } else{
             return true; # Product already exists
         }
     }

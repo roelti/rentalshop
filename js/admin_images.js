@@ -1,6 +1,6 @@
 // ----- JavaScript functions for image update ----- \\
 
-// Show import message in the menu
+// Show image update message in the menu
 jQuery().ready(function()
 {
     jQuery("#imageMelding").show();
@@ -10,7 +10,7 @@ jQuery().ready(function()
     applyAjax(1);
 });
 
-// Recursive function that sends product indices to PHP until the
+// Recursive function that sends image indices to PHP until the
 // whole array has been covered
 function applyAjax(counter){
     jQuery.ajax({

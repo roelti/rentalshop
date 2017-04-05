@@ -1,6 +1,6 @@
 // ----- JavaScript functions for product deletion ----- \\
 
-// Show import message in the menu
+// Show delete message in the menu
 jQuery().ready(function()
 {
     jQuery("#deleteStatus").html(string1 + "0%");
