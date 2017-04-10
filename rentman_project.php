@@ -47,7 +47,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.1"
+                "version" => "4.3.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

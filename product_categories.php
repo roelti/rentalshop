@@ -5,15 +5,18 @@
     # Create the categories in Wordpress
     function add_category($folder){
         # Insert WooCommerce Term
-        wp_insert_term(
-            $folder[1], # Name of term
-            'product_cat', # Taxonomy
-            array(
-                'slug' => $folder[0]
-            )
-        );
         $receive_term = get_term_by('slug', $folder[0], 'product_cat');
-        add_term_meta($receive_term->term_id, "source", 'Rentman'); // add Rentman as source
+        if ($receive_term == ''){
+            wp_insert_term(
+                $folder[1], # Name of term
+                'product_cat', # Taxonomy
+                array(
+                    'slug' => $folder[0]
+                )
+            );
+            $receive_term = get_term_by('slug', $folder[0], 'product_cat');
+            add_term_meta($receive_term->term_id, "source", 'Rentman'); // add Rentman as source
+        }
     }
 
     # Sets the right parents of the product categories
@@ -110,7 +113,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.1"
+                "version" => "4.3.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

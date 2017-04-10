@@ -5,7 +5,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.3.1
+     * Version: 4.3.2
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -73,7 +73,7 @@
     # Display and initialize Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.3.1</h1><hr><br>', 'rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.3.2</h1><hr><br>', 'rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop')?>
         <form method="post", action ="options.php">
@@ -163,19 +163,19 @@
         <?php
 
         # If 'Save Changes' button has been pressed, update options
-        if ( isset ( $_POST['change-settings'])){
+        if (isset($_POST['change-settings'])){
             update_option('plugin-checkdisc', $_POST['plugin-checkdisc']);
             update_option('plugin-checkavail', $_POST['plugin-checkavail']);
             echo "<meta http-equiv='refresh' content='0'>";
         }
 
         # If 'Import Products' button has been pressed, call function from product_import.php
-        if ( isset ( $_POST['import-rentman'])){
+        if (isset($_POST['import-rentman'])){
             import_products($token);
         }
 
         # If 'Update Images' button has been pressed, call function from product_import.php
-        if ( isset ( $_POST['image-rentman'])){
+        if (isset($_POST['image-rentman'])){
             update_images($token);
         }
 
@@ -218,8 +218,9 @@
         }
 
         # If 'Reset' button has been pressed, delete Rentman products and their categories
-        if ( isset ( $_POST['reset-rentman']))
+        if(isset($_POST['reset-rentman'])){
             reset_rentman();
+        }
     }
 
     // ------------- User Login Functions ------------- \\
@@ -331,7 +332,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.1"
+                "version" => "4.3.2"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

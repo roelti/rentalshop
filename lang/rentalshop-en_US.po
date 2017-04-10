@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-04-05 16:21+0200\n"
-"PO-Revision-Date: 2017-04-05 16:21+0200\n"
+"POT-Creation-Date: 2017-04-10 16:30+0200\n"
+"PO-Revision-Date: 2017-04-10 16:30+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -107,63 +107,63 @@ msgstr " is available in that time period!"
 msgid "<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>"
 msgstr "<h4>Import Failed! Did you provide the correct credentials?</h4>"
 
-#: product_import.php:53
+#: product_import.php:54
 msgid "<b>Producten klaar:</b> "
 msgstr "<b>Products finished:</b> "
 
-#: product_import.php:54
+#: product_import.php:55
 msgid "<br>Verwerken.."
 msgstr "<br>Processing.."
 
-#: product_import.php:55
+#: product_import.php:56
 msgid "<br>Irrelevante producten en mappen zijn verwijderd"
 msgstr "<br>Removed irrelevant products and categories"
 
-#: product_import.php:56
+#: product_import.php:57
 msgid "<h3>Importeren geslaagd!</h3>"
 msgstr "<h3>Import complete!</h3>"
 
-#: product_import.php:59
+#: product_import.php:60
 msgid "<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> "
 msgstr "<br><b>No new Rentman products have been found!</b> "
 
-#: product_import.php:63
+#: product_import.php:64
 msgid "<br>Er zijn geen producten gevonden op uw Rentman account..<br>"
 msgstr "<br>No products have been found on your Rentman Account..<br>"
 
-#: product_import.php:75
+#: product_import.php:77
 msgid "<b>Er zijn geen afbeeldingen gevonden..</b>"
 msgstr "<b>No images have been found..</b>"
 
-#: product_import.php:83
+#: product_import.php:85
 msgid "<b>Afbeeldingen klaar:</b> "
 msgstr "<b>Images finished:</b> "
 
-#: product_import.php:84
+#: product_import.php:86
 msgid "<b>Afbeeldingen updaten geslaagd!</b> "
 msgstr "<b>Image update complete!</b> "
 
-#: product_import.php:91
+#: product_import.php:93
 msgid "<br><br><b>Geimporteerde Producten:</b><br>"
 msgstr "<br><br><b>Imported Products:</b><br>"
 
-#: product_import.php:188
+#: product_import.php:190
 msgid "Geen informatie beschikbaar"
 msgstr "No information available"
 
-#: product_import.php:341
+#: product_import.php:355
 msgid "<b>Producten verwijderd:</b> "
 msgstr "<b>Products deleted:</b> "
 
-#: product_import.php:342
+#: product_import.php:356
 msgid "<br>Resetten was succesvol!"
 msgstr "<br>Reset was successful!"
 
-#: product_import.php:415
+#: product_import.php:429
 msgid "Verder lezen"
 msgstr "Read more"
 
-#: product_import.php:432
+#: product_import.php:446
 msgid "Rentable"
 msgstr "Rentable"
 
@@ -184,8 +184,10 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:76
-msgid "<h1>Rentman Product Import - v4.3.1</h1><hr><br>"
-msgstr ""
+#, fuzzy
+#| msgid "<h1>Rentman Product Import - v1.00</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.3.2</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v1.00</h1><hr><br>"
 
 #: rentman.php:78
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
@@ -276,15 +278,15 @@ msgstr ""
 "<h3>Starting import.. This might take a few minutes, so don't leave this "
 "page!</h3>"
 
-#: rentman.php:234
+#: rentman.php:235
 msgid "Dit is geen Rentman 4 account! &#10005;<br>"
 msgstr "This is not a Rentman 4 account! &#10005;<br>"
 
-#: rentman.php:241
+#: rentman.php:242
 msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
 msgstr "<strong>Please fill in all of the required fields</strong>"
 
-#: rentman.php:258
+#: rentman.php:259
 msgid ""
 "<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
 "h4>"
@@ -292,15 +294,15 @@ msgstr ""
 "<h4>Connection with the Rentman API failed! Did you provide the correct "
 "credentials?</h4>"
 
-#: rentman.php:261
+#: rentman.php:262
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
 msgstr "<h4>Connection with the Rentman API was successful!</h4>"
 
-#: rentman.php:270
+#: rentman.php:271
 msgid "<b>Compatibiliteitscontrole..</b><br>"
 msgstr "<b>Checking for compatibility errors..</b><br>"
 
-#: rentman.php:278
+#: rentman.php:279
 msgid ""
 "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
 "plugin hierdoor niet goed.. &#10005;<br>"
@@ -308,27 +310,27 @@ msgstr ""
 "Beware, the PHP time limit is lower than 30 seconds! The plugin might not "
 "work correctly.. &#10005;<br>"
 
-#: rentman.php:280
+#: rentman.php:281
 msgid "PHP tijdslimiet is in orde &#10003;<br>"
 msgstr "PHP time limit is okay &#10003;<br>"
 
-#: rentman.php:285
+#: rentman.php:286
 msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 msgstr "Folder created at <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 
-#: rentman.php:288
+#: rentman.php:289
 msgid "De Rentman map voor afbeeldingen is aanwezig &#10003;<br>"
 msgstr "The Rentman folder for images exists &#10003;<br>"
 
-#: rentman.php:297
+#: rentman.php:298
 msgid "Toevoegen van afbeeldingen is gelukt &#10003;<br>"
 msgstr "Addition of images was successful &#10003;<br>"
 
-#: rentman.php:299
+#: rentman.php:300
 msgid "Toevoegen van afbeeldingen is mislukt.. &#10005;<br>"
 msgstr "Addition of images failed.. &#10005;<br>"
 
-#: rentman.php:303
+#: rentman.php:304
 msgid ""
 "&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer "
 "dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
@@ -336,7 +338,7 @@ msgstr ""
 "&bull; <i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to "
 "change this and check if the error has been resolved.<br>"
 
-#: rentman.php:312
+#: rentman.php:313
 msgid ""
 "Let op: er ontbreekt een .htaccess bestand in de 'wp-content/uploads/"
 "rentman/' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>"
@@ -344,7 +346,7 @@ msgstr ""
 "Important: a .htaccess file is missing in the 'wp-content/uploads/rentman/' "
 "folder! The imported images might not be displayed correctly..<br>"
 
-#: rentman.php:314
+#: rentman.php:315
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
 msgstr "Images can be displayed &#10003;<br>"
 
@@ -460,9 +462,6 @@ msgstr "Rental period"
 
 #~ msgid " Geen<br>"
 #~ msgstr " None<br>"
-
-#~ msgid "<h1>Rentman Product Import - v1.00</h1><hr><br>"
-#~ msgstr "<h1>Rentman Product Import - v1.00</h1><hr><br>"
 
 #~ msgid "Contact bestaat nog niet<br>"
 #~ msgstr "Contact not exist yet<br>"

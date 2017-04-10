@@ -36,6 +36,7 @@
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
             $parsed = parseResponse($parsed);
+
             # Receive id's of first and last ID in response
             $listLength = sizeof($parsed['response']['links']['Materiaal']);
             if ($listLength > 0){ # At least one product has been found
@@ -61,6 +62,7 @@
                 }
             } else{ # No rentable products have been found
                 _e('<br>Er zijn geen producten gevonden op uw Rentman account..<br>', 'rentalshop');
+                remove_empty_categories();
             }
         }
     }
@@ -103,10 +105,14 @@
     # Parses the products in the API response, then checks whether they have been
     # updated and adds them to a list
     function convert_items($parsed, $lower, $higher){
+        global $wpdb;
         $prodList = array(); # array that stores new/updates products
         $checkList = array(); # array containing id's of all checked products
 
         for ($x = $lower; $x <= $higher; $x++) {
+            # Check if the key exists in the material array
+            if (!array_key_exists($x, $parsed['response']['items']['Materiaal']))
+                continue;
             # Get name, price, description, category and last modified date from current product
             $name = trim($parsed['response']['items']['Materiaal'][$x]['data']['naam']);
             $cost = $parsed['response']['items']['Materiaal'][$x]['data']['verhuurprijs'];
@@ -119,18 +125,13 @@
             $weight = $parsed['response']['items']['Materiaal'][$x]['data']['gewicht'];
             $btwcode = $parsed['response']['items']['Materiaal'][$x]['data']['btwcode'];
             $btw = $parsed['response']['items']['Btwcode'][$btwcode]['data']['tarief'];
-            $parent_term = get_term_by('slug', $folderID, 'product_cat'); // array is returned if taxonomy is given
-            $kate = $parent_term->name;
-
-            # If current item doesn't have a name (probably junk object)
-            if ($name == "")
-                continue;
 
             # Check if product already exists in database
             $noDiff = false;
-            if (wp_exist_post_by_title($name)){
+            $product_id = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $x));
+            if ($product_id){
                 # Post Exists, now check update time
-                $updated = check_updated($name, $modDate);
+                $updated = check_updated($x, $modDate);
                 if ($updated == false){
                     # Post has not been updated
                     $noDiff = true;
@@ -138,14 +139,14 @@
             }
 
             # Products has been checked
-            array_push($checkList, $name);
+            array_push($checkList, $x);
 
             if($noDiff){ # Product already exists and has not been updated
                 continue;
             } else { # Product does not exist yet or has been updated, so add it to the array
                 if ($longdesc == '')
                     $longdesc = $fulldesc;
-                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $kate, $modDate, $weight, $btw));
+                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $folderID, $modDate, $weight, $btw));
             }
         }
         # Delete products in WooCommerce shop that are not in the product list
@@ -163,7 +164,7 @@
         if (sizeof($remainder) > 0){
             # Now delete the posts in the remainder array
             foreach ($remainder as $item){
-                $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $item . "'");
+                $postID = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $item));
                 wp_delete_post($postID);
             }
         }
@@ -176,7 +177,8 @@
         $posts = get_posts($args);
         for ($x = 0; $x < sizeof($posts); $x++){
             $product = $posts[$x];
-            array_push($full_product_list, $product->post_title);
+            $material = wc_get_product($product->ID);
+            array_push($full_product_list, $material->get_sku());
         }
         return $full_product_list;
     }
@@ -202,7 +204,7 @@
         );
 
         # Check Category
-        $checkterm = get_term_by('name', $product[5], 'product_cat');
+        $checkterm = get_term_by('slug', $product[5], 'product_cat');
 
         # Insert post
         $post_id = wp_insert_post($new_product, TRUE);
@@ -252,7 +254,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.1"
+                "version" => "4.3.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -280,7 +282,19 @@
                     )
                 )
             ),
-            "query" => array("in_shop" => true)
+            "query" => array(
+                "conditions" => array(
+                    array(
+                        "key" => "tijdelijk",
+                        "value" => false
+                    ),
+                    array(
+                        "key" => "in_shop",
+                        "value" => true
+                    )
+                ),
+                "operator" => "AND"
+            )
         );
         return $object_data;
     }
@@ -298,7 +312,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.1"
+                "version" => "4.3.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -351,7 +365,7 @@
             if ($index >= sizeof($posts))
                 break;
             $object = $posts[$index];
-            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $object . "'");
+            $product_id = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $object));
             $material = wc_get_product($product_id);
             if ($material->product_type == 'rentable'){
                 # Delete product and the attached image
@@ -365,12 +379,12 @@
     }
 
     # Checks if last modified date is different
-    function check_updated($name, $lastmodified){
+    function check_updated($sku, $lastmodified){
         global $wpdb;
         $newestdate = substr($lastmodified, 0, 10) . ' ' . substr($lastmodified, 11, 8);
-        $postdate = $wpdb->get_var("SELECT post_date FROM $wpdb->posts WHERE post_title = '" . $name . "'");
-        $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
-
+        $postID = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $sku));
+        $getDate = get_the_date('c', $postID);
+        $postdate = substr($getDate, 0, 10) . ' ' . substr($getDate, 11, 8);
         if ($postdate == $newestdate)
             return false; # Has not been updated
 
