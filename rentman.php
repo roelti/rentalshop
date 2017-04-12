@@ -5,7 +5,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.3.2
+     * Version: 4.3.3
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -73,7 +73,7 @@
     # Display and initialize Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.3.2</h1><hr><br>', 'rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.3.3</h1><hr><br>', 'rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop')?>
         <form method="post", action ="options.php">
@@ -196,10 +196,13 @@
             $array_index = $_REQUEST['array_index'];
             $current_image = $image_array[$array_index];
             $post_id = wc_get_product_id_by_sku($array_index);
+            # Delete the old images attached to the product
+            $media = get_children(array('post_parent' => $post_id, 'post_type' => 'attachment'));
+            foreach ($media as $file){
+                wp_delete_post($file->ID);
+            }
+            # Create and attach the new images
             for ($x = 0; $x < sizeof($current_image); $x++){
-                $new_file_name = 'media-'.$array_index.'-'.$x;
-                $postID = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $new_file_name . "'");
-                wp_delete_post($postID);
                 attach_media($current_image[$x], $post_id, $array_index, $x);
             }
         }
@@ -332,7 +335,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.2"
+                "version" => "4.3.3"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

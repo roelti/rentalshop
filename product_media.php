@@ -73,6 +73,26 @@
         }
     }
 
+    # Function that updates the images of products
+    function update_images($token){
+        # Get the endpoint url
+        $url = receive_endpoint();
+        # Update the images of all imported products
+        $current_files = get_files(Array(), $token, $url, true);
+        if (sizeof($current_files) == 0){
+            _e('<b>Er zijn geen producten of afbeeldingen gevonden..</b>', 'rentalshop');
+            return;
+        }
+        # Register and localize the admin_images.js file, which handles the image update
+        wp_register_script('admin_add_images', plugins_url('js/admin_images.js', __FILE__ ));
+        wp_localize_script('admin_add_images', 'images', $current_files);
+        wp_localize_script('admin_add_images', 'arrayindex', key($current_files));
+        wp_localize_script('admin_add_images', 'totalsize', sizeof($current_files));
+        wp_localize_script('admin_add_images', 'string1', __('<b>Afbeeldingsgroepen klaar:</b> ', 'rentalshop'));
+        wp_localize_script('admin_add_images', 'string2', __('<b>Afbeeldingen updaten geslaagd!</b> ', 'rentalshop'));
+        wp_enqueue_script('admin_add_images');
+    }
+
     # Returns list of image file url's for every product
     function get_files($prodList, $token, $url, $globalimages = false){
         $fileList = array();

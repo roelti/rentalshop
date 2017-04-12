@@ -8,30 +8,13 @@
         } else{
             $date = date('l jS \of F Y h:i:s A');
             update_option('plugin-lasttime', $date);
+
             # Get the endpoint url
             $url = receive_endpoint();
 
-            # Firstly, import the product folders
-            $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
-            $received = do_request($url, $message);
-            $parsed = json_decode($received, true);
-            $parsed = parseResponse($parsed);
-
-			# Arrange the response data in a new clear array
-			$folder_arr = arrange_folders($parsed);
-			
-            # Create new Categories by using the imported folder data
-            foreach ($folder_arr as $folder){
-                add_category($folder);
-            }
-
-            # Attach the Categories to the right parent
-            foreach ($folder_arr as $folder){
-                set_parents($folder);
-            }
-
-            # Secondly, start importing the products
+            # First, obtain all the products from Rentman
             $message = json_encode(setup_import_request($token), JSON_PRETTY_PRINT);
+
             # Send Request & Receive Response
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
@@ -39,14 +22,38 @@
 
             # Receive id's of first and last ID in response
             $listLength = sizeof($parsed['response']['links']['Materiaal']);
+
             if ($listLength > 0){ # At least one product has been found
                 $firstItem = $parsed['response']['links']['Materiaal'][0];
                 $lastItem = $parsed['response']['links']['Materiaal'][$listLength-1];
+
                 # Build arrays containing all imported products and image files
                 $prod_array = convert_items($parsed, $firstItem, $lastItem);
                 $file_array = get_files($prod_array, $token, $url);
-                # If one or more products have been found, register and localize the admin_import.js file
-                if (sizeof($prod_array) > 0){ # Prepare Script
+
+                # If one or more products have been found, create the product categories
+                # and register and localize the admin_import.js file
+                if (sizeof($prod_array) > 0){
+                    # Import the product categories
+                    $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
+                    $received = do_request($url, $message);
+                    $parsed = json_decode($received, true);
+                    $parsed = parseResponse($parsed);
+
+                    # Arrange the response data in a new clear array
+                    $folder_arr = arrange_folders($parsed);
+
+                    # Create new Categories by using the imported folder data
+                    foreach ($folder_arr as $folder){
+                        add_category($folder);
+                    }
+
+                    # Attach the Categories to the right parent
+                    foreach ($folder_arr as $folder){
+                        set_parents($folder);
+                    }
+
+                    # Prepare Script
                     wp_register_script('admin_add_product', plugins_url('js/admin_import.js', __FILE__ ));
                     wp_localize_script('admin_add_product', 'products', $prod_array);
                     wp_localize_script('admin_add_product', 'folders', $file_array);
@@ -67,30 +74,11 @@
         }
     }
 
-    # Function that updates the images of products
-    function update_images($token){
-        # Get the endpoint url
-        $url = receive_endpoint();
-        # Update the images of all imported products
-        $current_files = get_files(Array(), $token, $url, true);
-        if (sizeof($current_files) == 0){
-            _e('<b>Er zijn geen afbeeldingen gevonden..</b>', 'rentalshop');
-            return;
-        }
-        # Register and localize the admin_images.js file, which handles the image update
-        wp_register_script('admin_add_images', plugins_url('js/admin_images.js', __FILE__ ));
-        wp_localize_script('admin_add_images', 'images', $current_files);
-        wp_localize_script('admin_add_images', 'arrayindex', key($current_files));
-        wp_localize_script('admin_add_images', 'totalsize', sizeof($current_files));
-        wp_localize_script('admin_add_images', 'string1', __('<b>Afbeeldingen klaar:</b> ', 'rentalshop'));
-        wp_localize_script('admin_add_images', 'string2', __('<b>Afbeeldingen updaten geslaagd!</b> ', 'rentalshop'));
-        wp_enqueue_script('admin_add_images');
-    }
-
     # Imports five products from the product array, starting from the received index
     function array_to_product($prod_array, $file_array, $startIndex){
         if (sizeof($prod_array) > 0){
             _e('<br><br><b>Geimporteerde Producten:</b><br>', 'rentalshop');
+
             # Import the products in the WooCommerce webshop
             $endIndex = $startIndex + 4;
             for ($index = $startIndex; $index <= $endIndex; $index++){
@@ -113,6 +101,7 @@
             # Check if the key exists in the material array
             if (!array_key_exists($x, $parsed['response']['items']['Materiaal']))
                 continue;
+
             # Get name, price, description, category and last modified date from current product
             $name = trim($parsed['response']['items']['Materiaal'][$x]['data']['naam']);
             $cost = $parsed['response']['items']['Materiaal'][$x]['data']['verhuurprijs'];
@@ -120,6 +109,7 @@
             $shortdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_short'];
             $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data']['omschrijving'];
             $modDate = $parsed['response']['items']['Materiaal'][$x]['data']['modified'];
+
             # Set correct folder data
             $folderID = $parsed['response']['items']['Materiaal'][$x]['data']['folder'];
             $weight = $parsed['response']['items']['Materiaal'][$x]['data']['gewicht'];
@@ -254,7 +244,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.2"
+                "version" => "4.3.3"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -312,7 +302,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.2"
+                "version" => "4.3.3"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -348,6 +338,7 @@
     # Delete products with a javascript function
     function reset_rentman(){
         $posts = get_product_list();
+
         # Register and localize the admin_delete.js file, which handles the reset
         wp_register_script('admin_del_product', plugins_url('js/admin_delete.js', __FILE__ ));
         wp_localize_script('admin_del_product', 'products', $posts);
@@ -368,11 +359,11 @@
             $product_id = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $object));
             $material = wc_get_product($product_id);
             if ($material->product_type == 'rentable'){
-                # Delete product and the attached image
-                $sku = $material->sku;
-                $image_name = 'media-'.$sku.'-0';
-                $image_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $image_name . "'");
-                wp_delete_post($image_id);
+                # Delete product and the attached images
+                $media = get_children(array('post_parent' => $product_id, 'post_type' => 'attachment'));
+                foreach ($media as $file){
+                    wp_delete_post($file->ID);
+                }
                 wp_delete_post($product_id);
             }
         }
