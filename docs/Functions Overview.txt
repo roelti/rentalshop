@@ -1,5 +1,7 @@
 RENTMAN PLUGIN FUNCTIONS OVERVIEW
------------
+---------------------------------
+This file contains a short summary of all functions in the plugin
+------------------------------------------------------------------
 rentman.php
 -----------
 check_compatibility :: checks whether the php time limit is high enough and if images can be uploaded to the server
@@ -36,10 +38,8 @@ add_custom_field :: adds the date fields for the availability check to the Rentm
 add_date_checkout :: adds the date fields to the checkout screen
 add_header_script :: adds javascript code for the dynamic availability check to the header
 add_to_cart_template :: adds a template for 'rentable' products that were imported from Rentman
-attachFunction :: javascript function that adds the availability function to the 'amount' field
 available_request :: sets up the availability request for a certain product
 check_available :: does the actual availability request and uses the response to generate the right message (i.e. not available / maybe available / available)
-quickCheck :: javascript function that applies the availability check when changes are made on the single product page
 set_functions :: unused function for testing the availability javascript functions
 update_amount :: applies the check_available function on updated products in the cart
 update_dates :: applies the availability check on all items in the cart for the updated dates
@@ -100,7 +100,7 @@ admin_delete.js & admin_import.js
 applyAjax :: recursive function that sends product indices to PHP code until the whole product array has been covered
 removeFolders :: calls a PHP function that removes all empty/unused product categories from Woocommerce
 ------------------
-admin_available.js
+admin_images.js
 ------------------
 applyAjax :: recursive function that sends image indices to PHP code until the whole image array has been covered
 ------------------

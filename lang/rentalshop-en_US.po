@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-04-12 15:23+0200\n"
-"PO-Revision-Date: 2017-04-12 15:25+0200\n"
+"POT-Creation-Date: 2017-04-19 16:09+0200\n"
+"PO-Revision-Date: 2017-04-19 16:09+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -135,23 +135,23 @@ msgstr "<br>No products have been found on your Rentman Account..<br>"
 msgid "<br><br><b>Geimporteerde Producten:</b><br>"
 msgstr "<br><br><b>Imported Products:</b><br>"
 
-#: product_import.php:180
+#: product_import.php:181
 msgid "Geen informatie beschikbaar"
 msgstr "No information available"
 
-#: product_import.php:346
+#: product_import.php:353
 msgid "<b>Producten verwijderd:</b> "
 msgstr "<b>Products deleted:</b> "
 
-#: product_import.php:347
+#: product_import.php:354
 msgid "<br>Resetten was succesvol!"
 msgstr "<br>Reset was successful!"
 
-#: product_import.php:420
+#: product_import.php:426
 msgid "Verder lezen"
 msgstr "Read more"
 
-#: product_import.php:437
+#: product_import.php:443
 msgid "Rentable"
 msgstr "Rentable"
 
@@ -184,8 +184,8 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:76
-msgid "<h1>Rentman Product Import - v4.3.3</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.3.3</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.4.0</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.4.0</h1><hr><br>"
 
 #: rentman.php:78
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
@@ -348,7 +348,7 @@ msgstr ""
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
 msgstr "Images can be displayed &#10003;<br>"
 
-#: rentman_project.php:104
+#: rentman_project.php:106
 msgid "Huurperiode"
 msgstr "Rental period"
 

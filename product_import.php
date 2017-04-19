@@ -109,6 +109,7 @@
             $shortdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_short'];
             $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data']['omschrijving'];
             $modDate = $parsed['response']['items']['Materiaal'][$x]['data']['modified'];
+            $verhuur = $parsed['response']['items']['Materiaal'][$x]['data']['verhuur'];
 
             # Set correct folder data
             $folderID = $parsed['response']['items']['Materiaal'][$x]['data']['folder'];
@@ -136,7 +137,7 @@
             } else { # Product does not exist yet or has been updated, so add it to the array
                 if ($longdesc == '')
                     $longdesc = $fulldesc;
-                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $folderID, $modDate, $weight, $btw));
+                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $folderID, $modDate, $weight, $btw, $verhuur));
             }
         }
         # Delete products in WooCommerce shop that are not in the product list
@@ -163,7 +164,7 @@
     # Get all 'Rentable' products stored in WooCommerce
     function get_product_list(){
         $full_product_list = array();
-        $args = array('post_type' => 'product', 'posts_per_page' => -1, 'product_type' => 'rentable');
+        $args = array('post_type' => 'product', 'posts_per_page' => -1, 'rentman_imported' => true);
         $posts = get_posts($args);
         for ($x = 0; $x < sizeof($posts); $x++){
             $product = $posts[$x];
@@ -201,7 +202,12 @@
 
         # Other method for setting category
         wp_set_object_terms($post_id, $checkterm->term_id, 'product_cat');
-        wp_set_object_terms($post_id, 'rentable', 'product_type');
+
+        # If it is a 'Verhuur' product
+        if ($product[9])
+            wp_set_object_terms($post_id, 'rentable', 'product_type');
+        else
+            wp_set_object_terms($post_id, 'simple_product', 'product_type');
 
         # Add/update the post meta
         add_post_meta($post_id, 'rentman_imported', true);
@@ -244,7 +250,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.3"
+                "version" => "4.4.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -253,6 +259,7 @@
                 "Materiaal" => array(
                     "naam",
                     "verhuurprijs",
+                    "verhuur",
                     "shop_description_long",
                     "shop_description_short",
                     "omschrijving",
@@ -302,7 +309,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.3"
+                "version" => "4.4.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -357,8 +364,7 @@
                 break;
             $object = $posts[$index];
             $product_id = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $object));
-            $material = wc_get_product($product_id);
-            if ($material->product_type == 'rentable'){
+            if (get_post_meta($product_id, 'rentman_imported', true) == true){
                 # Delete product and the attached images
                 $media = get_children(array('post_parent' => $product_id, 'post_type' => 'attachment'));
                 foreach ($media as $file){
@@ -396,7 +402,7 @@
     # Returns list of identifiers of all imported Rentman products
     function rentman_ids(){
         $full_product_list = array();
-        $args = array('post_type' => 'product', 'posts_per_page' => -1, 'product_type' => 'rentable');
+        $args = array('post_type' => 'product', 'posts_per_page' => -1, 'rentman_imported' => true);
         $pf = new WC_Product_Factory();
         $posts = get_posts($args);
         for ($x = 0; $x < sizeof($posts); $x++){

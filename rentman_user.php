@@ -11,14 +11,13 @@
         foreach($order->get_items() as $key => $lineItem){
             $name = $lineItem['name'];
             $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
-            $product = wc_get_product($product_id);
-            if ($product->product_type == 'rentable'){
+            if (get_post_meta($product_id, 'rentman_imported', true) == true){
                 $rentableProduct = true;
                 break;
             }
         }
 
-        # If it contains rentable products, add customer as contact to Rentman and create a new project
+        # If it contains Rentman products, add customer as contact to Rentman and create a new project
         # Check if alternative shipping address has been filled in and create a separate contact
         if ($rentableProduct){
             $url = receive_endpoint();
@@ -99,7 +98,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.3"
+                "version" => "4.4.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -127,7 +126,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.3"
+                "version" => "4.4.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -175,7 +174,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.3"
+                "version" => "4.4.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -269,7 +268,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.3"
+                "version" => "4.4.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

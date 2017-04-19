@@ -5,8 +5,8 @@ setup_folder_request() function.
 3) The add_category() function uses the values from the array to add the categories
 to Wordpress.
 4) The product categories have been added, now it's time for the product import.
-5) The remove_empty_categories() function is called after the product import has finished
-and deletes all unused categories.
+5) The remove_empty_categories() function is called after the product import has finished.
+It deletes all unused categories (so the categories that do not contain any products).
 
 Notes:
 - When a product has been moved to a different folder in Rentman, it will automatically

@@ -22,8 +22,10 @@
         $comp = $order->billing_company;
         $proj = $comp . " Project";
         $notitie = $order->customer_note;
+
         $startdate = get_option('plugin-startdate');
         $enddate = get_option('plugin-enddate');
+
         $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
         $startdate = $startdate . 'T00:00:00';
         $enddate = $enddate . 'T00:00:00';
@@ -47,7 +49,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.3.3"
+                "version" => "4.4.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -157,7 +159,7 @@
             $name = $lineItem['name'];
             $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
             $product = wc_get_product($product_id);
-            if ($product->product_type == 'rentable'){ # Only rentable products must be added to the request
+            if (get_post_meta($product_id, 'rentman_imported', true) == true){ # Only Rentman products must be added to the request
                 array_push($matarr, array(
                     $name,
                     $lineItem['qty'],
