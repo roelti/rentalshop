@@ -8,7 +8,6 @@
 
         # Setup New Project Request to send JSON
         $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees), JSON_PRETTY_PRINT);
-
         # Send Request & Receive Response
         do_request($url, $message);
     }
@@ -18,6 +17,7 @@
     # Includes contact, relevant materials & rent dates
     function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees){
         # Get Order data and rent dates
+        global $wpdb;
         $order = new WC_Order($order_id);
         $comp = $order->billing_company;
         $proj = $comp . " Project";
@@ -35,13 +35,49 @@
         $shippingbtw = ($order->order_shipping) / 1.21;
         $materials = get_material_array($order_id);
         $materialsize = sizeof($materials);
-        $count = -7;
-        $planarray = array('Planningmateriaal' => array());
-        for ($x = 0; $x < $materialsize; $x++){
-            array_push($planarray['Planningmateriaal'], $count);
-            $count--;
+
+        # Do not add any rental dates to the request when only non-rentable products
+        # have been purchased in the order
+        $rentableProduct = false;
+        foreach($order->get_items() as $key => $lineItem){
+            $product_id = $lineItem['product_id'];
+            $product = wc_get_product($product_id);
+            if ($product->product_type == 'rentable'){
+                $rentableProduct = true;
+                break;
+            }
         }
 
+        # Call the right function for the request generation
+        if ($rentableProduct){
+            $count = -7;
+            $planarray = array('Planningmateriaal' => array());
+            for ($x = 0; $x < $materialsize; $x++){
+                array_push($planarray['Planningmateriaal'], $count);
+                $count--;
+            }
+            $object_data = rentRequest($token, $proj, $contact_id, $transport_id,
+                $fees, $startdate, $enddate, $planarray, $notitie, $shippingbtw,
+                $materials, $order_id);
+        }
+        else{
+            $count = -6;
+            $planarray = array('Planningmateriaal' => array());
+            for ($x = 0; $x < $materialsize; $x++){
+                array_push($planarray['Planningmateriaal'], $count);
+                $count--;
+            }
+            $object_data = saleRequest($token, $proj, $contact_id, $transport_id,
+                $fees, $planarray, $notitie, $shippingbtw, $materials, $order_id);
+        }
+
+        return $object_data;
+    }
+
+    # Function that generates a new project request for rentable products
+    function rentRequest($token, $proj, $contact_id, $transport_id,
+                         $fees, $startdate, $enddate, $planarray,
+                         $notitie, $shippingbtw, $materials, $order_id){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -49,7 +85,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.0"
+                "version" => "4.4.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -141,10 +177,96 @@
                         )
                     )
                 ),
-                "Planningmateriaal" => planmaterial_array($materials, $planarray, $order_id, $contact_id)
+                "Planningmateriaal" => planmaterial_array($materials, $planarray, $order_id, $contact_id, -7)
             )
         );
+        return $object_data;
+    }
 
+    # Function that generates a new project request for rentable products
+    function saleRequest($token, $proj, $contact_id, $transport_id, $fees,
+                         $planarray, $notitie, $shippingbtw, $materials, $order_id){
+        # Represents request object
+        $object_data = array(
+            "requestType" => "create",
+            "apiVersion" => 1,
+            "client" => array(
+                "language" => "1",
+                "type" => "webshopplugin",
+                "version" => "4.4.1"
+            ),
+            "account" => get_option('plugin-account'),
+            "token" => $token,
+            "itemType" => "Project",
+            "columns" => array(
+                "Project" => array()
+            ),
+            "items" => array(
+                "Project" => array(
+                    "-1" => array(
+                        "values" => array(
+                            "id" => "-1",
+                            "naam" => $proj,
+                            "opdrachtgever" => $contact_id,
+                            "locatie" => $transport_id
+                        ),
+                        "links" => array(
+                            "Subproject" => array(
+                                -2
+                            ),
+                            "MateriaalCat" => array(
+                                -3
+                            ),
+                            "Projectnotitie" => array(
+                                -4
+                            ),
+                            "Functie" => array(
+                                -5
+                            )
+                        )
+                    )
+                ),
+                "Subproject" => array(
+                    "-2" => array(
+                        "values" => array(
+                            "id" => -2,
+                            "naam" => $proj,
+                            "korting_personeel" => $fees[0],
+                            "korting_totaal" => $fees[1],
+                            "korting_transport" => $fees[2]
+                        )
+                    )
+                ),
+                "MateriaalCat" => array(
+                    "-3" => array(
+                        "values" => array(
+                            "subproject" => -2
+                        ),
+                        "links" => $planarray
+                    )
+                ),
+                "Projectnotitie" => array(
+                    "-4" => array(
+                        "values" => array(
+                            "subproject" => -2,
+                            "naam" => 'WebShop',
+                            "omschrijving" => $notitie
+                        )
+                    )
+                ),
+                "Functie" => array(
+                    "-5" => array(
+                        "values" => array(
+                            "subproject" => -2,
+                            "naamintern" => 'Shipping',
+                            "prijs_vast" => $shippingbtw,
+                            "type" => "T"
+                        )
+                    )
+                ),
+                "Planningmateriaal" => planmaterial_array($materials, $planarray, $order_id, $contact_id, -6)
+            )
+        );
         return $object_data;
     }
 
@@ -152,12 +274,11 @@
 
     # Create array containing all products
     function get_material_array($order_id){
-        global $wpdb;
         $order = new WC_Order($order_id);
         $matarr = array();
         foreach($order->get_items() as $key => $lineItem){
             $name = $lineItem['name'];
-            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
+            $product_id = $lineItem['product_id'];
             $product = wc_get_product($product_id);
             if (get_post_meta($product_id, 'rentman_imported', true) == true){ # Only Rentman products must be added to the request
                 array_push($matarr, array(
@@ -171,11 +292,10 @@
     }
 
     # Combine the two arrays into an array with the right format
-    function planmaterial_array($materials, $planarray, $order_id, $contact_id){
+    function planmaterial_array($materials, $planarray, $order_id, $contact_id, $counter){
         $staffels = get_staffels($order_id);
         $discounts = get_all_discounts($order_id, $contact_id);
         $planmatarr = array_fill_keys($planarray['Planmateriaal'], 'Test');
-        $counter = -7;
         foreach ($materials as $item){
             $planmatarr[$counter] = array(
                 'values' => array(

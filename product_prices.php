@@ -216,8 +216,7 @@
 
         # Get staffel data for all items
         foreach($order->get_items() as $key => $lineItem){
-            $name = $lineItem['name'];
-            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
+            $product_id = $lineItem['product_id'];
             $product = wc_get_product($product_id);
             # Receive the right staffel depending on the staffelgroup
             $staffelgroup = get_staffelgroup($token, $product->get_sku());
@@ -242,8 +241,7 @@
 
         # Create array with all materials from the order
         foreach($order->get_items() as $key => $lineItem){
-            $name = $lineItem['name'];
-            $product_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_title = '" . $name . "'");
+            $product_id = $lineItem['product_id'];
             $product = $pf->get_product($product_id);
             array_push($materials, $product->get_sku());
         }
@@ -309,7 +307,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.0"
+                "version" => "4.4.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -353,7 +351,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.0"
+                "version" => "4.4.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -378,7 +376,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.0"
+                "version" => "4.4.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

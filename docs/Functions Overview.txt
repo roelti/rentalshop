@@ -22,6 +22,8 @@ rentman_project.php
 add_project :: creates a new project in Rentman by using the API
 get_material_array :: generates an array containing all Rentman products in an order
 planmaterial_array :: combines two arrays to create a 'Planningmateriaal' array in the right format
+rentRequest :: builds request when one or more rentable products have been purchased
+saleRequest :: builds request when only non-rentable products have been purchased
 setup_newproject_request :: sets up the new project request ready to be encoded in JSON
 ----------------
 rentman_user.php
