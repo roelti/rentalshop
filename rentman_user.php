@@ -24,6 +24,8 @@
             $token = get_option('plugin-token');
             $billing = $order->billing_address_1;
             $shipping = $order->shipping_address_1;
+            $contact_person = "";
+            $location_contact = "";
 
             # Setup Request to send JSON
             $message = json_encode(setup_check_request($token, $order->billing_email), JSON_PRETTY_PRINT);
@@ -45,6 +47,7 @@
                 $parsed = json_decode($received, true);
                 $parsed = parseResponse($parsed);
                 $contact_id = current($parsed['response']['items']['Contact']);
+                $contact_person = current($parsed['response']['items']['Contact'])['data']['contactpersoon'];
                 $fees = array();
                 for ($x = 0; $x <= 2; $x++){
                     array_push($fees, 0);
@@ -59,7 +62,7 @@
 
             if ($billing != $shipping){ # Get Rentman Contact for location
                 # Setup Request to send JSON
-                $message = json_encode(setup_location_request($token, $order->shipping_address_1), JSON_PRETTY_PRINT);
+                $message = json_encode(setup_location_request($token, $order->shipping_address_1, $order->shipping_email), JSON_PRETTY_PRINT);
 
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
@@ -76,6 +79,7 @@
                     $parsed = json_decode($received, true);
                     $parsed = parseResponse($parsed);
                     $transport_id = current($parsed['response']['items']['Contact']);
+                    $location_contact = current($parsed['response']['items']['Contact'])['data']['contactpersoon'];
                 } else{
                     $transport_id = current($parsed['response']['items']['Contact']);
                 }
@@ -83,7 +87,7 @@
             else # Billing and shipping addresses are exactly the same
                 $transport_id = $contact_id;
 
-            add_project($order_id, $contact_id['data']['id'], $transport_id['data']['id'], $fees);
+            add_project($order_id, $contact_id['data']['id'], $transport_id['data']['id'], $fees, $contact_person, $location_contact);
         }
     }
 
@@ -98,7 +102,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -119,14 +123,14 @@
 
     # Returns API request ready to be encoded in Json
     # Checks if a location already exists by their address
-    function setup_location_request($token, $address){
+    function setup_location_request($token, $address, $email){
         # Check if contact already exists (by address)
         $object_data = array(
             "requestType" => "query",
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -137,7 +141,19 @@
                     "id"
                 )
             ),
-            "query" => array("bezoekstraat" => $address)
+            "query" => array(
+                "conditions" => array(
+                    array(
+                        "key" => "bezoekstraat",
+                        "value" => $address
+                    ),
+                    array(
+                        "key" => "email",
+                        "value" => $email
+                    )
+                ),
+                "operator" => "AND"
+            )
         );
         return $object_data;
     }
@@ -174,7 +190,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -189,6 +205,7 @@
                             "id" => "-1",
                             "voornaam" => $firstname,
                             "naam" => $lastname,
+                            "contactpersoon" => "",
                             "bedrijf" => $order->billing_company,
                             "email" => $order->billing_email,
                             "bezoekstraat" => $order->billing_address_1,
@@ -230,6 +247,7 @@
                 )
             );
             $object_data['items']['Person'] = $person;
+            $object_data['items']['Contact'][-1]["values"]["contactpersoon"] = -2;
         } else { # Remove the Person data from the request if not
             unset($object_data['items']['Person']);
         }
@@ -268,7 +286,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -283,8 +301,9 @@
                             "id" => "-1",
                             "voornaam" => $firstname,
                             "naam" => $lastname,
+                            "contactpersoon" => "",
                             "bedrijf" => $order->shipping_company,
-                            "email" => $order->billing_email,
+                            "email" => $order->shipping_email,
                             "bezoekstraat" => $order->shipping_address_1,
                             "bezoekstad" => $order->shipping_city,
                             "bezoekpostcode" => $order->shipping_postcode,
@@ -294,7 +313,7 @@
                             "poststraat" => $order->shipping_address_1,
                             "poststad" => $order->shipping_city,
                             "postpostcode" => $order->shipping_postcode,
-                            "telefoon" => $order->billing_phone,
+                            "telefoon" => $order->shipping_phone,
                             "type" => $type
                         ),
                         "links" => $attachperson
@@ -323,10 +342,10 @@
                 )
             );
             $object_data['items']['Person'] = $person;
+            $object_data['items']['Contact'][-1]["values"]["contactpersoon"] = -2;
         } else{ # Remove the Person data from the request
             unset($object_data['items']['Person']);
         }
-
         return $object_data;
     }
 ?>

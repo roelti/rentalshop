@@ -46,7 +46,7 @@
 		);
 
 		$uploads = wp_upload_dir();
-		$save_path = $uploads['basedir'].'/rentman/'.$new_file_name;
+		$save_path = $uploads['basedir'] . '/rentman/' . $new_file_name;
 
 		# Insert database record
 		$attach_id = wp_insert_attachment($artdata, $save_path, $post_id);

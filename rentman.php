@@ -5,7 +5,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.4.1
+     * Version: 4.4.2
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -37,11 +37,12 @@
     add_action('woocommerce_before_cart_totals', 'add_date_checkout');
     add_action('woocommerce_cart_calculate_fees', 'apply_staffel');
     add_action('woocommerce_cart_calculate_fees', 'apply_rentman_tax');
-    add_action('woocommerce_single_product_summary', 'add_to_cart_template', 30 );
+    add_action('woocommerce_single_product_summary', 'add_to_cart_template', 30);
     add_action('woocommerce_thankyou', 'export_users', 10, 1);
 
     # Add filters for certain buttons and texts
     add_filter('woocommerce_add_to_cart_validation', 'check_available', 10, 5);
+    add_filter( 'woocommerce_checkout_fields', 'adjust_checkout');
     add_filter('woocommerce_product_single_add_to_cart_text', 'woo_custom_cart_button_text');
     add_filter('woocommerce_update_cart_validation', 'update_amount', 10, 5);
     add_filter('woocommerce_cart_needs_shipping', '__return_true');
@@ -73,7 +74,7 @@
     # Display and initialize Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.4.1</h1><hr><br>', 'rentalshop')?>
+        <?php _e('<h1>Rentman Product Import - v4.4.2</h1><hr><br>', 'rentalshop')?>
         <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop')?>
         <form method="post", action ="options.php">
@@ -190,7 +191,6 @@
 
         # Update images with certain index in array (called by admin_images.js)
         if(isset($_GET['update_images'])){
-            global $wpdb;
             $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $image_array = $_REQUEST['image_array'];
             $array_index = $_REQUEST['array_index'];
@@ -265,7 +265,6 @@
 				_e('<h4>De verbinding met de Rentman API was succesvol!</h4>', 'rentalshop');
 			}
         }
-
         return $token;
     }
 
@@ -294,14 +293,14 @@
 
         # Does the copy function for images work?
         $file_name = 'test.png';
-        $targetUrl = ABSPATH.$artDir.$file_name;
+        $targetUrl = ABSPATH . $artDir . $file_name;
         copy($fileUrl, $targetUrl);
-        $errors= error_get_last();
+        $errors = error_get_last();
         if (file_exists($targetUrl)){
             _e('Toevoegen van afbeeldingen is gelukt &#10003;<br>', 'rentalshop');
         } else{
             _e('Toevoegen van afbeeldingen is mislukt.. &#10005;<br>', 'rentalshop');
-            echo "&bull; Copy Error: ".$errors['type'];
+            echo "&bull; Copy Error: " . $errors['type'];
             echo "<br />\n&bull; " . $errors['message'] . '<br>';
             if(!ini_get('allow_url_fopen')){ # Show possible solution if the copy function fails
                 _e('&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>', 'rentalshop');
@@ -311,7 +310,7 @@
         $new_file_name = '.htaccess';
 
         # Check if images can be displayed
-        $targetUrl = ABSPATH.$artDir.$new_file_name;
+        $targetUrl = ABSPATH . $artDir . $new_file_name;
         if(!file_exists($targetUrl)){
             _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
         } else{
@@ -335,7 +334,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

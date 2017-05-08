@@ -114,6 +114,9 @@
             # Set correct folder data
             $folderID = $parsed['response']['items']['Materiaal'][$x]['data']['folder'];
             $weight = $parsed['response']['items']['Materiaal'][$x]['data']['gewicht'];
+            $height = $parsed['response']['items']['Materiaal'][$x]['data']['height'];
+            $length = $parsed['response']['items']['Materiaal'][$x]['data']['length'];
+            $width = $parsed['response']['items']['Materiaal'][$x]['data']['width'];
             $btwcode = $parsed['response']['items']['Materiaal'][$x]['data']['btwcode'];
             $btw = $parsed['response']['items']['Btwcode'][$btwcode]['data']['tarief'];
 
@@ -137,7 +140,7 @@
             } else { # Product does not exist yet or has been updated, so add it to the array
                 if ($longdesc == '')
                     $longdesc = $fulldesc;
-                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $folderID, $modDate, $weight, $btw, $verhuur));
+                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $folderID, $modDate, $weight, $btw, $verhuur, $length, $width, $height));
             }
         }
         # Delete products in WooCommerce shop that are not in the product list
@@ -221,9 +224,9 @@
         update_post_meta($post_id, '_purchase_note', "");
         update_post_meta($post_id, '_featured', "no");
         update_post_meta($post_id, '_weight', $product[7]);
-        update_post_meta($post_id, '_length', "");
-        update_post_meta($post_id, '_width', "");
-        update_post_meta($post_id, '_height', "");
+        update_post_meta($post_id, '_length', $product[10]);
+        update_post_meta($post_id, '_width', $product[11]);
+        update_post_meta($post_id, '_height', $product[12]);
         update_post_meta($post_id, '_sku', $product[0]);
         update_post_meta($post_id, '_product_attributes', array());
         update_post_meta($post_id, '_sale_price_dates_from', "");
@@ -250,7 +253,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -271,6 +274,9 @@
                         )
                     ),
                     "gewicht",
+                    "height",
+                    "length",
+                    "width",
                     "img",
                     array(
                         "btwcode" => array(
@@ -309,7 +315,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

@@ -230,7 +230,6 @@
 
     # Get discount array for project export
     function get_all_discounts($order_id, $contact_id){
-        global $wpdb;
         $order = new WC_Order($order_id);
         $materials = array();
         $pf = new WC_Product_Factory();
@@ -307,7 +306,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -351,7 +350,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -376,7 +375,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

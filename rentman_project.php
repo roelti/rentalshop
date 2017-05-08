@@ -2,12 +2,12 @@
     // ------------- API Request Functions ------------- \\
 
     # Handles API Request for project creation
-    function add_project($order_id, $contact_id, $transport_id, $fees){
+    function add_project($order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         $url = receive_endpoint();
         $token = get_option('plugin-token');
 
         # Setup New Project Request to send JSON
-        $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
         # Send Request & Receive Response
         do_request($url, $message);
     }
@@ -15,13 +15,13 @@
     # Returns API request ready to be encoded in Json
     # Used for sending new project data to Rentman
     # Includes contact, relevant materials & rent dates
-    function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees){
+    function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         # Get Order data and rent dates
-        global $wpdb;
         $order = new WC_Order($order_id);
         $comp = $order->billing_company;
         $proj = $comp . " Project";
         $notitie = $order->customer_note;
+        $ext_ref = $order->billing_reference;
 
         $startdate = get_option('plugin-startdate');
         $enddate = get_option('plugin-enddate');
@@ -58,7 +58,7 @@
             }
             $object_data = rentRequest($token, $proj, $contact_id, $transport_id,
                 $fees, $startdate, $enddate, $planarray, $notitie, $shippingbtw,
-                $materials, $order_id);
+                $materials, $order_id, $ext_ref, $contact_person, $location_contact);
         }
         else{
             $count = -6;
@@ -68,7 +68,8 @@
                 $count--;
             }
             $object_data = saleRequest($token, $proj, $contact_id, $transport_id,
-                $fees, $planarray, $notitie, $shippingbtw, $materials, $order_id);
+                $fees, $planarray, $notitie, $shippingbtw, $materials, $order_id,
+                $ext_ref, $contact_person, $location_contact);
         }
 
         return $object_data;
@@ -76,8 +77,9 @@
 
     # Function that generates a new project request for rentable products
     function rentRequest($token, $proj, $contact_id, $transport_id,
-                         $fees, $startdate, $enddate, $planarray,
-                         $notitie, $shippingbtw, $materials, $order_id){
+                         $fees, $startdate, $enddate, $planarray, $notitie,
+                         $shippingbtw, $materials, $order_id, $ext_ref,
+                         $contact_person, $location_contact){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -85,7 +87,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -100,7 +102,10 @@
                             "id" => "-1",
                             "naam" => $proj,
                             "opdrachtgever" => $contact_id,
+                            "opdrachtgever_persoon" => $contact_person,
                             "locatie" => $transport_id,
+                            "locatie_persoon" => $location_contact,
+                            "referentie" => $ext_ref,
                             "gebruiksperiode" => -2,
                             "planperiode" => -2
                         ),
@@ -130,7 +135,9 @@
                             "naam" => $proj,
                             "korting_personeel" => $fees[0],
                             "korting_totaal" => $fees[1],
-                            "korting_transport" => $fees[2]
+                            "korting_transport" => $fees[2],
+                            "locatie" => $transport_id,
+                            "locatie_persoon" => $location_contact
                         )
                     )
                 ),
@@ -184,8 +191,9 @@
     }
 
     # Function that generates a new project request for rentable products
-    function saleRequest($token, $proj, $contact_id, $transport_id, $fees,
-                         $planarray, $notitie, $shippingbtw, $materials, $order_id){
+    function saleRequest($token, $proj, $contact_id, $transport_id, $fees, $planarray,
+                         $notitie, $shippingbtw, $materials, $order_id, $ext_ref,
+                         $contact_person, $location_contact){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -193,7 +201,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.1"
+                "version" => "4.4.2"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -208,7 +216,10 @@
                             "id" => "-1",
                             "naam" => $proj,
                             "opdrachtgever" => $contact_id,
-                            "locatie" => $transport_id
+                            "opdrachtgever_persoon" => $contact_person,
+                            "locatie" => $transport_id,
+                            "locatie_persoon" => $location_contact,
+                            "referentie" => $ext_ref,
                         ),
                         "links" => array(
                             "Subproject" => array(
@@ -233,7 +244,9 @@
                             "naam" => $proj,
                             "korting_personeel" => $fees[0],
                             "korting_totaal" => $fees[1],
-                            "korting_transport" => $fees[2]
+                            "korting_transport" => $fees[2],
+                            "locatie" => $transport_id,
+                            "locatie_persoon" => $location_contact
                         )
                     )
                 ),
@@ -313,4 +326,31 @@
         return $planmatarr;
     }
 
+    // ------------- Customizing Checkout Fields ------------- \\
+
+    # Adds checkout fields for the external reference, shipping phone number and shipping email
+    function adjust_checkout($fields){
+        $fields['billing']['billing_reference'] = array(
+            'label'     => __('Externe referentie', 'rentalshop'),
+            'placeholder'   => __('Externe referentie (optioneel)', 'rentalshop'),
+            'required'  => false,
+            'class'     => array('form-row-wide'),
+            'clear'     => true
+        );
+        $fields['shipping']['shipping_email'] = array(
+            'label'     => __('E-mailadres', 'rentalshop'),
+            'placeholder'   => __('E-mail', 'rentalshop'),
+            'required'  => true,
+            'class'     => array('form-row-wide'),
+            'clear'     => true
+        );
+        $fields['shipping']['shipping_phone'] = array(
+            'label'     => __('Telefoon', 'rentalshop'),
+            'placeholder'   => __('Telefoonnummer', 'rentalshop'),
+            'required'  => true,
+            'class'     => array('form-row-wide'),
+            'clear'     => true
+        );
+        return $fields;
+    }
 ?>
