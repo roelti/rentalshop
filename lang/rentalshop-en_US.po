@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-05-08 16:54+0200\n"
-"PO-Revision-Date: 2017-05-08 16:54+0200\n"
+"POT-Creation-Date: 2017-05-22 16:08+0200\n"
+"PO-Revision-Date: 2017-05-22 16:08+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -155,15 +155,15 @@ msgstr "Read more"
 msgid "Rentable"
 msgstr "Rentable"
 
-#: product_media.php:83
+#: product_media.php:88
 msgid "<b>Er zijn geen producten of afbeeldingen gevonden..</b>"
 msgstr "<b>No products or images have been found..</b>"
 
-#: product_media.php:91
+#: product_media.php:96
 msgid "<b>Afbeeldingsgroepen klaar:</b> "
 msgstr "<b>Image groups finished:</b> "
 
-#: product_media.php:92
+#: product_media.php:97
 msgid "<b>Afbeeldingen updaten geslaagd!</b> "
 msgstr "<b>Image update complete!</b> "
 
@@ -184,8 +184,8 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:77
-msgid "<h1>Rentman Product Import - v4.4.2</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.4.2</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.4.3</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.4.3</h1><hr><br>"
 
 #: rentman.php:79
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
@@ -348,31 +348,31 @@ msgstr ""
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
 msgstr "Images can be displayed &#10003;<br>"
 
-#: rentman_project.php:149
+#: rentman_project.php:172
 msgid "Huurperiode"
 msgstr "Rental period"
 
-#: rentman_project.php:334
+#: rentman_project.php:355
 msgid "Externe referentie"
 msgstr "External reference"
 
-#: rentman_project.php:335
+#: rentman_project.php:356
 msgid "Externe referentie (optioneel)"
 msgstr "External reference (optional)"
 
-#: rentman_project.php:341
+#: rentman_project.php:362
 msgid "E-mailadres"
 msgstr "Email address"
 
-#: rentman_project.php:342
+#: rentman_project.php:363
 msgid "E-mail"
 msgstr "Email address"
 
-#: rentman_project.php:348
+#: rentman_project.php:369
 msgid "Telefoon"
 msgstr "Phone"
 
-#: rentman_project.php:349
+#: rentman_project.php:370
 msgid "Telefoonnummer"
 msgstr "Phone number"
 
