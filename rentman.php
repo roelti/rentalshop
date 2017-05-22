@@ -5,7 +5,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.4.2
+     * Version: 4.4.3
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -74,8 +74,8 @@
     # Display and initialize Rentman Plugin Menu in Wordpress Admin Panel
     function menu_display(){
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.4.2</h1><hr><br>', 'rentalshop')?>
-        <img src="http://rentman.nl/wp-content/uploads/2013/09/header.jpg" alt="Rentman" height="42" width="42">
+        <?php _e('<h1>Rentman Product Import - v4.4.3</h1><hr><br>', 'rentalshop')?>
+        <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop')?>
         <form method="post", action ="options.php">
             <?php settings_fields('plugin-settings');?>
@@ -334,7 +334,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.2"
+                "version" => "4.4.3"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),

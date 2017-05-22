@@ -56,9 +56,23 @@
                 array_push($planarray['Planningmateriaal'], $count);
                 $count--;
             }
-            $object_data = rentRequest($token, $proj, $contact_id, $transport_id,
-                $fees, $startdate, $enddate, $planarray, $notitie, $shippingbtw,
-                $materials, $order_id, $ext_ref, $contact_person, $location_contact);
+            $order_data = array(
+                "token" => $token,
+                "proj" => $proj,
+                "contact_id" => $contact_id,
+                "transport_id" => $transport_id,
+                "startdate" => $startdate,
+                "enddate" => $enddate,
+                "planarray" => $planarray,
+                "notitie" => $notitie,
+                "shippingBTW" => $shippingbtw,
+                "materials" => $materials,
+                "order_id" => $order_id,
+                "ext_ref" => $ext_ref,
+                "contact_person" => $contact_person,
+                "location_contact" => $location_contact
+            );
+            $object_data = rentRequest($order_data, $fees);
         }
         else{
             $count = -6;
@@ -67,19 +81,28 @@
                 array_push($planarray['Planningmateriaal'], $count);
                 $count--;
             }
-            $object_data = saleRequest($token, $proj, $contact_id, $transport_id,
-                $fees, $planarray, $notitie, $shippingbtw, $materials, $order_id,
-                $ext_ref, $contact_person, $location_contact);
+            $order_data = array(
+                "token" => $token,
+                "proj" => $proj,
+                "contact_id" => $contact_id,
+                "transport_id" => $transport_id,
+                "planarray" => $planarray,
+                "notitie" => $notitie,
+                "shippingBTW" => $shippingbtw,
+                "materials" => $materials,
+                "order_id" => $order_id,
+                "ext_ref" => $ext_ref,
+                "contact_person" => $contact_person,
+                "location_contact" => $location_contact
+            );
+            $object_data = saleRequest($order_data, $fees);
         }
 
         return $object_data;
     }
 
     # Function that generates a new project request for rentable products
-    function rentRequest($token, $proj, $contact_id, $transport_id,
-                         $fees, $startdate, $enddate, $planarray, $notitie,
-                         $shippingbtw, $materials, $order_id, $ext_ref,
-                         $contact_person, $location_contact){
+    function rentRequest($order_data, $fees){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -87,10 +110,10 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.2"
+                "version" => "4.4.3"
             ),
             "account" => get_option('plugin-account'),
-            "token" => $token,
+            "token" => $order_data['token'],
             "itemType" => "Project",
             "columns" => array(
                 "Project" => array()
@@ -100,12 +123,12 @@
                     "-1" => array(
                         "values" => array(
                             "id" => "-1",
-                            "naam" => $proj,
-                            "opdrachtgever" => $contact_id,
-                            "opdrachtgever_persoon" => $contact_person,
-                            "locatie" => $transport_id,
-                            "locatie_persoon" => $location_contact,
-                            "referentie" => $ext_ref,
+                            "naam" => $order_data['proj'],
+                            "opdrachtgever" => $order_data['contact_id'],
+                            "opdrachtgever_persoon" => $order_data['contact_person'],
+                            "locatie" => $order_data['transport_id'],
+                            "locatie_persoon" => $order_data['location_contact'],
+                            "referentie" => $order_data['ext_ref'],
                             "gebruiksperiode" => -2,
                             "planperiode" => -2
                         ),
@@ -132,20 +155,20 @@
                     "-4" => array(
                         "values" => array(
                             "id" => -4,
-                            "naam" => $proj,
+                            "naam" => $order_data['proj'],
                             "korting_personeel" => $fees[0],
                             "korting_totaal" => $fees[1],
                             "korting_transport" => $fees[2],
-                            "locatie" => $transport_id,
-                            "locatie_persoon" => $location_contact
+                            "locatie" => $order_data['transport_id'],
+                            "locatie_persoon" => $order_data['location_contact']
                         )
                     )
                 ),
                 "Tijd" => array(
                     "-2" => array(
                         "values" => array(
-                            "van" => $startdate,
-                            "tot" => $enddate,
+                            "van" => $order_data['startdate'],
+                            "tot" => $order_data['enddate'],
                             "naam" => __("Huurperiode",'rentalshop'),
                             "subproject" => -4
                         )
@@ -155,14 +178,14 @@
                     "-3" => array(
                         "values" => array(
                             "subproject" => -4,
-                            "van" => $startdate,
-                            "tot" => $enddate,
-                            "gebruikvan" => $startdate,
-                            "gebruiktot" => $enddate,
-                            "planvan" => $startdate,
-                            "plantot" => $enddate
+                            "van" => $order_data['startdate'],
+                            "tot" => $order_data['enddate'],
+                            "gebruikvan" => $order_data['startdate'],
+                            "gebruiktot" => $order_data['enddate'],
+                            "planvan" => $order_data['startdate'],
+                            "plantot" => $order_data['enddate']
                         ),
-                        "links" => $planarray
+                        "links" => $order_data['planarray']
                     )
                 ),
                 "Projectnotitie" => array(
@@ -170,7 +193,7 @@
                         "values" => array(
                             "subproject" => -4,
                             "naam" => 'WebShop',
-                            "omschrijving" => $notitie
+                            "omschrijving" => $order_data['notitie']
                         )
                     )
                 ),
@@ -179,21 +202,19 @@
                         "values" => array(
                             "subproject" => -4,
                             "naamintern" => 'Shipping',
-                            "prijs_vast" => $shippingbtw,
+                            "prijs_vast" => $order_data['shippingBTW'],
                             "type" => "T"
                         )
                     )
                 ),
-                "Planningmateriaal" => planmaterial_array($materials, $planarray, $order_id, $contact_id, -7)
+                "Planningmateriaal" => planmaterial_array($order_data['materials'], $order_data['planarray'], $order_data['order_id'], $order_data['contact_id'], -7)
             )
         );
         return $object_data;
     }
 
     # Function that generates a new project request for rentable products
-    function saleRequest($token, $proj, $contact_id, $transport_id, $fees, $planarray,
-                         $notitie, $shippingbtw, $materials, $order_id, $ext_ref,
-                         $contact_person, $location_contact){
+    function saleRequest($order_data, $fees){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -201,10 +222,10 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.2"
+                "version" => "4.4.3"
             ),
             "account" => get_option('plugin-account'),
-            "token" => $token,
+            "token" => $order_data['token'],
             "itemType" => "Project",
             "columns" => array(
                 "Project" => array()
@@ -214,12 +235,12 @@
                     "-1" => array(
                         "values" => array(
                             "id" => "-1",
-                            "naam" => $proj,
-                            "opdrachtgever" => $contact_id,
-                            "opdrachtgever_persoon" => $contact_person,
-                            "locatie" => $transport_id,
-                            "locatie_persoon" => $location_contact,
-                            "referentie" => $ext_ref,
+                            "naam" => $order_data['proj'],
+                            "opdrachtgever" => $order_data['contact_id'],
+                            "opdrachtgever_persoon" => $order_data['contact_person'],
+                            "locatie" => $order_data['transport_id'],
+                            "locatie_persoon" => $order_data['location_contact'],
+                            "referentie" => $order_data['ext_ref'],
                         ),
                         "links" => array(
                             "Subproject" => array(
@@ -241,12 +262,12 @@
                     "-2" => array(
                         "values" => array(
                             "id" => -2,
-                            "naam" => $proj,
+                            "naam" => $order_data['proj'],
                             "korting_personeel" => $fees[0],
                             "korting_totaal" => $fees[1],
                             "korting_transport" => $fees[2],
-                            "locatie" => $transport_id,
-                            "locatie_persoon" => $location_contact
+                            "locatie" => $order_data['transport_id'],
+                            "locatie_persoon" => $order_data['location_contact']
                         )
                     )
                 ),
@@ -255,7 +276,7 @@
                         "values" => array(
                             "subproject" => -2
                         ),
-                        "links" => $planarray
+                        "links" => $order_data['planarray']
                     )
                 ),
                 "Projectnotitie" => array(
@@ -263,7 +284,7 @@
                         "values" => array(
                             "subproject" => -2,
                             "naam" => 'WebShop',
-                            "omschrijving" => $notitie
+                            "omschrijving" => $order_data['notitie']
                         )
                     )
                 ),
@@ -272,12 +293,12 @@
                         "values" => array(
                             "subproject" => -2,
                             "naamintern" => 'Shipping',
-                            "prijs_vast" => $shippingbtw,
+                            "prijs_vast" => $order_data['shippingBTW'],
                             "type" => "T"
                         )
                     )
                 ),
-                "Planningmateriaal" => planmaterial_array($materials, $planarray, $order_id, $contact_id, -6)
+                "Planningmateriaal" => planmaterial_array($order_data['materials'], $order_data['planarray'], $order_data['order_id'], $order_data['contact_id'], -6)
             )
         );
         return $object_data;

@@ -7,6 +7,8 @@ jQuery().ready(function()
     jQuery("#importStatus").html(string1 + "0 / " + products.length);
     console.log('Products Imported:');
     console.log(products);
+    console.log('Files Imported:');
+    console.log(folders);
     applyAjax();
 });
 

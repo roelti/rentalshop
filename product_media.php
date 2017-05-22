@@ -20,6 +20,11 @@
         $new_file_name = 'media-' . $sku . '-' . $count . '.' . $ext;
         $post_file_name = 'media-' . $sku . '-' . $count;
         $targetUrl = ABSPATH.$artDir . $new_file_name;
+
+        # Delete old attachments with the same name
+        $attachment = get_page_by_title($post_file_name, OBJECT, 'attachment');
+        wp_delete_attachment($attachment->ID);
+
         if(!file_exists($targetUrl)){
             copy($fileUrl, $targetUrl);
         }
