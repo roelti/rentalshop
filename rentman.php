@@ -31,21 +31,24 @@
     add_action('admin_menu', 'register_submenu');
     add_action('init', 'register_rental_product_type');
     add_action('init', 'translatePlugin');
+    add_action('woocommerce_admin_order_data_after_billing_address', 'display_dates_in_order', 10, 1);
     add_action('woocommerce_after_single_product', 'set_functions');
     add_action('woocommerce_before_add_to_cart_form', 'show_discount', 9, 1);
     add_action('woocommerce_before_add_to_cart_button', 'add_custom_field', 10, 1);
     add_action('woocommerce_before_cart_totals', 'add_date_checkout');
     add_action('woocommerce_cart_calculate_fees', 'apply_staffel');
     add_action('woocommerce_cart_calculate_fees', 'apply_rentman_tax');
+    add_action('woocommerce_checkout_update_order_meta', 'add_rental_data');
     add_action('woocommerce_single_product_summary', 'add_to_cart_template', 30);
     add_action('woocommerce_thankyou', 'export_users', 10, 1);
 
     # Add filters for certain buttons and texts
     add_filter('woocommerce_add_to_cart_validation', 'check_available', 10, 5);
-    add_filter( 'woocommerce_checkout_fields', 'adjust_checkout');
+    add_filter('woocommerce_checkout_fields', 'adjust_checkout');
     add_filter('woocommerce_product_single_add_to_cart_text', 'woo_custom_cart_button_text');
     add_filter('woocommerce_update_cart_validation', 'update_amount', 10, 5);
     add_filter('woocommerce_cart_needs_shipping', '__return_true');
+    add_filter('woocommerce_email_order_meta_fields', 'add_dates_to_email', 10, 3);
     add_filter('product_type_selector', 'add_rentable_product');
 
     # Register the plugin settings for a specific user

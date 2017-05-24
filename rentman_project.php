@@ -374,4 +374,24 @@
         );
         return $fields;
     }
+
+    # Adds the rental period data to the order data in the confirmation email
+    function add_dates_to_email($fields, $sent_to_admin, $order){
+        $fields['rental_period'] = array(
+            'label' => __('Huurperiode', 'rentalshop'),
+            'value' => get_post_meta($order->id, 'rental_period', true),
+        );
+        return $fields;
+    }
+
+    # Adds the rental period data to the order meta
+    function add_rental_data($order_id){
+        $rental = get_option('plugin-startdate') . ' ~ ' . get_option('plugin-enddate');
+        update_post_meta($order_id, 'rental_period', $rental);
+    }
+
+    # Displays the rental period data on the order details page
+    function display_dates_in_order($order){
+        echo '<p><strong>' . __('Huurperiode') . ':</strong> ' . get_post_meta($order->id, 'rental_period', true) . '</p>';
+    }
 ?>
