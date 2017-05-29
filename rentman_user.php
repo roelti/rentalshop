@@ -87,7 +87,9 @@
             else # Billing and shipping addresses are exactly the same
                 $transport_id = $contact_id;
 
+            # Add the project and finish the session
             add_project($order_id, $contact_id['data']['id'], $transport_id['data']['id'], $fees, $contact_person, $location_contact);
+            unset($_SESSION['rentman_rental_session']);
         }
     }
 
@@ -102,7 +104,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -130,7 +132,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -190,7 +192,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -286,7 +288,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

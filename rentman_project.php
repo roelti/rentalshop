@@ -23,8 +23,9 @@
         $notitie = $order->customer_note;
         $ext_ref = $order->billing_reference;
 
-        $startdate = get_option('plugin-startdate');
-        $enddate = get_option('plugin-enddate');
+        $dates = get_dates();
+        $startdate = $dates['from_date'];
+        $enddate = $dates['to_date'];
 
         $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
         $startdate = $startdate . 'T00:00:00';
@@ -110,7 +111,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -222,7 +223,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -386,7 +387,8 @@
 
     # Adds the rental period data to the order meta
     function add_rental_data($order_id){
-        $rental = get_option('plugin-startdate') . ' ~ ' . get_option('plugin-enddate');
+        $dates = get_dates();
+        $rental = $dates['from_date'] . ' ~ ' . $dates['to_date'];
         update_post_meta($order_id, 'rental_period', $rental);
     }
 

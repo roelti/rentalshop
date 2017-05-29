@@ -18,8 +18,9 @@
             }
             # If there isn't, display the date input fields
             if ($rentableProduct == false){
-                $fromDate = get_option('plugin-startdate');
-                $toDate = get_option('plugin-enddate');
+                $dates = get_dates();
+                $fromDate = $dates['from_date'];
+                $toDate = $dates['to_date'];
                 $today = date("Y-m-d");
                 # Check if the 'from' date is earlier than the 'to' date
                 if (strtotime($fromDate) < strtotime($today))
@@ -36,8 +37,9 @@
                 <?php
             }
             else{ # Else, display the dates from the products in your shopping cart
+                $dates = get_dates();
                 ?>
-                <?php _e('<h3>Geselecteerde datums: </h3> <p><b>Van </b>', 'rentalshop'); echo get_option('plugin-startdate'); _e('<b> tot </b>', 'rentalshop'); echo get_option('plugin-enddate');?></p>
+                <?php _e('<h3>Geselecteerde datums: </h3> <p><b>Van </b>', 'rentalshop'); echo $dates['from_date']; _e('<b> tot </b>', 'rentalshop'); echo $dates['to_date'];?></p>
                 <?php
             }
             # Only show the availability messages when 'check availability for sending' is allowed
@@ -65,8 +67,9 @@
         if ($rentableProduct){
             ?><p>
             <?php _e('<h2>VERHUURPERIODE</h2>','rentalshop');
-            $startdate = get_option('plugin-startdate');
-            $enddate = get_option('plugin-enddate');
+            $dates = get_dates();
+            $startdate = $dates['from_date'];
+            $enddate = $dates['to_date'];
             $sdate =& $startdate;
             $edate =& $enddate;
             ?>
@@ -144,20 +147,21 @@
 
     # Setup API request that checks the availability of the product
     function available_request($token, $identifier, $quantity){
-        $enddate = get_option('plugin-enddate');
+        $dates = get_dates();
+        $enddate = $dates['to_date'];
         $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
         $object_data = array(
             "requestType" => "modulefunction",
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
             "module" => "Availability",
             "parameters" => array(
-                "van" => get_option('plugin-startdate'),
+                "van" => $dates['from_date'],
                 "tot" => $enddate,
                 "materiaal" => $identifier,
                 "aantal" => $quantity
@@ -185,8 +189,8 @@
             }
         } # Only update the dates when all materials are available in the new time period
         if ($checkergroup == false){
-            update_option('plugin-startdate', $_POST['backup-start']);
-            update_option('plugin-enddate', $_POST['backup-end']);
+            $_SESSION['rentman_rental_session']['from_date'] = $_POST['backup-start'];
+            $_SESSION['rentman_rental_session']['to_date'] = $_POST['backup-end'];
         }
         echo "<meta http-equiv='refresh' content='0'>";
     }
@@ -205,12 +209,13 @@
         }
 
         # Adjust the ending date to 00:00 on the following day
-        $enddate = get_option('plugin-enddate');
+        $dates = get_dates();
+        $enddate = $dates['to_date'];
         $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
 
         # Register and localize the availability script
         wp_register_script('admin_availability', plugins_url('js/admin_available.js', __FILE__ ));
-        wp_localize_script('admin_availability', 'startDate', get_option('plugin-startdate'));
+        wp_localize_script('admin_availability', 'startDate', $dates['from_date']);
         wp_localize_script('admin_availability', 'endDate', $enddate);
         wp_localize_script('admin_availability', 'endPoint', receive_endpoint());
         wp_localize_script('admin_availability', 'rm_account', get_option('plugin-account'));
@@ -231,17 +236,19 @@
         $startDate = $_POST['start-date'];
         $endDate = $_POST['end-date'];
         if ($startDate == '' or $endDate == ''){
-            $startDate = get_option('plugin-startdate');
-            $endDate = get_option('plugin-enddate');
+            $dates = get_dates();
+            $startDate = $dates['from_date'];
+            $endDate = $dates['to_date'];
         }
 
         # Only apply availability check on products that were
         # imported from Rentman
         if ($product->product_type == 'rentable'){
-            update_option('plugin-startdate', $startDate);
-            update_option('plugin-enddate', $endDate);
-            $sdate = get_option('plugin-startdate');
-            $edate = get_option('plugin-enddate');
+            $_SESSION['rentman_rental_session']['from_date'] = $startDate;
+            $_SESSION['rentman_rental_session']['to_date'] = $endDate;
+            $dates = get_dates();
+            $sdate = $dates['from_date'];
+            $edate = $dates['to_date'];
             # Check if any of the input dates are wrong
             if ($sdate == '' or $edate == '' or (strtotime($edate) < strtotime($sdate))){
                 $passed = false;

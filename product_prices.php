@@ -14,17 +14,19 @@
 
         if (get_post_meta($post->ID, 'rentman_imported', true) == true){
             if (get_option('plugin-checkdisc') == 1){
-                global $user_email;
-                get_currentuserinfo();
+                $current_user = wp_get_current_user();
+                if ($current_user->ID != 0){
+                    # Setup request to send JSON
+                    $message = json_encode(setup_check_request($token, $current_user->user_email), JSON_PRETTY_PRINT);
 
-                # Setup request to send JSON
-                $message = json_encode(setup_check_request($token, $user_email), JSON_PRETTY_PRINT);
-
-                # Send request and receive response
-                $received = do_request($url, $message);
-                $parsed = json_decode($received, true);
-                $parsed = parseResponse($parsed);
-                $contactarr = $parsed['response']['items']['Contact'];
+                    # Send request and receive response
+                    $received = do_request($url, $message);
+                    $parsed = json_decode($received, true);
+                    $parsed = parseResponse($parsed);
+                    $contactarr = $parsed['response']['items']['Contact'];
+                } else {
+                    $contactarr = array();
+                }
 
                 if (empty($contactarr)){ # User not found, so don't add the discount
                     $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
@@ -73,8 +75,9 @@
         $pf = new WC_Product_Factory();
 
         # Get token and dates
-        $fromDate = strtotime(get_option('plugin-startdate'));
-        $endDate = strtotime(get_option('plugin-enddate'));
+        $dates = get_dates();
+        $fromDate = strtotime($dates['from_date']);
+        $endDate = strtotime($dates['to_date']);
         $totaldays = abs($endDate - $fromDate);
         $totaldays = ceil($totaldays / (3600*24)) + 1;
         $token = get_option('plugin-token');
@@ -117,21 +120,23 @@
     function apply_customer_discount($staffels){
         # Check if discount check is enabled
         if (get_option('plugin-checkdisc') == 1){
-            global $user_email;
-            get_currentuserinfo();
+            $current_user = wp_get_current_user();
+            if ($current_user->ID != 0){
+                # Receive endpoint and token
+                $url = receive_endpoint();
+                $token = get_option('plugin-token');
 
-            # Receive endpoint and token
-            $url = receive_endpoint();
-            $token = get_option('plugin-token');
+                # Setup request to send JSON
+                $message = json_encode(setup_check_request($token, $current_user->user_email), JSON_PRETTY_PRINT);
 
-            # Setup request to send JSON
-            $message = json_encode(setup_check_request($token, $user_email), JSON_PRETTY_PRINT);
-
-            # Send request and receive response
-            $received = do_request($url, $message);
-            $parsed = json_decode($received, true);
-            $parsed = parseResponse($parsed);
-            $contactarr = $parsed['response']['items']['Contact'];
+                # Send request and receive response
+                $received = do_request($url, $message);
+                $parsed = json_decode($received, true);
+                $parsed = parseResponse($parsed);
+                $contactarr = $parsed['response']['items']['Contact'];
+            } else {
+                $contactarr = array();
+            }
 
             if (empty($contactarr)){ # User not found, so don't add the discount
                 return;
@@ -203,13 +208,13 @@
 
     # Get staffel array for project export
     function get_staffels($order_id){
-        global $wpdb;
         $order = new WC_Order($order_id);
         $staffels = array();
 
         # Get token and dates
-        $fromDate = strtotime(get_option('plugin-startdate'));
-        $endDate = strtotime(get_option('plugin-enddate'));
+        $dates = get_dates();
+        $fromDate = strtotime($dates['from_date']);
+        $endDate = strtotime($dates['to_date']);
         $totaldays = abs($endDate - $fromDate);
         $totaldays = ceil($totaldays / (3600*24)) + 1;
         $token = get_option('plugin-token');
@@ -230,29 +235,33 @@
 
     # Get discount array for project export
     function get_all_discounts($order_id, $contact_id){
-        $order = new WC_Order($order_id);
-        $materials = array();
-        $pf = new WC_Product_Factory();
+        if (get_option('plugin-checkdisc') == 1) {
+            $order = new WC_Order($order_id);
+            $materials = array();
+            $pf = new WC_Product_Factory();
 
-        # Receive endpoint and token
-        $url = receive_endpoint();
-        $token = get_option('plugin-token');
+            # Receive endpoint and token
+            $url = receive_endpoint();
+            $token = get_option('plugin-token');
 
-        # Create array with all materials from the order
-        foreach($order->get_items() as $key => $lineItem){
-            $product_id = $lineItem['product_id'];
-            $product = $pf->get_product($product_id);
-            array_push($materials, $product->get_sku());
+            # Create array with all materials from the order
+            foreach ($order->get_items() as $key => $lineItem) {
+                $product_id = $lineItem['product_id'];
+                $product = $pf->get_product($product_id);
+                array_push($materials, $product->get_sku());
+            }
+
+            # Setup request, send request and receive response
+            $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
+            $received = do_request($url, $message);
+            $parsed = json_decode($received, true);
+            $parsed = parseResponse($parsed);
+
+            # Receive array of discounts
+            $discounts = $parsed['response']['value'];
+        } else {
+            $discounts = array();
         }
-
-        # Setup request, send request and receive response
-        $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
-        $received = do_request($url, $message);
-        $parsed = json_decode($received, true);
-        $parsed = parseResponse($parsed);
-
-        # Receive array of discounts
-        $discounts = $parsed['response']['value'];
         return $discounts;
     }
 
@@ -306,7 +315,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -350,7 +359,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -375,7 +384,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.4.3"
+                "version" => "4.4.4"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
