@@ -3,7 +3,7 @@
  * Plugin Name: Rentman
  * Plugin URI: http://www.rentman.nl
  * Description: Integrates Rentman rental software into WooCommerce
- * Version: 0.0.1
+ * Version: 1.0.1
  * Author: 
  * Author URI: 
  * Text Domain: rentman
@@ -276,14 +276,14 @@ class Rentman {
 		$cart = array();
 
 		foreach ( $products as $product ) {
-			$product_id = $product['item_meta']['_product_id'][0];
-			$sku = get_post_meta($product_id, "_sku");
-			$sku = $sku[0];
-			$quantity = $product['item_meta']['_qty'];		
+			$product_id = $product['product_id'];
+			$material = wc_get_product($product_id);
+			$sku = $material->get_sku();
+			$quantity = $product['quantity'];
 			$cart["items"][$sku] = array(
 				"id" => $sku,
-				"aantal" => $quantity[0]
-				);
+				"aantal" => $quantity
+			);
 		}
 
 		$cart["in"] = get_post_meta( $order->id, 'from_date', true );
