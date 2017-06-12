@@ -24,7 +24,7 @@
                     $parsed = json_decode($received, true);
                     $parsed = parseResponse($parsed);
                     $contactarr = $parsed['response']['items']['Contact'];
-                } else {
+                } else{
                     $contactarr = array();
                 }
 
@@ -59,7 +59,7 @@
                         return;
                     echo '<h4 style="color:#8b0000">' . $notice . '€' . number_format(round($discountprice, 2), 2) . '</h4>';
                 }
-            } else {
+            } else{
                 $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
                 # Display price including tax
                 $taxprice = $product->get_price() * $tax;
@@ -134,7 +134,7 @@
                 $parsed = json_decode($received, true);
                 $parsed = parseResponse($parsed);
                 $contactarr = $parsed['response']['items']['Contact'];
-            } else {
+            } else{
                 $contactarr = array();
             }
 
@@ -303,98 +303,5 @@
             $totalprice += $carttotals - $discountprice + $extradiscount;
         }
         return $totalprice*(-1);
-    }
-
-    // ------------- API Request ------------- \\
-
-    # Returns API request ready to be encoded in Json
-    # For getting staffel by staffelgroup
-    function setup_staffel_request($token, $totaldays, $staffelgroup){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Staffel",
-            "columns" => array(
-                "Staffel" => array(
-                    "id",
-                    "displayname",
-                    "staffel",
-                    "staffelgroep",
-                    "van",
-                    "tot"
-                )
-            ),
-            "query" => array(
-                "conditions" => array(
-                    array(
-                        "key" => "staffelgroep",
-                        "value" => $staffelgroup
-                    ),
-                    array(
-                        "key" => "van",
-                        "value" => $totaldays,
-                        "comparator" => "<="
-                    ),
-                    array(
-                        "key" => "tot",
-                        "value" => $totaldays,
-                        "comparator" => ">="
-                    )
-                ))
-        );
-        return $object_data;
-    }
-
-    # Returns API request ready to be encoded in Json
-    # For getting staffelgroups
-    function setup_staffelgroup_request($token, $product_id){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Materiaal",
-            "columns" => array(
-                "Materiaal" => array(
-                    "naam",
-                    "verhuurprijs",
-                    "staffelgroep",
-                    "verhuur"
-                )
-            ),
-            "query" => array("id" => $product_id)
-        );
-        return $object_data;
-    }
-
-    # Setup API request that returns the fees of products
-    function setup_discount_request($token, $contact_id, $materials){
-        $object_data = array(
-            "requestType" => "modulefunction",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "module" => "Webshop",
-            "parameters" => array(
-                "contact" => $contact_id,
-                "materialen" => $materials
-            ),
-            "method" => "calculateDiscount"
-        );
-        return $object_data;
     }
 ?>

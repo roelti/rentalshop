@@ -104,35 +104,4 @@
         }
         return $itemCount;
     }
-
-    # Returns API request ready to be encoded in Json
-    # For importing folders
-    function setup_folder_request($token){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Folder",
-            "columns" => array(
-                "Folder" => array(
-                    "naam",
-                    "id",
-                    array(
-                        "parent" => array(
-                            "naam",
-                            "id"
-                        )
-                    ),
-                    "numberofitems"
-                )
-            ),
-            "query" => array("operator" => "AND", "conditions" => [])
-        );
-        return $object_data;
-    }
 ?>

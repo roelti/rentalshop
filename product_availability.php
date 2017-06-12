@@ -145,32 +145,6 @@
 
     // ------------- API Request Functions ------------- \\
 
-    # Setup API request that checks the availability of the product
-    function available_request($token, $identifier, $quantity){
-        $dates = get_dates();
-        $enddate = $dates['to_date'];
-        $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
-        $object_data = array(
-            "requestType" => "modulefunction",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "module" => "Availability",
-            "parameters" => array(
-                "van" => $dates['from_date'],
-                "tot" => $enddate,
-                "materiaal" => $identifier,
-                "aantal" => $quantity
-            ),
-            "method" => "is_available"
-        );
-        return $object_data;
-    }
-
     # Apply the check_available function on updated products in the cart
     function update_amount($passed, $cart_item_key, $values, $quantity){
         $product = $values['data'];

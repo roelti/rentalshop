@@ -137,7 +137,7 @@
 
             if($noDiff){ # Product already exists and has not been updated
                 continue;
-            } else { # Product does not exist yet or has been updated, so add it to the array
+            } else{ # Product does not exist yet or has been updated, so add it to the array
                 if ($longdesc == '')
                     $longdesc = $fulldesc;
                 array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $folderID, $modDate, $weight, $btw, $verhuur, $length, $width, $height));
@@ -241,109 +241,6 @@
         for ($x = 0; $x < sizeof($file_list[$product[0]]); $x++){
             attach_media($file_list[$product[0]][$x], $post_id, $product[0], $x);
         }
-    }
-
-    // ------------- API Requests ------------- \\
-
-    # Returns API request ready to be encoded in Json
-    # For importing products
-    function setup_import_request($token){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Materiaal",
-            "columns" => array(
-                "Materiaal" => array(
-                    "naam",
-                    "verhuurprijs",
-                    "verhuur",
-                    "shop_description_long",
-                    "shop_description_short",
-                    "omschrijving",
-                    "modified",
-                    array(
-                        "folder" => array(
-                            "naam",
-                            "parent"
-                        )
-                    ),
-                    "gewicht",
-                    "height",
-                    "length",
-                    "width",
-                    "img",
-                    array(
-                        "btwcode" => array(
-                            "tarief"
-                        )
-                    )
-                )
-            ),
-            "query" => array(
-                "conditions" => array(
-                    array(
-                        "key" => "tijdelijk",
-                        "value" => false
-                    ),
-                    array(
-                        "key" => "in_shop",
-                        "value" => true
-                    )
-                ),
-                "operator" => "AND"
-            )
-        );
-        return $object_data;
-    }
-
-    # Returns API request ready to be encoded in Json
-    # For getting image files for every product
-    function setup_file_request($token, $prodList, $globalimages = false){
-        if ($globalimages)
-            $idList = rentman_ids();
-        else
-            $idList = list_of_ids($prodList);
-        $file_data = array(
-            "requestType" => "query",
-            "apiVersion" => 1,
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Files",
-            "columns" => array(
-                "Files" => array(
-                    "url",
-                    "item"
-                )
-            ),
-            "query" => array(
-                "conditions" => array(
-                    array(
-                        "linkedTo" => "Materiaal",
-                        "reverse" => false,
-                        "query" => array(
-                            "id" => $idList
-                        )
-                    ),
-                    array(
-                        "key" => "image",
-                        "value" => true
-                    )
-                ),
-                "operator" => "AND"
-            )
-        );
-        return $file_data;
     }
 
     // ------------- Various Functions ------------- \\

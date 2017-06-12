@@ -5,13 +5,13 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.4.4
+     * Version: 4.5.0
      * Author: Rentman
      * Text Domain: rentalshop
      */
 
     # Start session
-    if (session_id() == '') {
+    if (session_id() == ''){
         session_start();
     }
 
@@ -21,11 +21,12 @@
     include_once('product_import.php');
     include_once('product_media.php');
     include_once('product_prices.php');
+    include_once('rentman_requests.php');
     include_once('rentman_project.php');
     include_once('rentman_user.php');
 
     # Create plugin-settings option
-    if (false == get_option('plugin-settings')) {
+    if (false == get_option('plugin-settings')){
         add_option('plugin-settings');
     }
 
@@ -86,7 +87,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.4.4</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.5.0</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
@@ -121,7 +122,7 @@
         <?php # Buttons for availability check and discount
         $availCheck = get_option('plugin-checkavail');
         $discountCheck = get_option('plugin-checkdisc');
-        if ($availCheck == '' or $discountCheck == '') {
+        if ($availCheck == '' or $discountCheck == ''){
             update_option('plugin-checkdisc', 0);
             update_option('plugin-checkavail', 0);
         } ?>
@@ -130,11 +131,11 @@
         <form method="post"><!-- If checked, applies availability check in the shop -->
             <?php _e('<strong>Check beschikbaarheid voor sturen  </strong>', 'rentalshop'); ?>
             <select name='plugin-checkavail'>
-                <option value="1" <?php if (get_option('plugin-checkavail') == 1) {
+                <option value="1" <?php if (get_option('plugin-checkavail') == 1){
                     echo "selected";
                 } ?>>Yes
                 </option>
-                <option value="0" <?php if (get_option('plugin-checkavail') == 0) {
+                <option value="0" <?php if (get_option('plugin-checkavail') == 0){
                     echo "selected";
                 } ?>>No
                 </option>
@@ -142,11 +143,11 @@
             <!-- If checked, specific customer discounts in Rentman are loaded and applied -->
             <?php _e('<br><br><strong>Korting contact uit Rentman overnemen  </strong>', 'rentalshop'); ?>
             <select name='plugin-checkdisc'>
-                <option value="1" <?php if (get_option('plugin-checkdisc') == 1) {
+                <option value="1" <?php if (get_option('plugin-checkdisc') == 1){
                     echo "selected";
                 } ?>>Yes
                 </option>
-                <option value="0" <?php if (get_option('plugin-checkdisc') == 0) {
+                <option value="0" <?php if (get_option('plugin-checkdisc') == 0){
                     echo "selected";
                 } ?>>No
                 </option>
@@ -198,24 +199,24 @@
         <?php
 
         # If 'Save Changes' button has been pressed, update options
-        if (isset($_POST['change-settings'])) {
+        if (isset($_POST['change-settings'])){
             update_option('plugin-checkdisc', $_POST['plugin-checkdisc']);
             update_option('plugin-checkavail', $_POST['plugin-checkavail']);
             echo "<meta http-equiv='refresh' content='0'>";
         }
 
         # If 'Import Products' button has been pressed, call function from product_import.php
-        if (isset($_POST['import-rentman'])) {
+        if (isset($_POST['import-rentman'])){
             import_products($token);
         }
 
         # If 'Update Images' button has been pressed, call function from product_import.php
-        if (isset($_POST['image-rentman'])) {
+        if (isset($_POST['image-rentman'])){
             update_images($token);
         }
 
         # Import Products with certain index in array (called by admin_import.js)
-        if (isset($_GET['import_products'])) {
+        if (isset($_GET['import_products'])){
             $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $prod_array = $_REQUEST['prod_array'];
             $file_array = $_REQUEST['file_array'];
@@ -224,7 +225,7 @@
         }
 
         # Update images with certain index in array (called by admin_images.js)
-        if (isset($_GET['update_images'])) {
+        if (isset($_GET['update_images'])){
             $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $image_array = $_REQUEST['image_array'];
             $array_index = $_REQUEST['array_index'];
@@ -232,17 +233,17 @@
             $post_id = wc_get_product_id_by_sku($array_index);
             # Delete the old images attached to the product
             $media = get_children(array('post_parent' => $post_id, 'post_type' => 'attachment'));
-            foreach ($media as $file) {
+            foreach ($media as $file){
                 wp_delete_post($file->ID);
             }
             # Create and attach the new images
-            for ($x = 0; $x < sizeof($current_image); $x++) {
+            for ($x = 0; $x < sizeof($current_image); $x++){
                 attach_media($current_image[$x], $post_id, $array_index, $x);
             }
         }
 
         # Delete certain amount of posts
-        if (isset($_GET['delete_products'])) {
+        if (isset($_GET['delete_products'])){
             $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $posts = $_REQUEST['prod_array'];
             $index = $_REQUEST['array_index'];
@@ -250,12 +251,12 @@
         }
 
         # Remove Empty Categories
-        if (isset($_GET['remove_folders'])) {
+        if (isset($_GET['remove_folders'])){
             remove_empty_categories();
         }
 
         # If 'Reset' button has been pressed, delete Rentman products and their categories
-        if (isset($_POST['reset-rentman'])) {
+        if (isset($_POST['reset-rentman'])){
             reset_rentman();
         }
     }
@@ -293,7 +294,7 @@
     # Main function for user login
     function login_user()
     {
-        if (false == completedata()) {
+        if (false == completedata()){
             _e('<strong>Niet alle verplichte velden zijn ingevuld</strong>', 'rentalshop');
             $token = "fail"; # User has not filled in all required fields yet
         } else {
@@ -310,9 +311,9 @@
             # Functionality check
             check_compatibility();
 
-            if ($parsed['response']['login'] == false) {
+            if ($parsed['response']['login'] == false){
                 _e('<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</h4>', 'rentalshop');
-            } else {
+            } else{
                 _e('<h4>De verbinding met de Rentman API was succesvol!</h4>', 'rentalshop');
             }
         }
@@ -331,15 +332,15 @@
         $timelimit = ini_get('max_execution_time');
         if ($timelimit < 30)
             _e('Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de plugin hierdoor niet goed.. &#10005;<br>', 'rentalshop');
-        else {
+        else{
             _e('PHP tijdslimiet is in orde &#10003;<br>', 'rentalshop');
         }
 
         # Does Rentman image Folder exist?
-        if (!file_exists(ABSPATH . $artDir)) {
+        if (!file_exists(ABSPATH . $artDir)){
             _e('Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>', 'rentalshop');
             mkdir(ABSPATH . $artDir); # Create one if it doesn't
-        } else {
+        } else{
             _e('De Rentman map voor afbeeldingen is aanwezig &#10003;<br>', 'rentalshop');
         }
 
@@ -348,13 +349,13 @@
         $targetUrl = ABSPATH . $artDir . $file_name;
         copy($fileUrl, $targetUrl);
         $errors = error_get_last();
-        if (file_exists($targetUrl)) {
+        if (file_exists($targetUrl)){
             _e('Toevoegen van afbeeldingen is gelukt &#10003;<br>', 'rentalshop');
-        } else {
+        } else{
             _e('Toevoegen van afbeeldingen is mislukt.. &#10005;<br>', 'rentalshop');
             echo "&bull; Copy Error: " . $errors['type'];
             echo "<br />\n&bull; " . $errors['message'] . '<br>';
-            if (!ini_get('allow_url_fopen')) { # Show possible solution if the copy function fails
+            if (!ini_get('allow_url_fopen')){ # Show possible solution if the copy function fails
                 _e('&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>', 'rentalshop');
             }
         }
@@ -363,9 +364,9 @@
 
         # Check if images can be displayed
         $targetUrl = ABSPATH . $artDir . $new_file_name;
-        if (!file_exists($targetUrl)) {
+        if (!file_exists($targetUrl)){
             _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
-        } else {
+        } else{
             _e('Afbeeldingen kunnen weergegeven worden &#10003;<br>', 'rentalshop');
         }
     }
@@ -380,24 +381,6 @@
         return true;
     }
 
-    # Returns API request ready to be encoded in Json
-    # Login Request
-    function setup_login_request()
-    {
-        $login_data = array(
-            "requestType" => "login",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.4.4"
-            ),
-            "account" => get_option('plugin-account'),
-            "user" => get_option('plugin-username'),
-            "password" => get_option('plugin-password')
-        );
-        return $login_data;
-    }
-
     // ------------- API Request Functions ------------- \\
 
     # Function that parses the response to a clear format
@@ -405,15 +388,15 @@
     {
         $columnNames = array();
         # Get column names
-        foreach ($response['response']['columns'] as $key => $file) {
+        foreach ($response['response']['columns'] as $key => $file){
             array_push($columnNames, $key);
         }
         # Parse key names of each column
-        foreach ($columnNames as $column) {
+        foreach ($columnNames as $column){
             $currentCol = $response['response']['items'][$column];
             # For every item in the column, change the keys
-            foreach ($currentCol as $identifier => $item) {
-                for ($x = 0; $x < sizeof($item['data']); $x++) {
+            foreach ($currentCol as $identifier => $item){
+                for ($x = 0; $x < sizeof($item['data']); $x++){
                     $keyname = $response['response']['columns'][$column][$x]['id'];
                     $item['data'][$keyname] = $item['data'][$x];
                     unset($item['data'][$x]);

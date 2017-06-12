@@ -9,8 +9,8 @@
 
         # Create Rentman image directory if it somehow still
         # doesn't exist yet
-        if(!file_exists(ABSPATH.$artDir)){
-            mkdir(ABSPATH.$artDir);
+        if(!file_exists(ABSPATH . $artDir)){
+            mkdir(ABSPATH . $artDir);
         }
 
         # Get the extension and return when the image url is incorrect
@@ -19,7 +19,7 @@
             return;
         $new_file_name = 'media-' . $sku . '-' . $count . '.' . $ext;
         $post_file_name = 'media-' . $sku . '-' . $count;
-        $targetUrl = ABSPATH.$artDir . $new_file_name;
+        $targetUrl = ABSPATH . $artDir . $new_file_name;
 
         # Delete old attachments with the same name
         $attachment = get_page_by_title($post_file_name, OBJECT, 'attachment');
