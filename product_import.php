@@ -159,6 +159,11 @@
             # Now delete the posts in the remainder array
             foreach ($remainder as $item){
                 $postID = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $item));
+                # Delete attached images
+                $media = get_children(array('post_parent' => $postID, 'post_type' => 'attachment'));
+                foreach ($media as $file){
+                    wp_delete_post($file->ID);
+                }
                 wp_delete_post($postID);
             }
         }

@@ -29,10 +29,11 @@
                 }
 
                 if (empty($contactarr)){ # User not found, so don't add the discount
+                    /*
                     $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
                     # Display price including tax
                     $taxprice = $product->get_price() * $tax;
-                    echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';
+                    echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';*/
                     return;
                 } else{ # Calculate the total customer discount
                     # Get contact and relevant materials
@@ -54,16 +55,18 @@
                     # Display discount if there is one
                     $taxprice = $product->get_price() * $tax;
                     $discountprice = (1 - current($discounts)) * $taxprice;
-                    echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';
+                    /*
+                    echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';*/
                     if (1 - current($discounts) == 1)
                         return;
                     echo '<h4 style="color:#8b0000">' . $notice . '€' . number_format(round($discountprice, 2), 2) . '</h4>';
                 }
             } else{
+                /*
                 $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
                 # Display price including tax
                 $taxprice = $product->get_price() * $tax;
-                echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';
+                echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';*/
                 return;
             }
         }
@@ -303,5 +306,17 @@
             $totalprice += $carttotals - $discountprice + $extradiscount;
         }
         return $totalprice*(-1);
+    }
+
+    # Changes the HTML for the price view by applying the Rentman tax
+    function apply_tax_on_price($price_html, $product)
+    {
+        $currency = get_woocommerce_currency_symbol();
+        $price = $product->get_price();
+        $tax = 1 + get_post_meta($product->id, '_rentman_tax', true);
+        $price = $price * $tax;
+        $endprice = number_format((float)$price, 2, '.', '');
+        $price_html = '<span class="woocommerce-Price-amount amount">' . $currency . $endprice . __(' (inclusief BTW)','rentalshop') . '</span>';
+        return $price_html;
     }
 ?>
