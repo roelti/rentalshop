@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-06-14 16:50+0200\n"
-"PO-Revision-Date: 2017-06-14 16:51+0200\n"
+"POT-Creation-Date: 2017-06-19 14:52+0200\n"
+"PO-Revision-Date: 2017-06-19 14:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -188,8 +188,8 @@ msgid " (inclusief BTW)"
 msgstr " (including taxes)"
 
 #: rentman.php:91
-msgid "<h1>Rentman Product Import - v4.5.1</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.5.1</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.5.2</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.5.2</h1><hr><br>"
 
 #: rentman.php:93
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
