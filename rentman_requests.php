@@ -14,7 +14,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),
@@ -36,7 +36,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -64,7 +64,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -124,7 +124,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -220,7 +220,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -290,7 +290,7 @@
     # Returns API request ready to be encoded in Json
     # Used for sending new project data to Rentman
     # Includes contact, relevant materials & rent dates
-    function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
+    function setup_newproject_request($url, $token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         # Get Order data and rent dates
         $order = new WC_Order($order_id);
         $comp = $order->billing_company;
@@ -315,14 +315,30 @@
         # Do not add any rental dates to the request when only non-rentable products
         # have been purchased in the order
         $rentableProduct = false;
+        $_tax = new WC_Tax();
+        $tax = 0;
         foreach($order->get_items() as $key => $lineItem){
             $product_id = $lineItem['product_id'];
             $product = wc_get_product($product_id);
+            if ($tax == 0){
+                $product_tax_class = $product->get_tax_class();
+                $rates = $_tax->get_rates($product_tax_class);
+                $rate = current($rates);
+                $tax = (floatval($rate['rate']) / 100);
+            }
             if ($product->product_type == 'rentable'){
                 $rentableProduct = true;
                 break;
             }
         }
+
+        # Receive the right Btwcode
+        $message = json_encode(receive_btwcode_request($token, $tax));
+
+        # Send Request & Receive Response
+        $received = do_request($url, $message);
+        $parsed = json_decode($received, true);
+        $taxcode = current(array_keys($parsed['response']['items']['Btwcode']));
 
         # Call the right function for the request generation
         if ($rentableProduct){
@@ -348,7 +364,7 @@
                 "contact_person" => $contact_person,
                 "location_contact" => $location_contact
             );
-            $object_data = rentRequest($order_data, $fees);
+            $object_data = rentRequest($order_data, $fees, $taxcode);
         }
         else{
             $count = -6;
@@ -371,14 +387,14 @@
                 "contact_person" => $contact_person,
                 "location_contact" => $location_contact
             );
-            $object_data = saleRequest($order_data, $fees);
+            $object_data = saleRequest($order_data, $fees, $taxcode);
         }
 
         return $object_data;
     }
 
     # Function that generates a new project request for rentable products
-    function rentRequest($order_data, $fees){
+    function rentRequest($order_data, $fees, $taxcode){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -386,7 +402,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -436,7 +452,8 @@
                             "korting_totaal" => $fees[1],
                             "korting_transport" => $fees[2],
                             "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact']
+                            "locatie_persoon" => $order_data['location_contact'],
+                            "btwcode" => $taxcode
                         )
                     )
                 ),
@@ -490,7 +507,7 @@
     }
 
     # Function that generates a new project request for rentable products
-    function saleRequest($order_data, $fees){
+    function saleRequest($order_data, $fees, $taxcode){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -498,7 +515,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -543,7 +560,8 @@
                             "korting_totaal" => $fees[1],
                             "korting_transport" => $fees[2],
                             "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact']
+                            "locatie_persoon" => $order_data['location_contact'],
+                            "btwcode" => $taxcode
                         )
                     )
                 ),
@@ -592,7 +610,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -627,7 +645,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -689,7 +707,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -734,7 +752,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -751,7 +769,7 @@
     }
 
     // ------------------------------------------------------- \\
-    // --------| RETRIEVAL OF STAFFELS AND DISCOUNTS |-------- \\
+    // --------| RETRIEVAL OF STAFFELS, DISCOUNTS AND TAXES|-------- \\
     // ------------------------------------------------------- \\
 
     # Returns API request ready to be encoded in Json
@@ -762,7 +780,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -806,7 +824,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -831,7 +849,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.5.2"
+                "version" => "4.6.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -843,5 +861,30 @@
             "method" => "calculateDiscount"
         );
         return $object_data;
+    }
+
+    # Setup API request that returns the ID of the Btwcode that
+    # is linked to the tax value in Rentman
+    function receive_btwcode_request($token, $tax){
+        $tax_data = array(
+            "requestType" => "query",
+            "client" => array(
+                "language" => "1",
+                "type" => "webshopplugin",
+                "version" => "2"
+            ),
+            "account" => 'rentalshopexample',
+            "token" => $token,
+            "itemType" => "Btwcode",
+            "columns" => array(
+                "Btwcode" => array(
+                    "naam",
+                    "id",
+                    "tarief"
+                )
+            ),
+            "query" => array("tarief" => $tax)
+        );
+        return $tax_data;
     }
 ?>

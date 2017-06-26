@@ -61,7 +61,7 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.5.2"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.6.0"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);

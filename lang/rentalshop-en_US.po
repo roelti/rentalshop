@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-06-19 14:52+0200\n"
-"PO-Revision-Date: 2017-06-19 14:52+0200\n"
+"POT-Creation-Date: 2017-06-26 16:42+0200\n"
+"PO-Revision-Date: 2017-06-26 16:42+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -167,67 +167,55 @@ msgstr "<b>Image groups finished:</b> "
 msgid "<b>Afbeeldingen updaten geslaagd!</b> "
 msgstr "<b>Image update complete!</b> "
 
-#: product_prices.php:52
+#: product_prices.php:50
 msgid "Kortingsprijs: "
 msgstr "Discount price: "
 
-#: product_prices.php:53
-msgid "Prijs inclusief BTW: "
-msgstr "Price including taxes: "
-
-#: product_prices.php:119
-msgid "BTW"
-msgstr "Tax"
-
-#: product_prices.php:169
+#: product_prices.php:144
 msgid "Klantkorting"
 msgstr "Customer Discount"
 
-#: product_prices.php:319
-msgid " (inclusief BTW)"
-msgstr " (including taxes)"
+#: rentman.php:89
+msgid "<h1>Rentman Product Import - v4.6.0</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.6.0</h1><hr><br>"
 
 #: rentman.php:91
-msgid "<h1>Rentman Product Import - v4.5.2</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.5.2</h1><hr><br>"
-
-#: rentman.php:93
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
 msgstr "<h3>Provide your Rentman 4G login credentials</h3>"
 
-#: rentman.php:99
+#: rentman.php:97
 msgid "<strong>Gebruikersnaam</strong>"
 msgstr "<strong>Username</strong>"
 
-#: rentman.php:101
+#: rentman.php:99
 msgid "<strong>Wachtwoord</strong>"
 msgstr "<strong>Password</strong>"
 
-#: rentman.php:103
+#: rentman.php:101
 msgid "Gegevens controleren"
 msgstr "Submit Credentials"
 
-#: rentman.php:131
+#: rentman.php:129
 msgid "<hr><h3>Instellingen</h3>"
 msgstr "<hr><h3>Settings</h3>"
 
-#: rentman.php:133
+#: rentman.php:131
 msgid "<strong>Check beschikbaarheid voor sturen  </strong>"
 msgstr "<strong>Check availability for sending  </strong>"
 
-#: rentman.php:145
+#: rentman.php:143
 msgid "<br><br><strong>Korting contact uit Rentman overnemen  </strong>"
 msgstr "<br><br><strong>Use discount from contact in Rentman  </strong>"
 
-#: rentman.php:159
+#: rentman.php:157
 msgid "Wijzigingen Opslaan"
 msgstr "Save Changes"
 
-#: rentman.php:162
+#: rentman.php:160
 msgid "Update afbeeldingen van producten"
 msgstr "Update product images"
 
-#: rentman.php:164
+#: rentman.php:162
 msgid ""
 "Druk op de onderstaande knop wanneer je afbeeldingen in Rentman hebt "
 "gewijzigd<br>\n"
@@ -237,19 +225,19 @@ msgstr ""
 "your<br>\n"
 "                changes to WooCommerce."
 
-#: rentman.php:171
+#: rentman.php:169
 msgid "Afbeeldingen Updaten"
 msgstr "Update Images"
 
-#: rentman.php:174
+#: rentman.php:172
 msgid "<h3>De afbeeldingen worden opgehaald..</h3>"
 msgstr "<h3>Starting image import..</h3>"
 
-#: rentman.php:176
+#: rentman.php:174
 msgid "Importeer materiaal uit Rentman"
 msgstr "Import products from Rentman"
 
-#: rentman.php:178
+#: rentman.php:176
 msgid ""
 "Druk op de onderstaande knop om te zoeken naar nieuwe of gewijzigde "
 "producten en deze<br>\n"
@@ -259,19 +247,19 @@ msgstr ""
 "webshop products<br>\n"
 "                from your Rentman account to your WooCommerce shop."
 
-#: rentman.php:180
+#: rentman.php:178
 msgid "-- Meest recente check voor updates: "
 msgstr "-- Most recent check for updates: "
 
-#: rentman.php:188
+#: rentman.php:186
 msgid "Producten Importeren"
 msgstr "Import Products"
 
-#: rentman.php:193
+#: rentman.php:191
 msgid "Reset"
 msgstr "Reset"
 
-#: rentman.php:197
+#: rentman.php:195
 msgid ""
 "<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze "
 "pagina niet!</h3>"
@@ -279,15 +267,15 @@ msgstr ""
 "<h3>Starting import.. This might take a few minutes, so don't leave this "
 "page!</h3>"
 
-#: rentman.php:291
+#: rentman.php:289
 msgid "Dit is geen Rentman 4 account! &#10005;<br>"
 msgstr "This is not a Rentman 4 account! &#10005;<br>"
 
-#: rentman.php:299
+#: rentman.php:297
 msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
 msgstr "<strong>Please fill in all of the required fields</strong>"
 
-#: rentman.php:316
+#: rentman.php:314
 msgid ""
 "<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
 "h4>"
@@ -295,15 +283,15 @@ msgstr ""
 "<h4>Connection with the Rentman API failed! Did you provide the correct "
 "credentials?</h4>"
 
-#: rentman.php:318
+#: rentman.php:316
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
 msgstr "<h4>Connection with the Rentman API was successful!</h4>"
 
-#: rentman.php:327
+#: rentman.php:325
 msgid "<b>Compatibiliteitscontrole..</b><br>"
 msgstr "<b>Checking for compatibility errors..</b><br>"
 
-#: rentman.php:335
+#: rentman.php:333
 msgid ""
 "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
 "plugin hierdoor niet goed.. &#10005;<br>"
@@ -311,27 +299,27 @@ msgstr ""
 "Beware, the PHP time limit is lower than 30 seconds! The plugin might not "
 "work correctly.. &#10005;<br>"
 
-#: rentman.php:337
+#: rentman.php:335
 msgid "PHP tijdslimiet is in orde &#10003;<br>"
 msgstr "PHP time limit is okay &#10003;<br>"
 
-#: rentman.php:342
+#: rentman.php:340
 msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 msgstr "Folder created at <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 
-#: rentman.php:345
+#: rentman.php:343
 msgid "De Rentman map voor afbeeldingen is aanwezig &#10003;<br>"
 msgstr "The Rentman folder for images exists &#10003;<br>"
 
-#: rentman.php:354
+#: rentman.php:352
 msgid "Toevoegen van afbeeldingen is gelukt &#10003;<br>"
 msgstr "Addition of images was successful &#10003;<br>"
 
-#: rentman.php:356
+#: rentman.php:354
 msgid "Toevoegen van afbeeldingen is mislukt.. &#10005;<br>"
 msgstr "Addition of images failed.. &#10005;<br>"
 
-#: rentman.php:360
+#: rentman.php:358
 msgid ""
 "&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer "
 "dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
@@ -339,7 +327,7 @@ msgstr ""
 "&bull; <i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to "
 "change this and check if the error has been resolved.<br>"
 
-#: rentman.php:369
+#: rentman.php:367
 msgid ""
 "Let op: er ontbreekt een .htaccess bestand in de 'wp-content/uploads/"
 "rentman/' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>"
@@ -347,7 +335,7 @@ msgstr ""
 "Important: a .htaccess file is missing in the 'wp-content/uploads/rentman/' "
 "folder! The imported images might not be displayed correctly..<br>"
 
-#: rentman.php:371
+#: rentman.php:369
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
 msgstr "Images can be displayed &#10003;<br>"
 
@@ -375,9 +363,18 @@ msgstr "Phone"
 msgid "Telefoonnummer"
 msgstr "Phone number"
 
-#: rentman_project.php:90 rentman_project.php:105 rentman_requests.php:448
+#: rentman_project.php:90 rentman_project.php:105 rentman_requests.php:465
 msgid "Huurperiode"
 msgstr "Rental period"
+
+#~ msgid "Prijs inclusief BTW: "
+#~ msgstr "Price including taxes: "
+
+#~ msgid "BTW"
+#~ msgstr "Tax"
+
+#~ msgid " (inclusief BTW)"
+#~ msgstr " (including taxes)"
 
 #~ msgid "Einddatum"
 #~ msgstr "End date"

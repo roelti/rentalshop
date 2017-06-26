@@ -7,7 +7,7 @@
         $token = get_option('plugin-token');
 
         # Setup New Project Request to send JSON
-        $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_newproject_request($url, $token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
 
         # Send Request & Receive Response
         do_request($url, $message);

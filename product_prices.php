@@ -6,8 +6,11 @@
         global $post;
         $pf = new WC_Product_Factory();
         $product = $pf->get_product($post->ID);
-        $tax = 1 + get_post_meta($post->ID, '_rentman_tax', true);
-
+        $_tax = new WC_Tax();
+        $product_tax_class = $product->get_tax_class();
+        $rates = $_tax->get_rates($product_tax_class);
+        $rate = current($rates);
+        $tax = 1 + (floatval($rate['rate']) / 100);
         # Receive endpoint and token
         $url = receive_endpoint();
         $token = get_option('plugin-token');
@@ -29,11 +32,6 @@
                 }
 
                 if (empty($contactarr)){ # User not found, so don't add the discount
-                    /*
-                    $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
-                    # Display price including tax
-                    $taxprice = $product->get_price() * $tax;
-                    echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';*/
                     return;
                 } else{ # Calculate the total customer discount
                     # Get contact and relevant materials
@@ -50,23 +48,16 @@
                     # Receive array of discounts
                     $discounts = $parsed['response']['value'];
                     $notice = __('Kortingsprijs: ','rentalshop');
-                    $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
 
                     # Display discount if there is one
                     $taxprice = $product->get_price() * $tax;
                     $discountprice = (1 - current($discounts)) * $taxprice;
-                    /*
-                    echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';*/
+
                     if (1 - current($discounts) == 1)
                         return;
                     echo '<h4 style="color:#8b0000">' . $notice . '€' . number_format(round($discountprice, 2), 2) . '</h4>';
                 }
             } else{
-                /*
-                $taxnotice = __('Prijs inclusief BTW: ','rentalshop');
-                # Display price including tax
-                $taxprice = $product->get_price() * $tax;
-                echo '<h4>' . $taxnotice . '€' . number_format(round($taxprice, 2), 2) . '</h4>';*/
                 return;
             }
         }
@@ -101,22 +92,6 @@
         $fee = calculate_fee($staffels);
         apply_customer_discount($staffels);
         WC()->cart->add_fee('Staffel', $fee, true, 'standard');
-    }
-
-    # Apply tax from Rentman to product
-    function apply_rentman_tax(){
-        $items = WC()->cart->get_cart();
-        $pf = new WC_Product_Factory();
-        $taxtotal = 0;
-        foreach ($items as $item => $values){
-            $amount = $items[$item]["quantity"];
-            $_product = $values['data']->post;
-            $product = $pf->get_product($_product->ID);
-            $tax = get_post_meta($_product->ID, '_rentman_tax', true);
-            $price = $tax * $product->get_price() * $amount;
-            $taxtotal += $price;
-        }
-        WC()->cart->add_fee(__('BTW','rentalshop'), $taxtotal, true, 'standard');
     }
 
     # Apply customer discount on the prices of the products
@@ -278,7 +253,11 @@
             $amount = $items[$item]["quantity"];
             $product = $pf->get_product($_product->ID);
             $staffel = $staffels[$product->get_sku()];
-            $tax = 1 + get_post_meta($_product->ID, '_rentman_tax', true);
+            $_tax = new WC_Tax();
+            $product_tax_class = $product->get_tax_class();
+            $rates = $_tax->get_rates($product_tax_class);
+            $rate = current($rates);
+            $tax = 1 + (floatval($rate['rate']) / 100);
             $price = $tax * $product->get_price();
             $carttotals = $price * $amount;
             $staffelprice = $carttotals * $staffel;
@@ -297,7 +276,11 @@
             $amount = $items[$item]["quantity"];
             $product = $pf->get_product($_product->ID);
             $discount = $discounts[$product->get_sku()];
-            $tax = 1 + get_post_meta($_product->ID, '_rentman_tax', true);
+            $_tax = new WC_Tax();
+            $product_tax_class = $product->get_tax_class();
+            $rates = $_tax->get_rates($product_tax_class);
+            $rate = current($rates);
+            $tax = 1 + (floatval($rate['rate']) / 100);
             $price = $tax * $product->get_price();
             $carttotals = $price * $staffels[$product->get_sku()] * $amount;
             $percentage = 1 - $discount;
@@ -306,17 +289,5 @@
             $totalprice += $carttotals - $discountprice + $extradiscount;
         }
         return $totalprice*(-1);
-    }
-
-    # Changes the HTML for the price view by applying the Rentman tax
-    function apply_tax_on_price($price_html, $product)
-    {
-        $currency = get_woocommerce_currency_symbol();
-        $price = $product->get_price();
-        $tax = 1 + get_post_meta($product->id, '_rentman_tax', true);
-        $price = $price * $tax;
-        $endprice = number_format((float)$price, 2, '.', '');
-        $price_html = '<span class="woocommerce-Price-amount amount">' . $currency . $endprice . __(' (inclusief BTW)','rentalshop') . '</span>';
-        return $price_html;
     }
 ?>
