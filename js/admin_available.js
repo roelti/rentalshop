@@ -18,14 +18,16 @@ function quickCheck() {
     if (document.contains(document.getElementsByName("start-date")[0])) {
         var fromDate = document.getElementsByName("start-date")[0].value;
         var toDate = document.getElementsByName("end-date")[0].value;
-        var incDate = new Date(toDate);
-        incDate.setDate(incDate.getDate() + 1);
-        toDate = incDate.toISOString().substring(0,19);
+        if (fromDate != null && fromDate != "" && toDate != null && toDate != null){
+        	var incDate = new Date(toDate);
+        	incDate.setDate(incDate.getDate() + 1);
+        	toDate = incDate.toISOString().substring(0,19);
+        }
     } else {
         var fromDate = startDate;
         var toDate = endDate;
     }
-    if (fromDate > toDate){
+    if (fromDate == null || toDate == null || fromDate == ""|| toDate == "" || fromDate > toDate){
         document.getElementsByClassName("availLog")[0].innerHTML = unavailable;
         document.getElementsByClassName("availLog")[0].style = "color:red";
     }
@@ -61,7 +63,7 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.6.0"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.6.1"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);

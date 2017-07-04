@@ -146,7 +146,7 @@
         }
     }
 
-    # Get staffel from Rentman
+    # Get daily fee multiplier from Rentman
     function get_staffel($token, $totaldays, $staffelgroup){
         $url = receive_endpoint();
 

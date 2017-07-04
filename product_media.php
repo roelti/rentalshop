@@ -91,8 +91,8 @@
         # Register and localize the admin_images.js file, which handles the image update
         wp_register_script('admin_add_images', plugins_url('js/admin_images.js', __FILE__ ));
         wp_localize_script('admin_add_images', 'images', $current_files);
-        wp_localize_script('admin_add_images', 'arrayindex', key($current_files));
-        wp_localize_script('admin_add_images', 'totalsize', sizeof($current_files));
+        wp_localize_script('admin_add_images', 'arrayindex', (string)key($current_files));
+        wp_localize_script('admin_add_images', 'totalsize', (string)sizeof($current_files));
         wp_localize_script('admin_add_images', 'string1', __('<b>Afbeeldingsgroepen klaar:</b> ', 'rentalshop'));
         wp_localize_script('admin_add_images', 'string2', __('<b>Afbeeldingen updaten geslaagd!</b> ', 'rentalshop'));
         wp_enqueue_script('admin_add_images');

@@ -38,7 +38,7 @@
     function planmaterial_array($materials, $planarray, $order_id, $contact_id, $counter){
         $staffels = get_staffels($order_id);
         $discounts = get_all_discounts($order_id, $contact_id);
-        $planmatarr = array_fill_keys($planarray['Planmateriaal'], 'Test');
+        $planmatarr = array_fill_keys($planarray['Planningmateriaal'], 'Test');
         foreach ($materials as $item){
             $planmatarr[$counter] = array(
                 'values' => array(

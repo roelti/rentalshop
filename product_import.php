@@ -57,7 +57,7 @@
                     wp_register_script('admin_add_product', plugins_url('js/admin_import.js', __FILE__ ));
                     wp_localize_script('admin_add_product', 'products', $prod_array);
                     wp_localize_script('admin_add_product', 'folders', $file_array);
-                    wp_localize_script('admin_add_product', 'arrayindex', 0);
+                    wp_localize_script('admin_add_product', 'arrayindex', '0');
                     wp_localize_script('admin_add_product', 'string1', __('<b>Producten klaar:</b> ', 'rentalshop'));
                     wp_localize_script('admin_add_product', 'string2', __('<br>Verwerken..', 'rentalshop'));
                     wp_localize_script('admin_add_product', 'string3', __('<br>Irrelevante producten en mappen zijn verwijderd', 'rentalshop'));
@@ -257,7 +257,7 @@
         # Register and localize the admin_delete.js file, which handles the reset
         wp_register_script('admin_del_product', plugins_url('js/admin_delete.js', __FILE__ ));
         wp_localize_script('admin_del_product', 'products', $posts);
-        wp_localize_script('admin_del_product', 'arrayindex', 0);
+        wp_localize_script('admin_del_product', 'arrayindex', '0');
         wp_localize_script('admin_del_product', 'string1', __('<b>Producten verwijderd:</b> ', 'rentalshop'));
         wp_localize_script('admin_del_product', 'string2', __('<br>Resetten was succesvol!', 'rentalshop'));
         wp_enqueue_script('admin_del_product');

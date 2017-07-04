@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-06-26 16:42+0200\n"
-"PO-Revision-Date: 2017-06-26 16:42+0200\n"
+"POT-Creation-Date: 2017-07-04 16:55+0200\n"
+"PO-Revision-Date: 2017-07-04 16:55+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -176,8 +176,8 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:89
-msgid "<h1>Rentman Product Import - v4.6.0</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.6.0</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.6.1</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.6.1</h1><hr><br>"
 
 #: rentman.php:91
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
@@ -363,7 +363,7 @@ msgstr "Phone"
 msgid "Telefoonnummer"
 msgstr "Phone number"
 
-#: rentman_project.php:90 rentman_project.php:105 rentman_requests.php:465
+#: rentman_project.php:90 rentman_project.php:105 rentman_requests.php:467
 msgid "Huurperiode"
 msgstr "Rental period"
 

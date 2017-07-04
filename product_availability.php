@@ -194,7 +194,7 @@
         wp_localize_script('admin_availability', 'endPoint', receive_endpoint());
         wp_localize_script('admin_availability', 'rm_account', get_option('plugin-account'));
         wp_localize_script('admin_availability', 'rm_token', get_option('plugin-token'));
-        wp_localize_script('admin_availability', 'cart_amount', $quantity);
+        wp_localize_script('admin_availability', 'cart_amount', (string)$quantity);
         wp_localize_script('admin_availability', 'unavailable', __("Product is niet beschikbaar!", "rentalshop"));
         wp_localize_script('admin_availability', 'maybe', __("Product is misschien niet beschikbaar!", "rentalshop"));
         wp_localize_script('admin_availability', 'available', __("Product is beschikbaar!", "rentalshop"));

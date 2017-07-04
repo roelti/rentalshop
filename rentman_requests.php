@@ -14,7 +14,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),
@@ -36,7 +36,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -64,7 +64,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -124,7 +124,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -183,6 +183,7 @@
             $object_data['items']['Person'] = $person;
             $object_data['items']['Contact'][-1]["values"]["contactpersoon"] = -2;
         } else { # Remove the Person data from the request if not
+            unset($object_data['items']['Contact'][-1]["values"]["contactpersoon"]);
             unset($object_data['items']['Person']);
         }
         return $object_data;
@@ -220,7 +221,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -338,6 +339,7 @@
         # Send Request & Receive Response
         $received = do_request($url, $message);
         $parsed = json_decode($received, true);
+        $parsed = parseResponse($parsed);
         $taxcode = current(array_keys($parsed['response']['items']['Btwcode']));
 
         # Call the right function for the request generation
@@ -402,7 +404,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -515,7 +517,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -610,7 +612,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -645,7 +647,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.6.0"
+                "version" => "4.6.1"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -873,7 +875,7 @@
                 "type" => "webshopplugin",
                 "version" => "2"
             ),
-            "account" => 'rentalshopexample',
+            "account" => get_option('plugin-account'),
             "token" => $token,
             "itemType" => "Btwcode",
             "columns" => array(
