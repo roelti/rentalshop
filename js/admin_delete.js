@@ -19,7 +19,7 @@ function applyAjax(){
         data: JSON.stringify({ prod_array : products, array_index : arrayindex }),
         contentType: 'application/json; charset=utf-8',
         success: function(){
-            var endindex = arrayindex + 10;
+            var endindex = parseInt(arrayindex) + 10;
             if (endindex > products.length)
                 endindex = products.length;
             if (products.length == 0)
@@ -27,7 +27,7 @@ function applyAjax(){
             else
                 var percentage = Math.round((endindex / products.length) * 100);
             jQuery("#deleteStatus").html(string1 + percentage + '%');
-            arrayindex += 10;
+            arrayindex = parseInt(arrayindex) + 10;
             if (arrayindex < products.length){
                 applyAjax();
             } else {

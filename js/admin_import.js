@@ -24,11 +24,11 @@ function applyAjax(){
         success: function(){
         	console.log('Current Array Index:');
     		console.log(arrayindex);
-            var endindex = arrayindex + 5;
+            var endindex = parseInt(arrayindex) + 5;
             if (endindex > products.length)
                 endindex = products.length;
             jQuery("#importStatus").html(string1 + endindex + " / " + products.length);
-            arrayindex += 5;
+            arrayindex = parseInt(arrayindex) + 5;
             if (arrayindex < products.length){
                 applyAjax();
             } else {

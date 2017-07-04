@@ -220,7 +220,7 @@
             $prod_array = $_REQUEST['prod_array'];
             $file_array = $_REQUEST['file_array'];
             $array_index = $_REQUEST['array_index'];
-            array_to_product($prod_array, $file_array, $array_index);
+            array_to_product($prod_array, $file_array, (int)$array_index);
         }
 
         # Update images with certain index in array (called by admin_images.js)
@@ -228,8 +228,8 @@
             $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $image_array = $_REQUEST['image_array'];
             $array_index = $_REQUEST['array_index'];
-            $current_image = $image_array[$array_index];
-            $post_id = wc_get_product_id_by_sku($array_index);
+            $current_image = $image_array[(int)$array_index];
+            $post_id = wc_get_product_id_by_sku((int)$array_index);
             # Delete the old images attached to the product
             $media = get_children(array('post_parent' => $post_id, 'post_type' => 'attachment'));
             foreach ($media as $file){
@@ -237,7 +237,7 @@
             }
             # Create and attach the new images
             for ($x = 0; $x < sizeof($current_image); $x++){
-                attach_media($current_image[$x], $post_id, $array_index, $x);
+                attach_media($current_image[$x], $post_id, (int)$array_index, $x);
             }
         }
 
@@ -246,7 +246,7 @@
             $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $posts = $_REQUEST['prod_array'];
             $index = $_REQUEST['array_index'];
-            delete_by_index($posts, $index);
+            delete_by_index($posts, (int)$index);
         }
 
         # Remove Empty Categories
