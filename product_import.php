@@ -185,8 +185,13 @@
     # Use the array of imported projects from Rentman to create
     # new products in WooCommerce
     function import_product($product, $file_list){
+
         if (empty($product[3])){
-            $content = __('Geen informatie beschikbaar', 'rentalshop');
+            if(empty($product[5])){
+                $content = __('Geen informatie beschikbaar', 'rentalshop');
+            } else {
+                $content = $product[5];
+            }            
         } else{
             $content = $product[3];
         }
