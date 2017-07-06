@@ -324,7 +324,7 @@
     {
         _e('<b>Compatibiliteitscontrole..</b><br>', 'rentalshop');
         echo 'Current PHP version: ' . phpversion() . '<br>'; # Get current PHP version
-        $artDir = 'wp-content/uploads/rentman/';
+        $artDir = '/uploads/rentman/';
         $fileUrl = 'https://raw.githubusercontent.com/rentmanpublic/rentalshop/plugin4g_beta/img/test.png';
 
         # Check the PHP time limit
@@ -336,16 +336,16 @@
         }
 
         # Does Rentman image Folder exist?
-        if (!file_exists(ABSPATH . $artDir)){
+        if (!file_exists(WP_CONTENT_DIR . $artDir)){
             _e('Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>', 'rentalshop');
-            mkdir(ABSPATH . $artDir); # Create one if it doesn't
+            mkdir(WP_CONTENT_DIR . $artDir); # Create one if it doesn't
         } else{
             _e('De Rentman map voor afbeeldingen is aanwezig &#10003;<br>', 'rentalshop');
         }
 
         # Does the copy function for images work?
         $file_name = 'test.png';
-        $targetUrl = ABSPATH . $artDir . $file_name;
+        $targetUrl = WP_CONTENT_DIR . $artDir . $file_name;
         copy($fileUrl, $targetUrl);
         $errors = error_get_last();
         if (file_exists($targetUrl)){
@@ -358,11 +358,11 @@
                 _e('&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>', 'rentalshop');
             }
         }
-        $artDir = 'wp-content/uploads/rentman/';
+        $artDir = '/uploads/rentman/';
         $new_file_name = '.htaccess';
 
         # Check if images can be displayed
-        $targetUrl = ABSPATH . $artDir . $new_file_name;
+        $targetUrl = WP_CONTENT_DIR . $artDir . $new_file_name;
         if (!file_exists($targetUrl)){
             _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
         } else{

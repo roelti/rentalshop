@@ -4,13 +4,13 @@
     # Attach image file from Rentman to product in Woocommerce
     function attach_media($fileUrl, $post_id, $sku, $count = 0){
         global $wpdb;
-        $artDir = 'wp-content/uploads/rentman/';
+        $artDir = '/uploads/rentman/';
         $fileUrl = str_replace(' ', '%20', $fileUrl);
 
         # Create Rentman image directory if it somehow still
         # doesn't exist yet
-        if(!file_exists(ABSPATH . $artDir)){
-            mkdir(ABSPATH . $artDir);
+        if(!file_exists(WP_CONTENT_DIR . $artDir)){
+            mkdir(WP_CONTENT_DIR . $artDir);
         }
 
         # Get the extension and return when the image url is incorrect
@@ -19,7 +19,7 @@
             return;
         $new_file_name = 'media-' . $sku . '-' . $count . '.' . $ext;
         $post_file_name = 'media-' . $sku . '-' . $count;
-        $targetUrl = ABSPATH . $artDir . $new_file_name;
+        $targetUrl = WP_CONTENT_DIR . $artDir . $new_file_name;
 
         # Delete old attachments with the same name
         $attachment = get_page_by_title($post_file_name, OBJECT, 'attachment');
