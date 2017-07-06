@@ -109,10 +109,11 @@
         $parsed = parseResponse($parsed);
 
         foreach ($parsed['response']['items']['Files'] as $imgFile){
-            if ($fileList[$imgFile['data']['item']] == null)
+            if ($fileList[$imgFile['data']['item']] == null){
                 $fileList[$imgFile['data']['item']] = array($imgFile['data']['url']);
-            else
+            } else {
                 array_push($fileList[$imgFile['data']['item']], $imgFile['data']['url']);
+            }
         }
         return $fileList;
     }

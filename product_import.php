@@ -217,10 +217,12 @@
         wp_set_object_terms($post_id, $checkterm->term_id, 'product_cat');
 
         # If it is a 'Verhuur' product
-        if ($product[9])
+        if ($product[9]) {
             wp_set_object_terms($post_id, 'rentable', 'product_type');
-        else
+        }
+        else {
             wp_set_object_terms($post_id, 'simple_product', 'product_type');
+        }
 
         # Add/update the post meta
         add_post_meta($post_id, 'rentman_imported', true);
