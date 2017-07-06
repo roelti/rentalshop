@@ -32,7 +32,6 @@
 
     # Add actions for Admin Initialization, Admin Menu, Fee Calculation and
     # Woocommerce Checkout to the right hooks
-
     add_action('admin_init', 'register_settings');
     add_action('admin_menu', 'register_submenu');
     add_action('init', 'register_rental_product_type');
@@ -364,7 +363,7 @@
         # Check if images can be displayed
         $targetUrl = WP_CONTENT_DIR . $artDir . $new_file_name;
         if (!file_exists($targetUrl)){
-            _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
+            _e('Let op: er ontbreekt een .htaccess bestand in de \'uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
         } else{
             _e('Afbeeldingen kunnen weergegeven worden &#10003;<br>', 'rentalshop');
         }
