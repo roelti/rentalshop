@@ -11,6 +11,7 @@
 
         # Send Request & Receive Response
         do_request($url, $message);
+        //echo json_encode(json_decode($received), JSON_PRETTY_PRINT);
     }
 
     // ------------- Array Creation Functions ------------- \\
