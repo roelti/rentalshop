@@ -176,8 +176,8 @@ msgid "Klantkorting"
 msgstr "Customer Discount"
 
 #: rentman.php:89
-msgid "<h1>Rentman Product Import - v4.6.1</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.6.1</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.6.2</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.6.2</h1><hr><br>"
 
 #: rentman.php:91
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
