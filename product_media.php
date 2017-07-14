@@ -14,7 +14,7 @@
         }
 
         # Get the extension and return when the image url is incorrect
-        $ext = array_pop(explode(".", $fileUrl));
+        $ext = pathinfo(parse_url($fileUrl)['path'], PATHINFO_EXTENSION);
         if ($ext == '')
             return;
         $new_file_name = 'media-' . $sku . '-' . $count . '.' . $ext;

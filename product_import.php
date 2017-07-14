@@ -85,7 +85,7 @@
                 if ($index >= sizeof($prod_array))
                     break;
                 import_product($prod_array[$index], $file_array);
-                echo 'Index of Product:' . $prod_array[$index][0];
+                echo 'Index of Product:' . $prod_array[$index]['id'];
             }
         }
     }
@@ -102,23 +102,11 @@
             if (!array_key_exists($x, $parsed['response']['items']['Materiaal']))
                 continue;
 
-            # Get name, price, description, category and last modified date from current product
-            $name = trim($parsed['response']['items']['Materiaal'][$x]['data']['naam']);
-            $cost = $parsed['response']['items']['Materiaal'][$x]['data']['verhuurprijs'];
+            # Get description, last modified date and btwcode from current product
             $longdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_long'];
-            $shortdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_short'];
             $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data']['omschrijving'];
             $modDate = $parsed['response']['items']['Materiaal'][$x]['data']['modified'];
-            $verhuur = $parsed['response']['items']['Materiaal'][$x]['data']['verhuur'];
-
-            # Set correct folder data
-            $folderID = $parsed['response']['items']['Materiaal'][$x]['data']['folder'];
-            $weight = $parsed['response']['items']['Materiaal'][$x]['data']['gewicht'];
-            $height = $parsed['response']['items']['Materiaal'][$x]['data']['height'];
-            $length = $parsed['response']['items']['Materiaal'][$x]['data']['length'];
-            $width = $parsed['response']['items']['Materiaal'][$x]['data']['width'];
             $btwcode = $parsed['response']['items']['Materiaal'][$x]['data']['btwcode'];
-            $btw = $parsed['response']['items']['Btwcode'][$btwcode]['data']['tarief'];
 
             # Check if product already exists in database
             $noDiff = false;
@@ -140,7 +128,24 @@
             } else{ # Product does not exist yet or has been updated, so add it to the array
                 if ($longdesc == '')
                     $longdesc = $fulldesc;
-                array_push($prodList, array($x, $name, $cost, $longdesc, $shortdesc, $folderID, $modDate, $weight, $btw, $verhuur, $length, $width, $height));
+                # Retrieve the rest of the product information from the response and add to array
+                $product_data = array(
+                    "id" => $x,
+                    "name" => trim($parsed['response']['items']['Materiaal'][$x]['data']['naam']),
+                    "cost" => $parsed['response']['items']['Materiaal'][$x]['data']['verhuurprijs'],
+                    "long_desc" => $longdesc,
+                    "short_desc" => $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_short'],
+                    "folder_id" => $parsed['response']['items']['Materiaal'][$x]['data']['folder'],
+                    "mod_date" => $modDate,
+                    "weight" => $parsed['response']['items']['Materiaal'][$x]['data']['gewicht'],
+                    "btw" => $parsed['response']['items']['Btwcode'][$btwcode]['data']['tarief'],
+                    "verhuur" => $parsed['response']['items']['Materiaal'][$x]['data']['verhuur'],
+                    "length" => $parsed['response']['items']['Materiaal'][$x]['data']['length'],
+                    "width" => $parsed['response']['items']['Materiaal'][$x]['data']['width'],
+                    "height" => $parsed['response']['items']['Materiaal'][$x]['data']['height'],
+                    "amount" => $parsed['response']['items']['Materiaal'][$x]['data']['aantal']
+                );
+                array_push($prodList, $product_data);
             }
         }
         # Delete products in WooCommerce shop that are not in the product list
@@ -185,25 +190,25 @@
     # Use the array of imported projects from Rentman to create
     # new products in WooCommerce
     function import_product($product, $file_list){
-        if (empty($product[3])){
+        if (empty($product['long_desc'])){
             $content = __('Geen informatie beschikbaar', 'rentalshop');
         } else{
-            $content = $product[3];
+            $content = $product['long_desc'];
         }
 
         # Create new product
         $new_product = array(
-            "post_name" => $product[1],
-            "post_title" => $product[1],
+            "post_name" => $product['name'],
+            "post_title" => $product['name'],
             "post_content" => $content,
-            "post_excerpt" => $product[4],
-            "post_date" => $product[6],
+            "post_excerpt" => $product['short_desc'],
+            "post_date" => $product['mod_date'],
             "post_status" => "publish",
             "post_type" => "product"
         );
 
         # Check Category
-        $checkterm = get_term_by('slug', $product[5], 'product_cat');
+        $checkterm = get_term_by('slug', $product['folder_id'], 'product_cat');
 
         # Insert post
         $post_id = wp_insert_post($new_product, TRUE);
@@ -212,39 +217,39 @@
         wp_set_object_terms($post_id, $checkterm->term_id, 'product_cat');
 
         # If it is a 'Verhuur' product
-        if ($product[9])
+        if ($product['verhuur'])
             wp_set_object_terms($post_id, 'rentable', 'product_type');
         else
             wp_set_object_terms($post_id, 'simple_product', 'product_type');
 
         # Add/update the post meta
         add_post_meta($post_id, 'rentman_imported', true);
-        add_post_meta($post_id, '_rentman_tax', $product[8]);
+        add_post_meta($post_id, '_rentman_tax', $product['btw']);
         update_post_meta($post_id, '_visibility', 'visible');
         update_post_meta($post_id, '_stock_status', 'instock');
         update_post_meta($post_id, 'total_sales', '0');
         update_post_meta($post_id, '_downloadable', 'no');
         update_post_meta($post_id, '_virtual', 'no');
-        update_post_meta($post_id, '_regular_price', $product[2]);
+        update_post_meta($post_id, '_regular_price', $product['cost']);
         update_post_meta($post_id, '_purchase_note', "");
         update_post_meta($post_id, '_featured', "no");
-        update_post_meta($post_id, '_weight', $product[7]);
-        update_post_meta($post_id, '_length', $product[10]);
-        update_post_meta($post_id, '_width', $product[11]);
-        update_post_meta($post_id, '_height', $product[12]);
-        update_post_meta($post_id, '_sku', $product[0]);
+        update_post_meta($post_id, '_weight', $product['weight']);
+        update_post_meta($post_id, '_length', $product['length']);
+        update_post_meta($post_id, '_width', $product['width']);
+        update_post_meta($post_id, '_height', $product['height']);
+        update_post_meta($post_id, '_sku', $product['id']);
         update_post_meta($post_id, '_product_attributes', array());
         update_post_meta($post_id, '_sale_price_dates_from', "");
         update_post_meta($post_id, '_sale_price_dates_to', "");
-        update_post_meta($post_id, '_price', $product[2]);
+        update_post_meta($post_id, '_price', $product['cost']);
         update_post_meta($post_id, '_sold_individually', "");
         update_post_meta($post_id, '_manage_stock', "no");
         update_post_meta($post_id, '_backorders', "no");
-        update_post_meta($post_id, '_stock', "aantal");
+        update_post_meta($post_id, '_stock', $product['amount']);
 
         # Attach Media Files
-        for ($x = 0; $x < sizeof($file_list[$product[0]]); $x++){
-            attach_media($file_list[$product[0]][$x], $post_id, $product[0], $x);
+        for ($x = 0; $x < sizeof($file_list[$product['id']]); $x++){
+            attach_media($file_list[$product['id']][$x], $post_id, $product['id'], $x);
         }
     }
 
@@ -302,7 +307,7 @@
     function list_of_ids($prodList){
         $id_list = array();
         foreach ($prodList as $item){
-            array_push($id_list, $item[0]);
+            array_push($id_list, $item['id']);
         }
         return $id_list;
     }
