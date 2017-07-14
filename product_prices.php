@@ -91,7 +91,7 @@
         # Calculate the additional fee and add it to the cart
         $fee = calculate_fee($staffels);
         apply_customer_discount($staffels);
-        WC()->cart->add_fee('Staffel', $fee, true, 'standard');
+        WC()->cart->add_fee(__('Extra ','rentalshop') . ($totaldays - 1) . __(' dagen','rentalshop'), $fee, true, 'standard');
     }
 
     # Apply customer discount on the prices of the products
@@ -289,5 +289,19 @@
             $totalprice += $carttotals - $discountprice + $extradiscount;
         }
         return $totalprice*(-1);
+    }
+
+    # Change the text of the subtotal strings
+    function my_text_strings($translated_text, $text, $domain)
+    {
+        switch ($translated_text){
+            case 'Subtotaal' :
+                $translated_text = __("Dagprijs","rentalshop");
+                break;
+            case 'Winkelmand Subtotaal' :
+                $translated_text = __("Dagprijs","rentalshop");
+                break;
+        }
+        return $translated_text;
     }
 ?>

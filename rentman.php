@@ -5,8 +5,8 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.6.2
-     * Author: Rentman
+     * Version: 4.6.3
+     * Author: Rentman (forked by Studio September)
      * Text Domain: rentalshop
      */
 
@@ -54,6 +54,7 @@
     add_filter('woocommerce_cart_needs_shipping', '__return_true');
     add_filter('woocommerce_email_order_meta_fields', 'add_dates_to_email', 10, 3);
     add_filter('product_type_selector', 'add_rentable_product');
+    add_filter('gettext', 'my_text_strings', 20, 3);
 
     # Register the plugin settings for a specific user
     function register_settings()
@@ -85,7 +86,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.6.2</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.6.3</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
@@ -363,7 +364,7 @@
         # Check if images can be displayed
         $targetUrl = WP_CONTENT_DIR . $artDir . $new_file_name;
         if (!file_exists($targetUrl)){
-            _e('Let op: er ontbreekt een .htaccess bestand in de \'uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
+            _e('Let op: er ontbreekt een .htaccess bestand in de \'wp-content/uploads/rentman/\' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>', 'rentalshop');
         } else{
             _e('Afbeeldingen kunnen weergegeven worden &#10003;<br>', 'rentalshop');
         }
