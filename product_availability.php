@@ -16,6 +16,7 @@
                     break;
                 }
             }
+            echo '<div class="rentman-fields">';
             # If there isn't, display the date input fields
             if ($rentableProduct == false){
                 $dates = get_dates();
@@ -48,6 +49,7 @@
             } else{
                 echo '<p class="availLog" hidden></p>';
             }
+            echo '</div>';
         }
     }
 
@@ -65,27 +67,29 @@
         }
         # If it does, add the date fields
         if ($rentableProduct){
-            ?><p>
-            <?php _e('<h2>VERHUURPERIODE</h2>','rentalshop');
-            $dates = get_dates();
-            $startdate = $dates['from_date'];
-            $enddate = $dates['to_date'];
-            $sdate =& $startdate;
-            $edate =& $enddate;
-            ?>
-            <form method="post">
-            <?php _e('Van:', 'rentalshop');?>
-            <input type="date" name="start-date" value="<?php echo $startdate;?>" min="<?php echo $today;?>">
-            <?php _e('Tot:', 'rentalshop');?>
-            <input type="date" name="end-date" value="<?php echo $enddate;?>" min="<?php echo $today;?>"><br>
+            if (apply_filters('rentman/show_cart_dates', true)) {
+                ?><p>
+                <?php _e('<h2>VERHUURPERIODE</h2>', 'rentalshop');
+                $dates = get_dates();
+                $startdate = $dates['from_date'];
+                $enddate = $dates['to_date'];
+                $sdate =& $startdate;
+                $edate =& $enddate;
+                ?>
+                <form method="post">
+                    <?php _e('Van:', 'rentalshop'); ?>
+                    <input type="date" name="start-date" value="<?php echo $startdate; ?>" min="<?php echo $today;?>">
+                    <?php _e('Tot:', 'rentalshop'); ?>
+                    <input type="date" name="end-date" value="<?php echo $enddate; ?>" min="<?php echo $today;?>"><br>
 
-            <!-- Update Button --></p>
-            <input type="hidden" name="rm-update-dates">
-            <input type="submit" class="button button-primary" value="<?php _e('Update Huurperiode', 'rentalshop');?>">
-            <input type="hidden" name="backup-start" value="<?php echo $sdate;?>">
-            <input type="hidden" name="backup-end" value="<?php echo $edate;?>">
-            </form>
-            <?php
+                    <!-- Update Button --></p>
+                <input type="hidden" name="rm-update-dates">
+                <input type="submit" class="button button-primary" value="<?php _e('Update Huurperiode', 'rentalshop');?>">
+                <input type="hidden" name="backup-start" value="<?php echo $sdate;?>">
+                <input type="hidden" name="backup-end" value="<?php echo $edate;?>">
+                </form>
+                <?php
+            }
 
             # If 'Update Dates' button has been pressed, call update_dates function
             if (isset($_POST['rm-update-dates'])){
@@ -119,27 +123,29 @@
 
         if ($product->product_type == 'rentable')
         {
-            do_action('woocommerce_before_add_to_cart_form');?>
+            if (apply_filters('rentman/add_to_cart_template', true)) {
+                do_action('woocommerce_before_add_to_cart_form'); ?>
 
-            <form class="cart rentman-extra-margin" method="post" enctype='multipart/form-data'>
-                <?php do_action('woocommerce_before_add_to_cart_button');?>
+                <form class="cart rentman-extra-margin" method="post" enctype='multipart/form-data'>
+                    <?php do_action('woocommerce_before_add_to_cart_button'); ?>
 
-                <?php
-                if (!$product->is_sold_individually())
-                    woocommerce_quantity_input(array(
-                        'min_value' => apply_filters('woocommerce_quantity_input_min', 1, $product),
-                        'max_value' => apply_filters('woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product)
-                    ));
-                ?>
+                    <?php
+                    if (!$product->is_sold_individually())
+                        woocommerce_quantity_input(array(
+                            'min_value' => apply_filters('woocommerce_quantity_input_min', 1, $product),
+                            'max_value' => apply_filters('woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product)
+                        ));
+                    ?>
 
-                <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->id);?>" />
+                    <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->id); ?>"/>
 
-                <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text();?></button>
+                    <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text();?></button>
 
-                <?php do_action('woocommerce_after_add_to_cart_button');?>
-            </form>
+                    <?php do_action('woocommerce_after_add_to_cart_button'); ?>
+                </form>
 
-            <?php do_action('woocommerce_after_add_to_cart_form');
+                <?php do_action('woocommerce_after_add_to_cart_form');
+            }
         }
     }
 

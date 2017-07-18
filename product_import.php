@@ -191,7 +191,11 @@
     # new products in WooCommerce
     function import_product($product, $file_list){
         if (empty($product['long_desc'])){
-            $content = __('Geen informatie beschikbaar', 'rentalshop');
+            if (empty($product['folder_id'])){
+                $content = __('Geen informatie beschikbaar', 'rentalshop');
+            } else{
+                $content = $product['folder_id'];
+            }
         } else{
             $content = $product['long_desc'];
         }
@@ -217,10 +221,12 @@
         wp_set_object_terms($post_id, $checkterm->term_id, 'product_cat');
 
         # If it is a 'Verhuur' product
-        if ($product['verhuur'])
+        if ($product['verhuur']) {
             wp_set_object_terms($post_id, 'rentable', 'product_type');
-        else
+        }
+        else {
             wp_set_object_terms($post_id, 'simple_product', 'product_type');
+        }
 
         # Add/update the post meta
         add_post_meta($post_id, 'rentman_imported', true);

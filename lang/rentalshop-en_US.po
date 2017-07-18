@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-07-13 17:22+0200\n"
-"PO-Revision-Date: 2017-07-13 17:23+0200\n"
+"POT-Creation-Date: 2017-07-18 14:27+0200\n"
+"PO-Revision-Date: 2017-07-18 14:51+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -19,15 +19,15 @@ msgstr ""
 msgid "'"
 msgstr ""
 
-#: product_availability.php:32 product_availability.php:77
+#: product_availability.php:33 product_availability.php:80
 msgid "Van:"
 msgstr "From:"
 
-#: product_availability.php:34 product_availability.php:79
+#: product_availability.php:35 product_availability.php:82
 msgid "Tot:"
 msgstr "To:"
 
-#: product_availability.php:36
+#: product_availability.php:37
 msgid ""
 "Let op: je kan de datums voor ander materiaal pas in de winkelwagen weer "
 "wijzigen!"
@@ -35,71 +35,71 @@ msgstr ""
 "Important: You can change the rent dates for other materials that you want "
 "to rent in the cart!"
 
-#: product_availability.php:42
+#: product_availability.php:43
 msgid "<h3>Geselecteerde datums: </h3> <p><b>Van </b>"
 msgstr "<h3>Selected dates: </h3> <p><b>From </b>"
 
-#: product_availability.php:42
+#: product_availability.php:43
 msgid "<b> tot </b>"
 msgstr "<b> to </b>"
 
-#: product_availability.php:69
+#: product_availability.php:72
 msgid "<h2>VERHUURPERIODE</h2>"
 msgstr "<h2>RENT PERIOD</h2>"
 
-#: product_availability.php:84
+#: product_availability.php:87
 msgid "Update Huurperiode"
 msgstr "Update Dates"
 
-#: product_availability.php:107
+#: product_availability.php:111
 msgid "Reserveer"
 msgstr "Reserve"
 
-#: product_availability.php:110
+#: product_availability.php:114
 msgid "Aan winkelmandje toevoegen"
 msgstr "Add to cart"
 
-#: product_availability.php:198
+#: product_availability.php:204
 msgid "Product is niet beschikbaar!"
 msgstr "Product is not available!"
 
-#: product_availability.php:199
+#: product_availability.php:205
 msgid "Product is misschien niet beschikbaar!"
 msgstr "Product might not be available!"
 
-#: product_availability.php:200
+#: product_availability.php:206
 msgid "Product is beschikbaar!"
 msgstr "Product is available!"
 
-#: product_availability.php:229
+#: product_availability.php:235
 msgid "Er ging iets mis.. Kloppen de datums wel?"
 msgstr "Something went wrong.. Did you provide correct dates?"
 
-#: product_availability.php:267
+#: product_availability.php:273
 msgid "Er zijn slechts "
 msgstr "There are only "
 
-#: product_availability.php:267
+#: product_availability.php:273
 msgid " beschikbaar in die tijdsperiode."
 msgstr " available in that time period."
 
-#: product_availability.php:270
+#: product_availability.php:276
 msgid "Let op: "
 msgstr "Important: "
 
-#: product_availability.php:270
+#: product_availability.php:276
 msgid " van de "
 msgstr " out of "
 
-#: product_availability.php:270
+#: product_availability.php:276
 msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
 msgstr " might not be available in that time period.."
 
-#: product_availability.php:273
+#: product_availability.php:279
 msgid "Uw geselecteerde aantal "
 msgstr "Your selected amount of "
 
-#: product_availability.php:273
+#: product_availability.php:279
 msgid " is beschikbaar in die tijdsperiode!"
 msgstr " is available in that time period!"
 
@@ -135,23 +135,23 @@ msgstr "<br>No products have been found on your Rentman Account..<br>"
 msgid "<br><br><b>Geimporteerde Producten:</b><br>"
 msgstr "<br><br><b>Imported Products:</b><br>"
 
-#: product_import.php:194
+#: product_import.php:195
 msgid "Geen informatie beschikbaar"
 msgstr "No information available"
 
-#: product_import.php:266
+#: product_import.php:272
 msgid "<b>Producten verwijderd:</b> "
 msgstr "<b>Products deleted:</b> "
 
-#: product_import.php:267
+#: product_import.php:273
 msgid "<br>Resetten was succesvol!"
 msgstr "<br>Reset was successful!"
 
-#: product_import.php:339
+#: product_import.php:345
 msgid "Verder lezen"
 msgstr "Read more"
 
-#: product_import.php:356
+#: product_import.php:362
 msgid "Rentable"
 msgstr "Rentable"
 
@@ -173,7 +173,7 @@ msgstr "Discount price: "
 
 #: product_prices.php:94
 msgid "Extra "
-msgstr "Extra"
+msgstr "Extra "
 
 #: product_prices.php:94
 msgid " dagen"
@@ -188,8 +188,8 @@ msgid "Dagprijs"
 msgstr "Daily price"
 
 #: rentman.php:90
-msgid "<h1>Rentman Product Import - v4.6.3</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.6.3</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.6.4</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.6.4</h1><hr><br>"
 
 #: rentman.php:92
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
@@ -341,11 +341,11 @@ msgstr ""
 
 #: rentman.php:368
 msgid ""
-"Let op: er ontbreekt een .htaccess bestand in de 'wp-content/uploads/"
-"rentman/' map. Mogelijk worden de afbeeldingen niet correct weergegeven..<br>"
+"Let op: er ontbreekt een .htaccess bestand in de 'uploads/rentman/' map. "
+"Mogelijk worden de afbeeldingen niet correct weergegeven..<br>"
 msgstr ""
-"Important: a .htaccess file is missing in the 'wp-content/uploads/rentman/' "
-"folder! The imported images might not be displayed correctly..<br>"
+"Important: a .htaccess file is missing in the 'uploads/rentman/' folder! The "
+"imported images might not be displayed correctly..<br>"
 
 #: rentman.php:370
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
