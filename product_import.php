@@ -6,70 +6,72 @@
         if ($token == "fail"){
             _e('<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>', 'rentalshop');
         } else{
-            $date = date('l jS \of F Y h:i:s A');
-            update_option('plugin-lasttime', $date);
+            if (apply_filters('rentman/import_products', true)) {
+                $date = date('l jS \of F Y h:i:s A');
+                update_option('plugin-lasttime', $date);
 
-            # Get the endpoint url
-            $url = receive_endpoint();
+                # Get the endpoint url
+                $url = receive_endpoint();
 
-            # First, obtain all the products from Rentman
-            $message = json_encode(setup_import_request($token), JSON_PRETTY_PRINT);
+                # First, obtain all the products from Rentman
+                $message = json_encode(setup_import_request($token), JSON_PRETTY_PRINT);
 
-            # Send Request & Receive Response
-            $received = do_request($url, $message);
-            $parsed = json_decode($received, true);
-            $parsed = parseResponse($parsed);
+                # Send Request & Receive Response
+                $received = do_request($url, $message);
+                $parsed = json_decode($received, true);
+                $parsed = parseResponse($parsed);
 
-            # Receive id's of first and last ID in response
-            $listLength = sizeof($parsed['response']['links']['Materiaal']);
+                # Receive id's of first and last ID in response
+                $listLength = sizeof($parsed['response']['links']['Materiaal']);
 
-            if ($listLength > 0){ # At least one product has been found
-                $firstItem = $parsed['response']['links']['Materiaal'][0];
-                $lastItem = $parsed['response']['links']['Materiaal'][$listLength-1];
+                if ($listLength > 0) { # At least one product has been found
+                    $firstItem = $parsed['response']['links']['Materiaal'][0];
+                    $lastItem = $parsed['response']['links']['Materiaal'][$listLength - 1];
 
-                # Build arrays containing all imported products and image files
-                $prod_array = convert_items($parsed, $firstItem, $lastItem);
-                $file_array = get_files($prod_array, $token, $url);
+                    # Build arrays containing all imported products and image files
+                    $prod_array = convert_items($parsed, $firstItem, $lastItem);
+                    $file_array = get_files($prod_array, $token, $url);
 
-                # If one or more products have been found, create the product categories
-                # and register and localize the admin_import.js file
-                if (sizeof($prod_array) > 0){
-                    # Import the product categories
-                    $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
-                    $received = do_request($url, $message);
-                    $parsed = json_decode($received, true);
-                    $parsed = parseResponse($parsed);
+                    # If one or more products have been found, create the product categories
+                    # and register and localize the admin_import.js file
+                    if (sizeof($prod_array) > 0) {
+                        # Import the product categories
+                        $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
+                        $received = do_request($url, $message);
+                        $parsed = json_decode($received, true);
+                        $parsed = parseResponse($parsed);
 
-                    # Arrange the response data in a new clear array
-                    $folder_arr = arrange_folders($parsed);
+                        # Arrange the response data in a new clear array
+                        $folder_arr = arrange_folders($parsed);
 
-                    # Create new Categories by using the imported folder data
-                    foreach ($folder_arr as $folder){
-                        add_category($folder);
+                        # Create new Categories by using the imported folder data
+                        foreach ($folder_arr as $folder) {
+                            add_category($folder);
+                        }
+
+                        # Attach the Categories to the right parent
+                        foreach ($folder_arr as $folder) {
+                            set_parents($folder);
+                        }
+
+                        # Prepare Script
+                        wp_register_script('admin_add_product', plugins_url('js/admin_import.js', __FILE__));
+                        wp_localize_script('admin_add_product', 'products', $prod_array);
+                        wp_localize_script('admin_add_product', 'folders', $file_array);
+                        wp_localize_script('admin_add_product', 'arrayindex', '0');
+                        wp_localize_script('admin_add_product', 'string1', __('<b>Producten klaar:</b> ', 'rentalshop'));
+                        wp_localize_script('admin_add_product', 'string2', __('<br>Verwerken..', 'rentalshop'));
+                        wp_localize_script('admin_add_product', 'string3', __('<br>Irrelevante producten en mappen zijn verwijderd', 'rentalshop'));
+                        wp_localize_script('admin_add_product', 'string4', __('<h3>Importeren geslaagd!</h3>', 'rentalshop'));
+                        wp_enqueue_script('admin_add_product');
+                    } else { # No new products have been added and the existing ones haven't been updated
+                        _e('<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> ', 'rentalshop');
+                        remove_empty_categories();
                     }
-
-                    # Attach the Categories to the right parent
-                    foreach ($folder_arr as $folder){
-                        set_parents($folder);
-                    }
-
-                    # Prepare Script
-                    wp_register_script('admin_add_product', plugins_url('js/admin_import.js', __FILE__ ));
-                    wp_localize_script('admin_add_product', 'products', $prod_array);
-                    wp_localize_script('admin_add_product', 'folders', $file_array);
-                    wp_localize_script('admin_add_product', 'arrayindex', '0');
-                    wp_localize_script('admin_add_product', 'string1', __('<b>Producten klaar:</b> ', 'rentalshop'));
-                    wp_localize_script('admin_add_product', 'string2', __('<br>Verwerken..', 'rentalshop'));
-                    wp_localize_script('admin_add_product', 'string3', __('<br>Irrelevante producten en mappen zijn verwijderd', 'rentalshop'));
-                    wp_localize_script('admin_add_product', 'string4', __('<h3>Importeren geslaagd!</h3>', 'rentalshop'));
-                    wp_enqueue_script('admin_add_product');
-                } else{ # No new products have been added and the existing ones haven't been updated
-                    _e('<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> ', 'rentalshop');
+                } else { # No rentable products have been found
+                    _e('<br>Er zijn geen producten gevonden op uw Rentman account..<br>', 'rentalshop');
                     remove_empty_categories();
                 }
-            } else{ # No rentable products have been found
-                _e('<br>Er zijn geen producten gevonden op uw Rentman account..<br>', 'rentalshop');
-                remove_empty_categories();
             }
         }
     }

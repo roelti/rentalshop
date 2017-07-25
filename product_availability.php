@@ -53,7 +53,7 @@
         }
     }
 
-    # Also adds date fields to the checkout screen
+    # Also adds date fields to the checkout menu
     function add_date_checkout(){
         $rentableProduct = false;
         $today = date("Y-m-d");
@@ -67,9 +67,10 @@
         }
         # If it does, add the date fields
         if ($rentableProduct){
-            if (apply_filters('rentman/show_cart_dates', true)) {
+            if (apply_filters('rentman/show_checkout_dates', true)) {
+                init_datepickers();
                 ?><p>
-                <?php _e('<h2>VERHUURPERIODE</h2>', 'rentalshop');
+                <?php _e('<h2>Verhuurperiode</h2>', 'rentalshop');
                 $dates = get_dates();
                 $startdate = $dates['from_date'];
                 $enddate = $dates['to_date'];
@@ -84,16 +85,11 @@
 
                     <!-- Update Button --></p>
                 <input type="hidden" name="rm-update-dates">
-                <input type="submit" class="button button-primary" value="<?php _e('Update Huurperiode', 'rentalshop');?>">
+                <input type="button" class="button button-primary" id="changePeriod" value="<?php _e('Update Huurperiode', 'rentalshop');?>">
                 <input type="hidden" name="backup-start" value="<?php echo $sdate;?>">
                 <input type="hidden" name="backup-end" value="<?php echo $edate;?>">
                 </form>
                 <?php
-            }
-
-            # If 'Update Dates' button has been pressed, call update_dates function
-            if (isset($_POST['rm-update-dates'])){
-                update_dates();
             }
         }
     }
@@ -157,22 +153,28 @@
         return check_available($passed, $product->id, $quantity, 'from_CART');
     }
 
-    # Apply availability check for each item in the cart for the new dates
+    # Apply availability check for each item in the cart for the new dates and update the
+    # dates in the current session if all products are available
     function update_dates(){
         $checkergroup = true;
         foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
             $product = $cart_item['data'];
             if ($product->product_type == 'rentable'){
-                $checkergroup = check_available($checkergroup, $product->id, $cart_item['']);
+                $checkergroup = check_available($checkergroup, $product->id, $cart_item[''], 'checkout');
                 if ($checkergroup == false)
                     break;
             }
         } # Only update the dates when all materials are available in the new time period
-        if ($checkergroup == false){
-            $_SESSION['rentman_rental_session']['from_date'] = $_POST['backup-start'];
-            $_SESSION['rentman_rental_session']['to_date'] = $_POST['backup-end'];
+        if ($checkergroup){
+            echo 'Materials are available, updating the dates in the current session';
+            $_SESSION['rentman_rental_session']['from_date'] = $_POST['start-date'];
+            $_SESSION['rentman_rental_session']['to_date'] = $_POST['end-date'];
+        } else {
+            echo 'Materials are not available, so do not update the dates of the current session';
+            echo 'SESSION from date = ' . $_SESSION['rentman_rental_session']['from_date'];
+            echo 'SESSION to date = ' . $_SESSION['rentman_rental_session']['to_date'];
         }
-        echo "<meta http-equiv='refresh' content='0'>";
+        wp_die();
     }
 
     # Set the availability functions
@@ -207,6 +209,14 @@
         wp_enqueue_script('admin_availability');
     }
 
+    # Set the datepicker functions
+    function init_datepickers(){
+        # Register and localize the datepickers script
+        wp_register_script('admin_datepickers', plugins_url('js/admin_datepickers.js', __FILE__ ));
+        wp_localize_script('admin_datepickers', 'ajax_file_path', admin_url('admin-ajax.php'));
+        wp_enqueue_script('admin_datepickers');
+    }
+
     # Main function for the availability check and relevant API requests
     function check_available($passed, $product_id, $quantity, $variation_id = '', $variations= '')
     {
@@ -224,60 +234,68 @@
         # Only apply availability check on products that were
         # imported from Rentman
         if ($product->product_type == 'rentable'){
-            $_SESSION['rentman_rental_session']['from_date'] = $startDate;
-            $_SESSION['rentman_rental_session']['to_date'] = $endDate;
-            $dates = get_dates();
-            $sdate = $dates['from_date'];
-            $edate = $dates['to_date'];
-            # Check if any of the input dates are wrong
-            if ($sdate == '' or $edate == '' or (strtotime($edate) < strtotime($sdate))){
-                $passed = false;
-                wc_add_notice(__('Er ging iets mis.. Kloppen de datums wel?', 'rentalshop'), 'error');
-            } else{
-                # Continue with the check if 'Check availability for sending' is set to yes
-                if (get_option('plugin-checkavail') == 1){
-                    $url = receive_endpoint();
-                    $token = get_option('plugin-token');
+            if (apply_filters('rentman/availability_check', true)) {
+                if ($variation_id != 'checkout') {
+                    $_SESSION['rentman_rental_session']['from_date'] = $startDate;
+                    $_SESSION['rentman_rental_session']['to_date'] = $endDate;
+                    $dates = get_dates();
+                    $sdate = $dates['from_date'];
+                    $edate = $dates['to_date'];
+                } else {
+                    $sdate = $startDate;
+                    $edate = $endDate;
+                }
+                # Check if any of the input dates are wrong
+                if ($sdate == '' or $edate == '' or (strtotime($edate) < strtotime($sdate))) {
+                    $passed = false;
+                    wc_add_notice(__('Er ging iets mis.. Kloppen de datums wel?', 'rentalshop'), 'error');
+                } else {
+                    # Continue with the check if 'Check availability for sending' is set to yes
+                    if (get_option('plugin-checkavail') == 1) {
+                        $url = receive_endpoint();
+                        $token = get_option('plugin-token');
 
-                    # Check if the item is already in the cart and adjust
-                    # the input quantity accordingly
-                    if($variation_id != 'from_CART'){
-                        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
-                            $cartproduct = $cart_item['data'];
-                            if ($cartproduct->get_title() == $product->get_title()){
-                                $quantity += $cart_item['quantity'];
-                                break;
+                        # Check if the item is already in the cart and adjust
+                        # the input quantity accordingly
+                        if ($variation_id != 'from_CART') {
+                            foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+                                $cartproduct = $cart_item['data'];
+                                if ($cartproduct->get_title() == $product->get_title()) {
+                                    $quantity += $cart_item['quantity'];
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    # Setup Request to send JSON
-                    $message = json_encode(available_request($token, $product->get_sku(), $quantity), JSON_PRETTY_PRINT);
+                        # Setup Request to send JSON
+                        $message = json_encode(available_request($token, $product->get_sku(), $quantity, true, $sdate, $edate), JSON_PRETTY_PRINT);
 
-                    # Send Request & Receive Response
-                    $received = do_request($url, $message);
-                    $parsed = json_decode($received, true);
-                    $parsed = parseResponse($parsed);
+                        # Send Request & Receive Response
+                        $received = do_request($url, $message);
+                        $parsed = json_decode($received, true);
+                        $parsed = parseResponse($parsed);
 
-                    # Get values from parsed response
-                    $maxconfirmed = $parsed['response']['value']['maxconfirmed'];
-                    $maxoption = $parsed['response']['value']['maxoption'];
+                        # Get values from parsed response
+                        $maxconfirmed = $parsed['response']['value']['maxconfirmed'];
+                        $maxoption = $parsed['response']['value']['maxoption'];
 
-                    $residual = $quantity + $maxconfirmed; # Total amount of available items
-                    $possible = $maxoption*(-1); # Amount of items that are definitely available
+                        $residual = $quantity + $maxconfirmed; # Total amount of available items
+                        $optional = $maxoption * (-1);
+                        $possible = min($optional, $quantity); # Amount of items that are definitely available
 
-                    # ~~ The actual Availability Check
-                    # Comparing values of 'maxconfirmed' and 'maxoption'
-                    if ($maxconfirmed < 0){ # Products are definitely not available
-                        $passed = false;
-                        $notice = __('Er zijn slechts ','rentalshop') . $residual . ' ' . $product->get_title() . __(' beschikbaar in die tijdsperiode.','rentalshop');
-                        wc_add_notice($notice, 'error');
-                    } else if ($maxconfirmed >= 0 and $maxoption < 0){ # Products might be available, depending on confirmation of other orders
-                        $notice = __('Let op: ','rentalshop') . $possible . __(' van de ','rentalshop') . $quantity . ' ' . $product->get_title() . __(' zijn misschien niet beschikbaar in die tijdsperiode..','rentalshop');
-                        wc_add_notice($notice, 'error');
-                    } else{ # Products are available and are added to the cart
-                        $notice = __('Uw geselecteerde aantal ','rentalshop') . $product->get_title() . __(' is beschikbaar in die tijdsperiode!','rentalshop');
-                        wc_add_notice($notice, 'success');
+                        # ~~ The actual Availability Check
+                        # Comparing values of 'maxconfirmed' and 'maxoption'
+                        if ($maxconfirmed < 0) { # Products are definitely not available
+                            $passed = false;
+                            $notice = __('Er zijn slechts ', 'rentalshop') . $residual . ' ' . $product->get_title() . __(' beschikbaar in die tijdsperiode.', 'rentalshop');
+                            wc_add_notice($notice, 'error');
+                        } else if ($maxconfirmed >= 0 and $maxoption < 0) { # Products might be available, depending on confirmation of other orders
+                            $notice = __('Let op: ', 'rentalshop') . $possible . __(' van de ', 'rentalshop') . $quantity . ' ' . $product->get_title() . __(' zijn misschien niet beschikbaar in die tijdsperiode..', 'rentalshop');
+                            wc_add_notice($notice, 'error');
+                        } else { # Products are available and are added to the cart
+                            $notice = __('Uw geselecteerde aantal ', 'rentalshop') . $product->get_title() . __(' is beschikbaar in die tijdsperiode!', 'rentalshop');
+                            wc_add_notice($notice, 'success');
+                        }
                     }
                 }
             }

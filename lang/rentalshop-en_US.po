@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-07-18 14:27+0200\n"
-"PO-Revision-Date: 2017-07-18 14:51+0200\n"
+"POT-Creation-Date: 2017-07-25 15:52+0200\n"
+"PO-Revision-Date: 2017-07-25 15:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -19,11 +19,11 @@ msgstr ""
 msgid "'"
 msgstr ""
 
-#: product_availability.php:33 product_availability.php:80
+#: product_availability.php:33 product_availability.php:81
 msgid "Van:"
 msgstr "From:"
 
-#: product_availability.php:35 product_availability.php:82
+#: product_availability.php:35 product_availability.php:83
 msgid "Tot:"
 msgstr "To:"
 
@@ -43,63 +43,63 @@ msgstr "<h3>Selected dates: </h3> <p><b>From </b>"
 msgid "<b> tot </b>"
 msgstr "<b> to </b>"
 
-#: product_availability.php:72
-msgid "<h2>VERHUURPERIODE</h2>"
-msgstr "<h2>RENT PERIOD</h2>"
+#: product_availability.php:73
+msgid "<h2>Verhuurperiode</h2>"
+msgstr "<h2>Rental Period</h2>"
 
-#: product_availability.php:87
+#: product_availability.php:88
 msgid "Update Huurperiode"
 msgstr "Update Dates"
 
-#: product_availability.php:111
+#: product_availability.php:107
 msgid "Reserveer"
 msgstr "Reserve"
 
-#: product_availability.php:114
+#: product_availability.php:110
 msgid "Aan winkelmandje toevoegen"
 msgstr "Add to cart"
 
-#: product_availability.php:204
+#: product_availability.php:206
 msgid "Product is niet beschikbaar!"
 msgstr "Product is not available!"
 
-#: product_availability.php:205
+#: product_availability.php:207
 msgid "Product is misschien niet beschikbaar!"
 msgstr "Product might not be available!"
 
-#: product_availability.php:206
+#: product_availability.php:208
 msgid "Product is beschikbaar!"
 msgstr "Product is available!"
 
-#: product_availability.php:235
+#: product_availability.php:251
 msgid "Er ging iets mis.. Kloppen de datums wel?"
 msgstr "Something went wrong.. Did you provide correct dates?"
 
-#: product_availability.php:273
+#: product_availability.php:290
 msgid "Er zijn slechts "
 msgstr "There are only "
 
-#: product_availability.php:273
+#: product_availability.php:290
 msgid " beschikbaar in die tijdsperiode."
 msgstr " available in that time period."
 
-#: product_availability.php:276
+#: product_availability.php:293
 msgid "Let op: "
 msgstr "Important: "
 
-#: product_availability.php:276
+#: product_availability.php:293
 msgid " van de "
 msgstr " out of "
 
-#: product_availability.php:276
+#: product_availability.php:293
 msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
 msgstr " might not be available in that time period.."
 
-#: product_availability.php:279
+#: product_availability.php:296
 msgid "Uw geselecteerde aantal "
 msgstr "Your selected amount of "
 
-#: product_availability.php:279
+#: product_availability.php:296
 msgid " is beschikbaar in die tijdsperiode!"
 msgstr " is available in that time period!"
 
@@ -107,127 +107,127 @@ msgstr " is available in that time period!"
 msgid "<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>"
 msgstr "<h4>Import Failed! Did you provide the correct credentials?</h4>"
 
-#: product_import.php:61
+#: product_import.php:62
 msgid "<b>Producten klaar:</b> "
 msgstr "<b>Products finished:</b> "
 
-#: product_import.php:62
+#: product_import.php:63
 msgid "<br>Verwerken.."
 msgstr "<br>Processing.."
 
-#: product_import.php:63
+#: product_import.php:64
 msgid "<br>Irrelevante producten en mappen zijn verwijderd"
 msgstr "<br>Removed irrelevant products and categories"
 
-#: product_import.php:64
+#: product_import.php:65
 msgid "<h3>Importeren geslaagd!</h3>"
 msgstr "<h3>Import complete!</h3>"
 
-#: product_import.php:67
+#: product_import.php:68
 msgid "<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> "
 msgstr "<br><b>No new Rentman products have been found!</b> "
 
-#: product_import.php:71
+#: product_import.php:72
 msgid "<br>Er zijn geen producten gevonden op uw Rentman account..<br>"
 msgstr "<br>No products have been found on your Rentman Account..<br>"
 
-#: product_import.php:80
+#: product_import.php:82
 msgid "<br><br><b>Geimporteerde Producten:</b><br>"
 msgstr "<br><br><b>Imported Products:</b><br>"
 
-#: product_import.php:195
+#: product_import.php:197
 msgid "Geen informatie beschikbaar"
 msgstr "No information available"
 
-#: product_import.php:272
+#: product_import.php:274
 msgid "<b>Producten verwijderd:</b> "
 msgstr "<b>Products deleted:</b> "
 
-#: product_import.php:273
+#: product_import.php:275
 msgid "<br>Resetten was succesvol!"
 msgstr "<br>Reset was successful!"
 
-#: product_import.php:345
+#: product_import.php:347
 msgid "Verder lezen"
 msgstr "Read more"
 
-#: product_import.php:362
+#: product_import.php:364
 msgid "Rentable"
 msgstr "Rentable"
 
-#: product_media.php:88
+#: product_media.php:89
 msgid "<b>Er zijn geen producten of afbeeldingen gevonden..</b>"
 msgstr "<b>No products or images have been found..</b>"
 
-#: product_media.php:96
+#: product_media.php:97
 msgid "<b>Afbeeldingsgroepen klaar:</b> "
 msgstr "<b>Image groups finished:</b> "
 
-#: product_media.php:97
+#: product_media.php:98
 msgid "<b>Afbeeldingen updaten geslaagd!</b> "
 msgstr "<b>Image update complete!</b> "
 
-#: product_prices.php:50
+#: product_prices.php:51
 msgid "Kortingsprijs: "
 msgstr "Discount price: "
 
-#: product_prices.php:94
+#: product_prices.php:96
 msgid "Extra "
 msgstr "Extra "
 
-#: product_prices.php:94
+#: product_prices.php:96
 msgid " dagen"
 msgstr " days"
 
-#: product_prices.php:144
+#: product_prices.php:147
 msgid "Klantkorting"
 msgstr "Customer Discount"
 
-#: product_prices.php:299 product_prices.php:302
+#: product_prices.php:303 product_prices.php:306
 msgid "Dagprijs"
 msgstr "Daily price"
 
-#: rentman.php:90
-msgid "<h1>Rentman Product Import - v4.6.4</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.6.4</h1><hr><br>"
-
 #: rentman.php:92
+msgid "<h1>Rentman Product Import - v4.7.0</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.7.0</h1><hr><br>"
+
+#: rentman.php:94
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
 msgstr "<h3>Provide your Rentman 4G login credentials</h3>"
 
-#: rentman.php:98
+#: rentman.php:100
 msgid "<strong>Gebruikersnaam</strong>"
 msgstr "<strong>Username</strong>"
 
-#: rentman.php:100
+#: rentman.php:102
 msgid "<strong>Wachtwoord</strong>"
 msgstr "<strong>Password</strong>"
 
-#: rentman.php:102
+#: rentman.php:104
 msgid "Gegevens controleren"
 msgstr "Submit Credentials"
 
-#: rentman.php:130
+#: rentman.php:132
 msgid "<hr><h3>Instellingen</h3>"
 msgstr "<hr><h3>Settings</h3>"
 
-#: rentman.php:132
+#: rentman.php:134
 msgid "<strong>Check beschikbaarheid voor sturen  </strong>"
 msgstr "<strong>Check availability for sending  </strong>"
 
-#: rentman.php:144
+#: rentman.php:146
 msgid "<br><br><strong>Korting contact uit Rentman overnemen  </strong>"
 msgstr "<br><br><strong>Use discount from contact in Rentman  </strong>"
 
-#: rentman.php:158
+#: rentman.php:160
 msgid "Wijzigingen Opslaan"
 msgstr "Save Changes"
 
-#: rentman.php:161
+#: rentman.php:163
 msgid "Update afbeeldingen van producten"
 msgstr "Update product images"
 
-#: rentman.php:163
+#: rentman.php:165
 msgid ""
 "Druk op de onderstaande knop wanneer je afbeeldingen in Rentman hebt "
 "gewijzigd<br>\n"
@@ -237,19 +237,19 @@ msgstr ""
 "your<br>\n"
 "                changes to WooCommerce."
 
-#: rentman.php:170
+#: rentman.php:172
 msgid "Afbeeldingen Updaten"
 msgstr "Update Images"
 
-#: rentman.php:173
+#: rentman.php:175
 msgid "<h3>De afbeeldingen worden opgehaald..</h3>"
 msgstr "<h3>Starting image import..</h3>"
 
-#: rentman.php:175
+#: rentman.php:177
 msgid "Importeer materiaal uit Rentman"
 msgstr "Import products from Rentman"
 
-#: rentman.php:177
+#: rentman.php:179
 msgid ""
 "Druk op de onderstaande knop om te zoeken naar nieuwe of gewijzigde "
 "producten en deze<br>\n"
@@ -259,19 +259,19 @@ msgstr ""
 "webshop products<br>\n"
 "                from your Rentman account to your WooCommerce shop."
 
-#: rentman.php:179
+#: rentman.php:181
 msgid "-- Meest recente check voor updates: "
 msgstr "-- Most recent check for updates: "
 
-#: rentman.php:187
+#: rentman.php:189
 msgid "Producten Importeren"
 msgstr "Import Products"
 
-#: rentman.php:192
+#: rentman.php:194
 msgid "Reset"
 msgstr "Reset"
 
-#: rentman.php:196
+#: rentman.php:198
 msgid ""
 "<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze "
 "pagina niet!</h3>"
@@ -279,15 +279,15 @@ msgstr ""
 "<h3>Starting import.. This might take a few minutes, so don't leave this "
 "page!</h3>"
 
-#: rentman.php:290
+#: rentman.php:292
 msgid "Dit is geen Rentman 4 account! &#10005;<br>"
 msgstr "This is not a Rentman 4 account! &#10005;<br>"
 
-#: rentman.php:298
+#: rentman.php:300
 msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
 msgstr "<strong>Please fill in all of the required fields</strong>"
 
-#: rentman.php:315
+#: rentman.php:317
 msgid ""
 "<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
 "h4>"
@@ -295,15 +295,15 @@ msgstr ""
 "<h4>Connection with the Rentman API failed! Did you provide the correct "
 "credentials?</h4>"
 
-#: rentman.php:317
+#: rentman.php:319
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
 msgstr "<h4>Connection with the Rentman API was successful!</h4>"
 
-#: rentman.php:326
+#: rentman.php:328
 msgid "<b>Compatibiliteitscontrole..</b><br>"
 msgstr "<b>Checking for compatibility errors..</b><br>"
 
-#: rentman.php:334
+#: rentman.php:336
 msgid ""
 "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
 "plugin hierdoor niet goed.. &#10005;<br>"
@@ -311,27 +311,27 @@ msgstr ""
 "Beware, the PHP time limit is lower than 30 seconds! The plugin might not "
 "work correctly.. &#10005;<br>"
 
-#: rentman.php:336
+#: rentman.php:338
 msgid "PHP tijdslimiet is in orde &#10003;<br>"
 msgstr "PHP time limit is okay &#10003;<br>"
 
-#: rentman.php:341
+#: rentman.php:343
 msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 msgstr "Folder created at <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 
-#: rentman.php:344
+#: rentman.php:346
 msgid "De Rentman map voor afbeeldingen is aanwezig &#10003;<br>"
 msgstr "The Rentman folder for images exists &#10003;<br>"
 
-#: rentman.php:353
+#: rentman.php:355
 msgid "Toevoegen van afbeeldingen is gelukt &#10003;<br>"
 msgstr "Addition of images was successful &#10003;<br>"
 
-#: rentman.php:355
+#: rentman.php:357
 msgid "Toevoegen van afbeeldingen is mislukt.. &#10005;<br>"
 msgstr "Addition of images failed.. &#10005;<br>"
 
-#: rentman.php:359
+#: rentman.php:361
 msgid ""
 "&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer "
 "dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
@@ -339,7 +339,7 @@ msgstr ""
 "&bull; <i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to "
 "change this and check if the error has been resolved.<br>"
 
-#: rentman.php:368
+#: rentman.php:370
 msgid ""
 "Let op: er ontbreekt een .htaccess bestand in de 'uploads/rentman/' map. "
 "Mogelijk worden de afbeeldingen niet correct weergegeven..<br>"
@@ -347,37 +347,40 @@ msgstr ""
 "Important: a .htaccess file is missing in the 'uploads/rentman/' folder! The "
 "imported images might not be displayed correctly..<br>"
 
-#: rentman.php:370
+#: rentman.php:372
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
 msgstr "Images can be displayed &#10003;<br>"
 
-#: rentman_project.php:65
+#: rentman_project.php:67
 msgid "Externe referentie"
 msgstr "External reference"
 
-#: rentman_project.php:66
+#: rentman_project.php:68
 msgid "Externe referentie (optioneel)"
 msgstr "External reference (optional)"
 
-#: rentman_project.php:72
+#: rentman_project.php:74
 msgid "E-mailadres"
 msgstr "Email address"
 
-#: rentman_project.php:73
+#: rentman_project.php:75
 msgid "E-mail"
 msgstr "Email address"
 
-#: rentman_project.php:79
+#: rentman_project.php:81
 msgid "Telefoon"
 msgstr "Phone"
 
-#: rentman_project.php:80
+#: rentman_project.php:82
 msgid "Telefoonnummer"
 msgstr "Phone number"
 
-#: rentman_project.php:91 rentman_project.php:106 rentman_requests.php:467
+#: rentman_project.php:93 rentman_project.php:108 rentman_requests.php:467
 msgid "Huurperiode"
 msgstr "Rental period"
+
+#~ msgid "<h2>VERHUURPERIODE</h2>"
+#~ msgstr "<h2>RENT PERIOD</h2>"
 
 #~ msgid "Prijs inclusief BTW: "
 #~ msgstr "Price including taxes: "
@@ -393,9 +396,6 @@ msgstr "Rental period"
 
 #~ msgid "Begindatum"
 #~ msgstr "Start date"
-
-#~ msgid "<br><b>Huurperiode</b>"
-#~ msgstr "<br><b>Rental period</b>"
 
 #~ msgid "Referentie"
 #~ msgstr "Reference"

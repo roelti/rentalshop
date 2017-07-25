@@ -750,10 +750,16 @@
     // --------------------------------------------- \\
 
     # Setup API request that checks the availability of the product
-    function available_request($token, $identifier, $quantity){
-        $dates = get_dates();
-        $enddate = $dates['to_date'];
-        $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
+    function available_request($token, $identifier, $quantity, $updating = false, $sdate, $edate){
+        if ($updating){
+            $startDate = $sdate;
+            $endDate = $edate;
+        } else {
+            $dates = get_dates();
+            $startDate = $dates['from_date'];
+            $endDate = $dates['to_date'];
+        }
+        $endDate = date("Y-m-j", strtotime("+1 day", strtotime($endDate)));
         $object_data = array(
             "requestType" => "modulefunction",
             "client" => array(
@@ -765,8 +771,8 @@
             "token" => $token,
             "module" => "Availability",
             "parameters" => array(
-                "van" => $dates['from_date'],
-                "tot" => $enddate,
+                "van" => $startDate,
+                "tot" => $endDate,
                 "materiaal" => $identifier,
                 "aantal" => $quantity
             ),

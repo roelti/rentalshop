@@ -5,7 +5,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.6.4
+     * Version: 4.7.0
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -42,10 +42,12 @@
     add_action('woocommerce_before_add_to_cart_form', 'show_discount', 9, 1);
     add_action('woocommerce_before_add_to_cart_button', 'add_custom_field', 10, 1);
     add_action('woocommerce_before_cart_totals', 'add_date_checkout');
+    add_action('woocommerce_checkout_after_order_review', 'add_date_checkout');
     add_action('woocommerce_cart_calculate_fees', 'apply_staffel');
     add_action('woocommerce_checkout_update_order_meta', 'add_rental_data');
     add_action('woocommerce_single_product_summary', 'add_to_cart_template', 30);
     add_action('woocommerce_thankyou', 'export_users', 10, 1);
+    add_action('wp_ajax_wdm_add_user_custom_data_options', 'update_dates');
 
     # Add filters for certain buttons and texts
     add_filter('woocommerce_add_to_cart_validation', 'check_available', 10, 5);
@@ -87,7 +89,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.6.4</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.7.0</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
