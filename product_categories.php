@@ -19,7 +19,7 @@
         }
     }
 
-    # Sets the right parents of the product categories
+    # Go through all the imported product categories and set the right parents
     function set_parents($folder){
         $parent_term = get_term_by('slug', $folder[2], 'product_cat'); // array is returned if taxonomy is given
         $this_term = get_term_by('slug', $folder[0], 'product_cat');
@@ -47,17 +47,16 @@
             $name = $parsed['response']['items']['Folder'][$counter]['data']['naam'];
             $id = $parsed['response']['items']['Folder'][$counter]['data']['id'];
             $parent = $parsed['response']['items']['Folder'][$counter]['data']['parent'];
-            if ($id == $lastkey)
+            array_push($folderList, array($id, $name, $parent));
+            if ($id == $lastkey) # Last folder in the array has been reached
                 $switch = false;
-            else{
-                array_push($folderList, array($id, $name, $parent));
+            else
                 $counter++;
-            }
         }
         return $folderList;
     }
 
-    # Hide all irrelevant product subcategories in the webshop (in other words, the empty ones)
+    # Delete all irrelevant product subcategories in the webshop (in other words, the empty ones)
     function remove_empty_categories(){
         $args = array(
             'taxonomy'     => 'product_cat',

@@ -7,8 +7,14 @@
         $pf = new WC_Product_Factory();
         $product = $pf->get_product($post->ID);
         if ($product->product_type == 'rentable'){
-            $rentableProduct = false;
+            # Display stock quantity of current product
+            $stock = __(' op voorraad', 'rentalshop');
+            $symbol = '&#10003; ';
+            if ($product->get_stock_quantity() == 0)
+                $symbol = '&#10005; ';
+            echo $symbol . $product->get_stock_quantity() . $stock . '<br><br>';
             # Checks if there already is a 'Rentable' product in the shopping cart
+            $rentableProduct = false;
             foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
                 $product = $cart_item['data'];
                 if ($product->product_type == 'rentable'){
@@ -209,7 +215,7 @@
         wp_enqueue_script('admin_availability');
     }
 
-    # Set the datepicker functions
+    # Attach script to the 'update rental period' button
     function init_datepickers(){
         # Register and localize the datepickers script
         wp_register_script('admin_datepickers', plugins_url('js/admin_datepickers.js', __FILE__ ));
@@ -218,7 +224,7 @@
     }
 
     # Main function for the availability check and relevant API requests
-    function check_available($passed, $product_id, $quantity, $variation_id = '', $variations= '')
+    function check_available($passed, $product_id, $quantity, $variation_id = '', $variations = '')
     {
         # Get the product and chosen dates
         $pf = new WC_Product_Factory();
@@ -232,7 +238,7 @@
         }
 
         # Only apply availability check on products that were
-        # imported from Rentman
+        # imported from Rentman (so with the 'rentable' product type)
         if ($product->product_type == 'rentable'){
             if (apply_filters('rentman/availability_check', true)) {
                 if ($variation_id != 'checkout') {
@@ -245,7 +251,7 @@
                     $sdate = $startDate;
                     $edate = $endDate;
                 }
-                # Check if any of the input dates are wrong
+                # Check if any of the input dates are empty or the rental period is invalid
                 if ($sdate == '' or $edate == '' or (strtotime($edate) < strtotime($sdate))) {
                     $passed = false;
                     wc_add_notice(__('Er ging iets mis.. Kloppen de datums wel?', 'rentalshop'), 'error');
@@ -281,9 +287,9 @@
 
                         $residual = $quantity + $maxconfirmed; # Total amount of available items
                         $optional = $maxoption * (-1);
-                        $possible = min($optional, $quantity); # Amount of items that are definitely available
+                        $possible = min($optional, $quantity); # Amount of items that might be available
 
-                        # ~~ The actual Availability Check
+                        # The actual Availability Check
                         # Comparing values of 'maxconfirmed' and 'maxoption'
                         if ($maxconfirmed < 0) { # Products are definitely not available
                             $passed = false;

@@ -30,8 +30,8 @@
         add_option('plugin-settings');
     }
 
-    # Add actions for Admin Initialization, Admin Menu, Fee Calculation and
-    # Woocommerce Checkout to the right hooks
+    # Add actions for Admin Initialization, Admin Menu, Fee Calculation,
+    # Woocommerce Checkout and more to the right hooks
 
     add_action('admin_init', 'register_settings');
     add_action('admin_menu', 'register_submenu');
@@ -244,7 +244,7 @@
             }
         }
 
-        # Delete certain amount of posts
+        # Delete certain amount of posts (called by admin_delete.js)
         if (isset($_GET['delete_products'])){
             $_REQUEST = array_merge($_GET, json_decode(file_get_contents('php://input'), true));
             $posts = $_REQUEST['prod_array'];
@@ -263,7 +263,7 @@
         }
     }
 
-    # Receive the dates for the rental period from the session
+    # Return the dates for the rental period from the current session
     function get_dates()
     {
         if (!isset ($_SESSION['rentman_rental_session'])){
@@ -413,7 +413,7 @@
     # Does a JSON request with a given message
     function do_request($url, $message)
     {
-        # Setup
+        # Setup a cURL session
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_POST, true);

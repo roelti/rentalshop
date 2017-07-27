@@ -105,14 +105,15 @@
         $message = json_encode(setup_file_request($token, $prodList, $globalimages), JSON_PRETTY_PRINT);
         $received = do_request($url, $message);
 
-        # Get the list of files and return
+        # Parse the API response
         $parsed = json_decode($received, true);
         $parsed = parseResponse($parsed);
 
+        # Add the URLs of the image files to an array
         foreach ($parsed['response']['items']['Files'] as $imgFile){
             if ($fileList[$imgFile['data']['item']] == null){
                 $fileList[$imgFile['data']['item']] = array($imgFile['data']['url']);
-            } else {
+            } else { # If more than one file is attached to the product
                 array_push($fileList[$imgFile['data']['item']], $imgFile['data']['url']);
             }
         }

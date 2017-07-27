@@ -10,7 +10,7 @@
                 $date = date('l jS \of F Y h:i:s A');
                 update_option('plugin-lasttime', $date);
 
-                # Get the endpoint url
+                # Get the url of the most latest endpoint
                 $url = receive_endpoint();
 
                 # First, obtain all the products from Rentman
@@ -21,7 +21,7 @@
                 $parsed = json_decode($received, true);
                 $parsed = parseResponse($parsed);
 
-                # Receive id's of first and last ID in response
+                # Receive ID's of first and last product in response
                 $listLength = sizeof($parsed['response']['links']['Materiaal']);
 
                 if ($listLength > 0) { # At least one product has been found
@@ -222,15 +222,15 @@
         # Other method for setting category
         wp_set_object_terms($post_id, $checkterm->term_id, 'product_cat');
 
-        # If it is a 'Verhuur' product
+        # If it is a 'verhuur' product, the type is set to 'rentable'
         if ($product['verhuur']) {
             wp_set_object_terms($post_id, 'rentable', 'product_type');
         }
-        else {
+        else { # Otherwise it is a 'simple product'
             wp_set_object_terms($post_id, 'simple_product', 'product_type');
         }
 
-        # Add/update the post meta
+        # Add/update the post meta of the product
         add_post_meta($post_id, 'rentman_imported', true);
         add_post_meta($post_id, '_rentman_tax', $product['btw']);
         update_post_meta($post_id, '_visibility', 'visible');
@@ -255,7 +255,7 @@
         update_post_meta($post_id, '_backorders', "no");
         update_post_meta($post_id, '_stock', $product['amount']);
 
-        # Attach Media Files
+        # Attach the media files to the post
         for ($x = 0; $x < sizeof($file_list[$product['id']]); $x++){
             attach_media($file_list[$product['id']][$x], $post_id, $product['id'], $x);
         }
@@ -359,7 +359,7 @@
         }
     }
 
-    # Make new product type selectable
+    # Make new product type selectable in Wordpress admin menu
     function add_rentable_product($types){
         $types['rentable'] = __('Rentable');
         return $types;
