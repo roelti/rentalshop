@@ -193,11 +193,7 @@
     # new products in WooCommerce
     function import_product($product, $file_list){
         if (empty($product['long_desc'])){
-            if (empty($product['folder_id'])){
-                $content = __('Geen informatie beschikbaar', 'rentalshop');
-            } else{
-                $content = $product['folder_id'];
-            }
+            $content = __('Geen informatie beschikbaar', 'rentalshop');
         } else{
             $content = $product['long_desc'];
         }

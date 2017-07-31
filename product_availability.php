@@ -40,7 +40,7 @@
                 <input type="date" name="start-date" onchange="quickCheck()" value="<?php echo $fromDate;?>" min="<?php echo $today;?>">
                 <?php _e('Tot:', 'rentalshop');?>
                 <input type="date" name="end-date" onchange="quickCheck()" value="<?php echo $toDate;?>" min="<?php echo $today;?>">
-                <p><?php _e('Let op: je kan de datums voor ander materiaal pas in de winkelwagen weer wijzigen!', 'rentalshop');?></p>
+                <p><?php _e('Let op: u kan de datums voor ander materiaal pas in de winkelwagen weer wijzigen!', 'rentalshop');?></p>
                 <?php
             }
             else{ # Else, display the dates from the products in your shopping cart

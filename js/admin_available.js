@@ -10,7 +10,8 @@ jQuery().ready(function()
 // Adds availability function to the 'amount' field
 function attachFunction() {
     var input = document.getElementsByClassName("input-text qty text")[0];
-    input.addEventListener ("change", quickCheck, false);
+    if (typeof input != 'undefined')
+    	input.addEventListener ("change", quickCheck, false);
 }
 
 // Function that applies the availability check when changes are made on the page
@@ -33,7 +34,13 @@ function quickCheck() {
     }
     else {
         var productID = document.getElementsByClassName("sku")[0].innerText;
-        var amount = document.getElementsByClassName("input-text qty text")[0].value;
+        // Check if the quantity field exists
+        var input = document.getElementsByClassName("input-text qty text")[0];
+        if (typeof input != 'undefined')
+        	var amount = document.getElementsByClassName("input-text qty text")[0].value;
+        else
+        	var amount = 1;
+        // Do the actual request
         xhr = new XMLHttpRequest();
         var url = endPoint;
         var account = rm_account;
@@ -63,7 +70,7 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.7.0"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.7.1"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);
