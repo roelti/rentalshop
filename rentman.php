@@ -5,7 +5,7 @@
      * Plugin Name: Rentman
      * Plugin URI: http://www.rentman.nl
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.7.1
+     * Version: 4.7.2
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -68,6 +68,7 @@
         register_setting('plugin-settings', 'plugin-enddate');
         register_setting('plugin-settings', 'plugin-lasttime');
         register_setting('plugin-settings', 'plugin-password');
+        register_setting('plugin-settings', 'plugin-rentmanIDs');
         register_setting('plugin-settings', 'plugin-startdate');
         register_setting('plugin-settings', 'plugin-token');
         register_setting('plugin-settings', 'plugin-username');
@@ -89,7 +90,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.7.1</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.7.2</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">

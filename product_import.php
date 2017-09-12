@@ -210,7 +210,8 @@
         );
 
         # Check Category
-        $checkterm = get_term_by('slug', $product['folder_id'], 'product_cat');
+        $categoryIDs = get_option('plugin-rentmanIDs', array());
+        $checkterm = get_term($categoryIDs[$product['folder_id']], 'product_cat');
 
         # Insert post
         $post_id = wp_insert_post($new_product, TRUE);
