@@ -61,7 +61,7 @@
                     array_push($fees, $contact_id['data']['transportkorting']);
                 }
 
-                if ($billing != $shipping) { # Get Rentman Contact for location
+                if ($billing != $shipping && $shipping != '') { # Get Rentman Contact for location
                     # Setup Request to send JSON
                     $message = json_encode(setup_location_request($token, $order->shipping_address_1, $order->shipping_email), JSON_PRETTY_PRINT);
 
