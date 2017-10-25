@@ -300,7 +300,9 @@
         $postID = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $sku));
         $getDate = get_the_date('c', $postID);
         $postdate = substr($getDate, 0, 10) . ' ' . substr($getDate, 11, 8);
-        if ($postdate == $newestdate)
+        $rentDate = strtotime($newestdate);
+        $wooDate = strtotime($postdate);
+        if ($wooDate >= $rentDate)
             return false; # Has not been updated
 
         # Product has been updated, delete old post

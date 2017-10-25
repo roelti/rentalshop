@@ -14,7 +14,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),
@@ -36,7 +36,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -64,7 +64,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -124,7 +124,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -221,7 +221,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -296,7 +296,7 @@
         $order = new WC_Order($order_id);
         $comp = $order->billing_company;
         $proj = $comp . " Project";
-        $notitie = $order->customer_note;
+        $notitie = "Bestelnummer in WooCommerce: " . $order_id . ".\n" . $order->customer_note;
         $ext_ref = $order->billing_reference;
 
         $dates = get_dates();
@@ -404,7 +404,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -517,7 +517,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -612,7 +612,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -647,7 +647,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -710,7 +710,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -765,7 +765,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -793,7 +793,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -837,7 +837,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -862,7 +862,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -884,7 +884,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.7.3"
+                "version" => "4.8.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
