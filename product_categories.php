@@ -15,18 +15,17 @@
 
         # Add the category if it does not exist yet
         if ($receive_term == ''){
-            wp_insert_term(
+            $category = wp_insert_term(
                 $folder[1], # Name of term
-                'product_cat', # Taxonomy
-                array(
-                    'slug' => $folder[0]
-                )
+                'product_cat' # Taxonomy
             );
-            $receive_term = get_term_by('slug', $folder[0], 'product_cat');
-            add_term_meta($receive_term->term_id, "source", 'Rentman'); // add Rentman as source
-            $categoryIDs = get_option('plugin-rentmanIDs', array()); // get global category array
-            $categoryIDs[$folder[0]] = $receive_term->term_id; // add the product ID to array
-            update_option('plugin-rentmanIDs', $categoryIDs); // update the array
+            if (!is_wp_error($category)){
+                $current_id = $category['term_id']; // get ID of the category that was just created
+                add_term_meta($current_id, "source", 'Rentman'); // add Rentman as source
+                $categoryIDs = get_option('plugin-rentmanIDs', array()); // get global category array
+                $categoryIDs[$folder[0]] = $current_id; // add the product ID to array
+                update_option('plugin-rentmanIDs', $categoryIDs); // update the array
+            }
         }
     }
 

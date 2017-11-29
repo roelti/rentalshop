@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2017-10-25 22:48+0200\n"
-"PO-Revision-Date: 2017-10-25 22:48+0200\n"
+"POT-Creation-Date: 2017-11-28 16:10+0100\n"
+"PO-Revision-Date: 2017-11-28 16:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -19,23 +19,23 @@ msgstr ""
 msgid "'"
 msgstr "'"
 
-#: product_availability.php:10
+#: product_availability.php:11
 msgid " op voorraad"
 msgstr " auf Vorrat"
 
-#: product_availability.php:11
+#: product_availability.php:12
 msgid "Totale voorraad onbekend"
 msgstr "Gesamtvorrat unbekannt"
 
-#: product_availability.php:43 product_availability.php:91
+#: product_availability.php:44 product_availability.php:92
 msgid "Van:"
 msgstr "Von:"
 
-#: product_availability.php:45 product_availability.php:93
+#: product_availability.php:46 product_availability.php:94
 msgid "Tot:"
 msgstr "Bis:"
 
-#: product_availability.php:47
+#: product_availability.php:48
 msgid ""
 "Let op: u kan de datums voor ander materiaal pas in de winkelwagen weer "
 "wijzigen!"
@@ -43,71 +43,71 @@ msgstr ""
 "Notiz: Du kannst das Datum des Materials auch gleich im Warenkorb wieder "
 "anpassen!"
 
-#: product_availability.php:53
+#: product_availability.php:54
 msgid "<h3>Geselecteerde datums: </h3> <p><b>Van </b>"
 msgstr "<h3>Selektierte Daten: </h3> <p><b>von </b>"
 
-#: product_availability.php:53
+#: product_availability.php:54
 msgid "<b> tot </b>"
 msgstr "<b> bis </b>"
 
-#: product_availability.php:83
+#: product_availability.php:84
 msgid "<h2>Verhuurperiode</h2>"
 msgstr "<h2>Mietzeitraum</h2>"
 
-#: product_availability.php:98
+#: product_availability.php:99
 msgid "Update Huurperiode"
 msgstr "Update Mietzeitraum"
 
-#: product_availability.php:117
+#: product_availability.php:118
 msgid "Reserveer"
 msgstr "Reservieren"
 
-#: product_availability.php:120
+#: product_availability.php:121
 msgid "Aan winkelmandje toevoegen"
 msgstr "Zum Warenkorb hinzufügen"
 
-#: product_availability.php:216
+#: product_availability.php:217
 msgid "Product is niet beschikbaar!"
 msgstr "Artikel ist nicht verfügbar!"
 
-#: product_availability.php:217
+#: product_availability.php:218
 msgid "Product is misschien niet beschikbaar!"
 msgstr "Artikel ist vielleicht nicht verfügbar!"
 
-#: product_availability.php:218
+#: product_availability.php:219
 msgid "Product is beschikbaar!"
 msgstr "Artikel ist verfügbar!"
 
-#: product_availability.php:261
+#: product_availability.php:262
 msgid "Er ging iets mis.. Kloppen de datums wel?"
 msgstr "Es ging etwas schief. Stimmen die eigegebenen Daten?"
 
-#: product_availability.php:300
+#: product_availability.php:301
 msgid "Er zijn slechts "
 msgstr "Es gibt nur "
 
-#: product_availability.php:300
+#: product_availability.php:301
 msgid " beschikbaar in die tijdsperiode."
 msgstr " verfügbar in diesem Zeitraum."
 
-#: product_availability.php:303
+#: product_availability.php:304
 msgid "Let op: "
 msgstr "Pass auf: "
 
-#: product_availability.php:303
+#: product_availability.php:304
 msgid " van de "
 msgstr " vom "
 
-#: product_availability.php:303
+#: product_availability.php:304
 msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
 msgstr " sind vielleicht nicht verfügbar in diesem Zeitraum."
 
-#: product_availability.php:306
+#: product_availability.php:307
 msgid "Uw geselecteerde aantal "
 msgstr "Deine ausgewählte Anzahl "
 
-#: product_availability.php:306
+#: product_availability.php:307
 msgid " is beschikbaar in die tijdsperiode!"
 msgstr " ist verfügbar in diesem Zeitraum!"
 
@@ -191,13 +191,13 @@ msgstr " Tage"
 msgid "Klantkorting"
 msgstr "Kundenrabatt"
 
-#: product_prices.php:303 product_prices.php:306
+#: product_prices.php:291 product_prices.php:294
 msgid "Dagprijs"
 msgstr "Tagespreis"
 
 #: rentman.php:93
-msgid "<h1>Rentman Product Import - v4.8.0</h1><hr><br>"
-msgstr "<h1>Rentman Artikel Import - v4.8.0</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.8.1</h1><hr><br>"
+msgstr "<h1>Rentman Artikel Import - v4.8.1</h1><hr><br>"
 
 #: rentman.php:95
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"

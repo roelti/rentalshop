@@ -257,13 +257,7 @@
             $amount = $items[$item]["quantity"];
             $product = $pf->get_product($_product->ID);
             $staffel = $staffels[$product->get_sku()];
-            $_tax = new WC_Tax();
-            $product_tax_class = $product->get_tax_class();
-            $rates = $_tax->get_rates($product_tax_class);
-            $rate = current($rates);
-            $tax = 1 + (floatval($rate['rate']) / 100);
-            $price = $tax * $product->get_price();
-            $carttotals = $price * $amount;
+            $carttotals = $product->get_price() * $amount;
             $staffelprice = $carttotals * $staffel;
             $totalprice += $staffelprice - $carttotals;
         }
@@ -280,13 +274,7 @@
             $amount = $items[$item]["quantity"];
             $product = $pf->get_product($_product->ID);
             $discount = $discounts[$product->get_sku()];
-            $_tax = new WC_Tax();
-            $product_tax_class = $product->get_tax_class();
-            $rates = $_tax->get_rates($product_tax_class);
-            $rate = current($rates);
-            $tax = 1 + (floatval($rate['rate']) / 100);
-            $price = $tax * $product->get_price();
-            $carttotals = $price * $staffels[$product->get_sku()] * $amount;
+            $carttotals = $product->get_price() * $staffels[$product->get_sku()] * $amount;
             $percentage = 1 - $discount;
             $discountprice = $carttotals * $percentage;
             $extradiscount = $discountprice * $totaldisc;
