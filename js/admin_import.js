@@ -1,105 +1,53 @@
+// ----- JavaScript functions for product import ----- \\
+
+// Show import message in the menu
 jQuery().ready(function()
 {
-    jQuery("importMelding").show();
-    //import categories
-    jQuery("ul#importstatus").append("<li>Importing categories</li>");
-
-    var numProducts = 0;
-    jQuery.get( "admin.php?page=rentman&import=import_categories", function( data )
-    {
-        data = JSON.parse(data);
-
-        if(data.status == "error")
-        {
-            alert("Er ging iets mis: "+data.error);
-            return;
-        }
-
-        importProducts(1,50);
-    })
-    .fail(function()
-    {
-        data = JSON.parse(data);
-        alert(data.error);
-        return;
-    })
+    jQuery("#importMelding").show();
+    jQuery("#importStatus").html(string1 + "0 / " + products.length);
+    console.log('Products Imported:');
+    console.log(products);
+    console.log('Files Imported:');
+    console.log(folders);
+    applyAjax();
 });
 
-function importProducts(van,tot)
-{
-    jQuery("ul#importstatus").append("<li>Importing products "+van+" - "+tot+"</li>");
-
-    jQuery.get( "admin.php?page=rentman&import=import_products&van="+van+"&tot="+tot, function( data )
-    {
-        data = JSON.parse(data);
-
-        if(data.status == "error")
-        {
-            alert("Er ging iets mis: "+data.error);
-            return;
+// Recursive function that sends product indices to PHP until the
+// whole array has been covered
+function applyAjax(){
+    jQuery.ajax({
+        type: "POST",
+        url: 'admin.php?page=rentman-shop&import_products',
+        datatype: "json",
+        data: JSON.stringify({ file_array : folders, array_index : arrayindex, prod_array : products}),
+    	contentType: 'application/json; charset=utf-8',
+        success: function(){
+        	console.log('Current Array Index:');
+    		console.log(arrayindex);
+            var endindex = parseInt(arrayindex) + 5;
+            if (endindex > products.length)
+                endindex = products.length;
+            jQuery("#importStatus").html(string1 + endindex + " / " + products.length);
+            arrayindex = parseInt(arrayindex) + 5;
+            if (arrayindex < products.length){
+                applyAjax();
+            } else {
+                removeFolders();
+            }
         }
-
-        numProducts = data.products;
-
-        if(numProducts > tot)
-            importProducts(tot+1,tot+50);
-        else
-            deleteProducts();
-    })
-    .fail(function()
-    {
-        data = JSON.parse(data);
-        alert(data.error);
-    })
+    });
 }
 
-function deleteProducts()
-{
-    jQuery("ul#importstatus").append("<li>Deleting unused products</li>");
-
-    jQuery.get( "admin.php?page=rentman&import=import_delete_products", function( data )
-    {
-        data = JSON.parse(data);
-
-        if(data.status == "error")
-        {
-            alert("Er ging iets mis: "+data.error);
-            return;
+// Calls PHP function that removes all empty product categories from WooCommerce
+function removeFolders(){
+    jQuery("#importStatus").append(string2);
+    jQuery.ajax({
+        type: "GET",
+        url: 'admin.php?page=rentman-shop&remove_folders',
+        data: '',
+        success: function(){
+            jQuery("#importStatus").append(string3);
+            jQuery("#importMelding").html(string4);
         }
-
-        importCrossSells(1,50);
-    })
-        .fail(function()
-        {
-            data = JSON.parse(data);
-            alert(data.error);
-        })
-}
-
-function importCrossSells(van,tot)
-{
-    jQuery("ul#importstatus").append("<li>Importing linked products "+van+" - "+tot+"</li>");
-
-    jQuery.get( "admin.php?page=rentman&import=import_cross_sells&van="+van+"&tot="+tot, function( data )
-    {
-        data = JSON.parse(data);
-
-        if(data.status == "error")
-        {
-            alert("Er ging iets mis: "+data.error);
-            return;
-        }
-
-        numProducts = data.products;
-
-        if(numProducts > tot)
-            importCrossSells(tot+1,tot+50);
-        else
-            jQuery("ul#importstatus").append("<li style='color: green;'>Import complete!</li>");
-    })
-    .fail(function()
-    {
-        data = JSON.parse(data);
-        alert(data.error);
-    })
+    });
 }
