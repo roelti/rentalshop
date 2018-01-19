@@ -6,7 +6,7 @@
         global $post;
         $pf = new WC_Product_Factory();
         $product = $pf->get_product($post->ID);
-        if ($product->product_type == 'rentable'){
+        if ($product->get_type() == 'rentable'){
             # Display stock quantity of current product
             $stock = __(' op voorraad', 'rentalshop');
             $nostock = __('Totale voorraad onbekend', 'rentalshop');
@@ -21,7 +21,7 @@
             $rentableProduct = false;
             foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
                 $product = $cart_item['data'];
-                if ($product->product_type == 'rentable'){
+                if ($product->get_type() == 'rentable'){
                     $rentableProduct = true;
                     break;
                 }
@@ -42,9 +42,9 @@
                 ?>
                 <!-- actual HTML code for the date input fields -->
                 <?php _e('Van:', 'rentalshop');?>
-                <input type="date" name="start-date" onchange="quickCheck()" value="<?php echo $fromDate;?>" min="<?php echo $today;?>">
+                <input type="date" name="start_date" onchange="quickCheck()" value="<?php echo $fromDate;?>" min="<?php echo $today;?>">
                 <?php _e('Tot:', 'rentalshop');?>
-                <input type="date" name="end-date" onchange="quickCheck()" value="<?php echo $toDate;?>" min="<?php echo $today;?>">
+                <input type="date" name="end_date" onchange="quickCheck()" value="<?php echo $toDate;?>" min="<?php echo $today;?>">
                 <p><?php _e('Let op: u kan de datums voor ander materiaal pas in de winkelwagen weer wijzigen!', 'rentalshop');?></p>
                 <?php
             }
@@ -64,14 +64,14 @@
         }
     }
 
-    # Also adds date fields to the checkout menu
+    # Also adds date fields to the checkout and cart menu
     function add_date_checkout(){
         $rentableProduct = false;
         $today = date("Y-m-d");
         # Again check if the shopping cart contains any 'Rentable' products
         foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
             $product = $cart_item['data'];
-            if ($product->product_type == 'rentable'){
+            if ($product->get_type() == 'rentable'){
                 $rentableProduct = true;
                 break;
             }
@@ -90,9 +90,9 @@
                 ?>
                 <form method="post">
                     <?php _e('Van:', 'rentalshop'); ?>
-                    <input type="date" name="start-date" value="<?php echo $startdate; ?>" min="<?php echo $today;?>">
+                    <input type="date" name="start_date" value="<?php echo $startdate; ?>" min="<?php echo $today;?>">
                     <?php _e('Tot:', 'rentalshop'); ?>
-                    <input type="date" name="end-date" value="<?php echo $enddate; ?>" min="<?php echo $today;?>"><br>
+                    <input type="date" name="end_date" value="<?php echo $enddate; ?>" min="<?php echo $today;?>"><br>
 
                     <!-- Update Button --></p>
                 <input type="hidden" name="rm-update-dates">
@@ -105,6 +105,26 @@
         }
     }
 
+    # Display the selected dates in the checkout menu
+    function show_selected_dates(){
+        $rentableProduct = false;
+        # Again check if the shopping cart contains any 'Rentable' products
+        foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
+            $product = $cart_item['data'];
+            if ($product->get_type() == 'rentable'){
+                $rentableProduct = true;
+                break;
+            }
+        }
+        # If it does, add the date fields
+        if ($rentableProduct){
+            $dates = get_dates();
+            ?>
+            <?php _e('<h3>Geselecteerde datums </h3> <p><b>Van </b>', 'rentalshop'); echo $dates['from_date']; _e('<b> tot </b>', 'rentalshop'); echo $dates['to_date'];?></p>
+            <?php
+        }
+    }
+
     // ------------- Template Changes ------------- \\
 
     # Changes text of the 'add to cart' button
@@ -114,7 +134,7 @@
 
         $product = $pf->get_product($post->ID);
 
-        if ($product->product_type == 'rentable'){
+        if ($product->get_type() == 'rentable'){
             return __('Reserveer', 'rentalshop');
         }
 
@@ -128,7 +148,7 @@
 
         $product = $pf->get_product($post->ID);
 
-        if ($product->product_type == 'rentable')
+        if ($product->get_type() == 'rentable')
         {
             if (apply_filters('rentman/add_to_cart_template', true)) {
                 do_action('woocommerce_before_add_to_cart_form'); ?>
@@ -144,7 +164,7 @@
                         ));
                     ?>
 
-                    <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->id); ?>"/>
+                    <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>"/>
 
                     <button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text();?></button>
 
@@ -161,7 +181,7 @@
     # Apply the check_available function on updated products in the cart
     function update_amount($passed, $cart_item_key, $values, $quantity){
         $product = $values['data'];
-        return check_available($passed, $product->id, $quantity, 'from_CART');
+        return check_available($passed, $product->get_id(), $quantity, 'from_CART');
     }
 
     # Apply availability check for each item in the cart for the new dates and update the
@@ -170,16 +190,16 @@
         $checkergroup = true;
         foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item){
             $product = $cart_item['data'];
-            if ($product->product_type == 'rentable'){
-                $checkergroup = check_available($checkergroup, $product->id, $cart_item[''], 'checkout');
+            if ($product->get_type() == 'rentable'){
+                $checkergroup = check_available($checkergroup, $product->get_id(), $cart_item[''], 'checkout');
                 if ($checkergroup == false)
                     break;
             }
         } # Only update the dates when all materials are available in the new time period
         if ($checkergroup){
             echo 'Materials are available, updating the dates in the current session';
-            $_SESSION['rentman_rental_session']['from_date'] = $_POST['start-date'];
-            $_SESSION['rentman_rental_session']['to_date'] = $_POST['end-date'];
+            $_SESSION['rentman_rental_session']['from_date'] = $_POST['start_date'];
+            $_SESSION['rentman_rental_session']['to_date'] = $_POST['end_date'];
         } else {
             echo 'Materials are not available, so do not update the dates of the current session';
             echo 'SESSION from date = ' . $_SESSION['rentman_rental_session']['from_date'];
@@ -217,6 +237,7 @@
         wp_localize_script('admin_availability', 'unavailable', __("Product is niet beschikbaar!", "rentalshop"));
         wp_localize_script('admin_availability', 'maybe', __("Product is misschien niet beschikbaar!", "rentalshop"));
         wp_localize_script('admin_availability', 'available', __("Product is beschikbaar!", "rentalshop"));
+        wp_localize_script('admin_availability', 'ajax_file_path', admin_url('admin-ajax.php'));
         wp_enqueue_script('admin_availability');
     }
 
@@ -234,8 +255,8 @@
         # Get the product and chosen dates
         $pf = new WC_Product_Factory();
         $product = $pf->get_product($product_id);
-        $startDate = $_POST['start-date'];
-        $endDate = $_POST['end-date'];
+        $startDate = $_POST['start_date'];
+        $endDate = $_POST['end_date'];
         if ($startDate == '' or $endDate == ''){
             $dates = get_dates();
             $startDate = $dates['from_date'];
@@ -244,7 +265,7 @@
 
         # Only apply availability check on products that were
         # imported from Rentman (so with the 'rentable' product type)
-        if ($product->product_type == 'rentable'){
+        if ($product->get_type() == 'rentable'){
             if (apply_filters('rentman/availability_check', true)) {
                 if ($variation_id != 'checkout') {
                     $_SESSION['rentman_rental_session']['from_date'] = $startDate;

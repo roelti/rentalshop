@@ -41,6 +41,7 @@ function applyAjax(){
 // Calls PHP function that removes all empty product categories from WooCommerce
 function removeFolders(){
     jQuery("#importStatus").append(string2);
+    jQuery("#taxWarning").html('<br>' + taxWarning);
     jQuery.ajax({
         type: "GET",
         url: 'admin.php?page=rentman-shop&remove_folders',

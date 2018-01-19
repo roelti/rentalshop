@@ -6,7 +6,7 @@
      * Plugin URI: https://rentman.io
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.9.0
+     * Version: 4.10.0
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -46,10 +46,11 @@
     add_action('woocommerce_before_cart_totals', 'add_date_checkout');
     add_action('woocommerce_cart_calculate_fees', 'apply_staffel');
     add_action('woocommerce_checkout_update_order_meta', 'add_rental_data');
-    add_action('woocommerce_review_order_before_submit', 'add_date_checkout');
+    add_action('woocommerce_review_order_before_submit', 'show_selected_dates');
     add_action('woocommerce_single_product_summary', 'add_to_cart_template', 30);
     add_action('woocommerce_thankyou', 'export_users', 10, 1);
     add_action('wp_ajax_wdm_add_user_custom_data_options', 'update_dates');
+    add_action('wp_ajax_nopriv_wdm_add_user_custom_data_options', 'update_dates');
 
     # Add filters for certain buttons and texts
     add_filter('woocommerce_add_to_cart_validation', 'check_available', 10, 5);
@@ -100,7 +101,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.9.0</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.10.0</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
@@ -209,6 +210,7 @@
              style="display: none;"><?php _e('<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze pagina niet!</h3>', 'rentalshop'); ?></div>
         <p id="deleteStatus"></p>
         <p id="importStatus"></p>
+        <p id="taxWarning"></p>
         <?php
 
         # If 'Save Changes' button has been pressed, update options
@@ -277,8 +279,12 @@
     # Return the dates for the rental period from the current session
     function get_dates()
     {
+        $today = date("Y-m-j");
         if (!isset ($_SESSION['rentman_rental_session'])){
-            $_SESSION['rentman_rental_session'] = array();
+            $_SESSION['rentman_rental_session'] = array(
+                'from_date' => $today,
+                'to_date' => $today
+            );
         }
 
         if (isset($_SESSION['rentman_rental_session']['from_date']) && isset($_SESSION['rentman_rental_session']['to_date'])){
@@ -286,8 +292,9 @@
             $to_date = sanitize_text_field($_SESSION['rentman_rental_session']['to_date']);
             return array("from_date" => $from_date, "to_date" => $to_date);
         }
-        else
+        else{
             return false;
+        }
     }
 
     // ------------- User Login Functions ------------- \\

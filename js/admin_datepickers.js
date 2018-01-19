@@ -10,24 +10,13 @@ jQuery().ready(function()
 
 // Update the dates in the session
 function ajax_post_date() {
-	var fromDate = document.getElementsByName("start-date")[0].value;
-    var toDate = document.getElementsByName("end-date")[0].value;
-
-	jQuery(function() {
-		jQuery.ajax({
-			url: ajax_file_path,
-			type: 'post',
-			data: { 
-				action: 'wdm_add_user_custom_data_options', 
-				'start-date': fromDate,
-				'end-date': toDate
-			},
-			success: function() {
-				location.reload();
-			},
-			error: function(arg1, desc, error) {
-				console.log("AJAX error: " + desc + " " + error);
-			}
-		});
-	});
+	var data = {
+		'action' : 'wdm_add_user_custom_data_options',
+		'start_date' : document.getElementsByName("start_date")[0].value,
+		'end_date' : document.getElementsByName("end_date")[0].value
+	};
+	jQuery.post(ajax_file_path, data, function(response) {
+		console.log('Server Responded!');
+		location.reload();
+	})
 }

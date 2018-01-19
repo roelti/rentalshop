@@ -81,8 +81,7 @@
         # Fill staffel array with data from the cart
         $items = WC()->cart->get_cart();
         foreach ($items as $item => $values){
-            $_product = $values['data']->post;
-            $product = $pf->get_product($_product->ID);
+            $product = wc_get_product($values['data']->get_id());
             $staffelgroup = get_staffelgroup($token, $product->get_sku());
             if ($staffelgroup == null)
                 $staffels[$product->get_sku()] = '1.0';
@@ -127,10 +126,8 @@
                     $contact_id = $contact['data']['id'];
                     $materials = array();
                     $items = WC()->cart->get_cart();
-                    $pf = new WC_Product_Factory();
                     foreach ($items as $item => $values) {
-                        $_product = $values['data']->post;
-                        $product = $pf->get_product($_product->ID);
+                        $product = wc_get_product($values['data']->get_id());
                         array_push($materials, $product->get_sku());
                     }
 
@@ -249,13 +246,11 @@
 
     # Calculate the total staffel fee of the shopping cart
     function calculate_fee($staffels){
-        $pf = new WC_Product_Factory();
         $totalprice = 0;
         $items = WC()->cart->get_cart();
         foreach ($items as $item => $values){
-            $_product = $values['data']->post;
             $amount = $items[$item]["quantity"];
-            $product = $pf->get_product($_product->ID);
+            $product = wc_get_product($values['data']->get_id());
             $staffel = $staffels[$product->get_sku()];
             $carttotals = $product->get_price() * $amount;
             $staffelprice = $carttotals * $staffel;
@@ -266,13 +261,11 @@
 
     # Calculate the total customer discount of the shopping cart
     function calculate_discount($discounts, $staffels, $totaldisc){
-        $pf = new WC_Product_Factory();
         $totalprice = 0;
         $items = WC()->cart->get_cart();
         foreach ($items as $item => $values){
-            $_product = $values['data']->post;
             $amount = $items[$item]["quantity"];
-            $product = $pf->get_product($_product->ID);
+            $product = wc_get_product($values['data']->get_id());
             $discount = $discounts[$product->get_sku()];
             $carttotals = $product->get_price() * $staffels[$product->get_sku()] * $amount;
             $percentage = 1 - $discount;

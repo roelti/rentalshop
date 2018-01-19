@@ -8,7 +8,7 @@
             $token = get_option('plugin-token');
 
             # Setup New Project Request to send JSON
-            $message = json_encode(setup_newproject_request($url, $token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
+            $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
 
             # Send Request & Receive Response
             do_request($url, $message);
@@ -51,7 +51,7 @@
                     'prijs' => $item[2],
                     'materiaal' => $item[3],
                     'staffel' => $staffels[$item[3]],
-                    'korting' => $discounts[$item[3]]),
+                    'korting' => isset($discounts[$item[3]]) ? $discounts[$item[3]] : 0),
                 'parameters' => array(
                     'extend_sets' => true));
             $counter--;
@@ -105,6 +105,6 @@
 
     # Displays the rental period data on the order details page
     function display_dates_in_order($order){
-        echo '<p><strong>' . __('Huurperiode', 'rentalshop') . ':</strong> ' . get_post_meta($order->id, 'rental_period', true) . '</p>';
+        echo '<p><strong>' . __('Huurperiode', 'rentalshop') . ':</strong> ' . get_post_meta($order->get_id(), 'rental_period', true) . '</p>';
     }
 ?>

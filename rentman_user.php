@@ -23,13 +23,13 @@
             if (apply_filters('rentman/add_customer', true)) {
                 $url = receive_endpoint();
                 $token = get_option('plugin-token');
-                $billing = $order->billing_address_1;
-                $shipping = $order->shipping_address_1;
+                $billing = $order->get_billing_address_1();
+                $shipping = $order->get_shipping_address_1();
                 $contact_person = "";
                 $location_contact = "";
 
                 # Setup Request to send JSON
-                $message = json_encode(setup_check_request($token, $order->billing_email), JSON_PRETTY_PRINT);
+                $message = json_encode(setup_check_request($token, $order->get_billing_email()), JSON_PRETTY_PRINT);
 
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
@@ -63,7 +63,7 @@
 
                 if ($billing != $shipping && $shipping != '') { # Get Rentman Contact for location
                     # Setup Request to send JSON
-                    $message = json_encode(setup_location_request($token, $order->shipping_address_1, $order->shipping_email), JSON_PRETTY_PRINT);
+                    $message = json_encode(setup_location_request($token, $order->get_shipping_address_1(), $order->shipping_email), JSON_PRETTY_PRINT);
 
                     # Send Request & Receive Response
                     $received = do_request($url, $message);

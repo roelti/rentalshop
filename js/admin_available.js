@@ -16,9 +16,9 @@ function attachFunction() {
 
 // Function that applies the availability check when changes are made on the page
 function quickCheck() {
-    if (document.contains(document.getElementsByName("start-date")[0])) {
-        var fromDate = document.getElementsByName("start-date")[0].value;
-        var toDate = document.getElementsByName("end-date")[0].value;
+    if (document.contains(document.getElementsByName("start_date")[0])) {
+        var fromDate = document.getElementsByName("start_date")[0].value;
+        var toDate = document.getElementsByName("end_date")[0].value;
         if (fromDate != null && fromDate != "" && toDate != null && toDate != null){
         	var incDate = new Date(toDate);
         	incDate.setDate(incDate.getDate() + 1);
@@ -70,7 +70,7 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.9.0"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.10.0"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);

@@ -111,7 +111,7 @@
 
         # Add the URLs of the image files to an array
         foreach ($parsed['response']['items']['Files'] as $imgFile){
-            if ($fileList[$imgFile['data']['item']] == null){
+            if (!isset($fileList[$imgFile['data']['item']])){
                 $fileList[$imgFile['data']['item']] = array($imgFile['data']['url']);
             } else { # If more than one file is attached to the product
                 array_push($fileList[$imgFile['data']['item']], $imgFile['data']['url']);

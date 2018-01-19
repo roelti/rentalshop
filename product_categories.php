@@ -12,15 +12,15 @@
         }
 
         # Check if the array contains the ID
-        if ($categoryIDs[$folder[0]] == null)
+        if (!isset($categoryIDs[$folder[0]]))
             $receive_term = '';
         else
             $receive_term = get_term($categoryIDs[$folder[0]], 'product_cat');
 
         # Add the category if it does not exist yet
         if ($receive_term == ''){
-            $parent_term = get_term($categoryIDs[$folder[2]], 'product_cat');
-            $parent_term_id = $parent_term->term_id;
+            $parent_term = isset($categoryIDs[$folder[2]]) ? get_term($categoryIDs[$folder[2]], 'product_cat') : null;
+            $parent_term_id = !is_null($parent_term) ? $parent_term->term_id : null;
             $category = wp_insert_term(
                 $folder[1], # Name of term
                 'product_cat', # Taxonomy
@@ -49,16 +49,16 @@
         # Organize the folders based on their parent
         while ($categoriesLeft){
             while ($switch){
-                $name = $parsed['response']['items']['Folder'][$counter]['data']['naam'];
-                $id = $parsed['response']['items']['Folder'][$counter]['data']['id'];
-                $parent = $parsed['response']['items']['Folder'][$counter]['data']['parent'];
-                if ($idList[$id] != true){ # Check if the item already has been added
+                $name = isset($parsed['response']['items']['Folder'][$counter]['data']['naam']) ? $parsed['response']['items']['Folder'][$counter]['data']['naam'] : null;
+                $id = isset($parsed['response']['items']['Folder'][$counter]['data']['id']) ? $parsed['response']['items']['Folder'][$counter]['data']['id'] : null;
+                $parent = isset($parsed['response']['items']['Folder'][$counter]['data']['parent']) ? $parsed['response']['items']['Folder'][$counter]['data']['parent'] : null;
+                if (!isset($idList[$id])){ # Check if the item already has been added
                     if ($parent == null) {
                         array_push($folderList, array($id, $name, $parent));
                         $idList[$id] = true;
                     }
                     else{ # Check if parent has already been created
-                        if ($idList[$parent] != null){
+                        if (isset($idList[$parent])){
                             array_push($folderList, array($id, $name, $parent));
                             $idList[$id] = true;
                         }

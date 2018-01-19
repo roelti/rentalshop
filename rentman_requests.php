@@ -14,7 +14,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "user" => get_option('plugin-username'),
@@ -36,7 +36,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -64,7 +64,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -96,7 +96,7 @@
     # For sending new user data to Rentman
     function setup_newuser_request($token, $order_id){
         $order = new WC_Order($order_id);
-        $company = $order->billing_company;
+        $company = $order->get_billing_company();
         $attachperson = array();
         $attached = false;
 
@@ -124,7 +124,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -140,15 +140,15 @@
                             "voornaam" => $firstname,
                             "naam" => $lastname,
                             "contactpersoon" => "",
-                            "bedrijf" => $order->billing_company,
-                            "email" => $order->billing_email,
-                            "bezoekstraat" => $order->billing_address_1,
+                            "bedrijf" => $order->get_billing_company(),
+                            "email" => $order->get_billing_email(),
+                            "bezoekstraat" => $order->get_billing_address_1(),
                             "bezoekstad" => $order->billing_city,
                             "bezoekpostcode" => $order->billing_postcode,
-                            "factuurstraat" => $order->billing_address_1,
+                            "factuurstraat" => $order->get_billing_address_1(),
                             "factuurstad" => $order->billing_city,
                             "factuurpostcode" => $order->billing_postcode,
-                            "poststraat" => $order->billing_address_1,
+                            "poststraat" => $order->get_billing_address_1(),
                             "poststad" => $order->billing_city,
                             "postpostcode" => $order->billing_postcode,
                             "telefoon" => $order->billing_phone,
@@ -174,9 +174,9 @@
                         "achternaam" => $order->billing_last_name,
                         "postcode" => $order->billing_postcode,
                         "stad" => $order->billing_city,
-                        "straat" => $order->billing_address_1,
+                        "straat" => $order->get_billing_address_1(),
                         "telefoon" => $order->billing_phone,
-                        "email" => $order->billing_email
+                        "email" => $order->get_billing_email()
                     )
                 )
             );
@@ -221,7 +221,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -239,13 +239,13 @@
                             "contactpersoon" => "",
                             "bedrijf" => $order->shipping_company,
                             "email" => $order->shipping_email,
-                            "bezoekstraat" => $order->shipping_address_1,
+                            "bezoekstraat" => $order->get_shipping_address_1(),
                             "bezoekstad" => $order->shipping_city,
                             "bezoekpostcode" => $order->shipping_postcode,
-                            "factuurstraat" => $order->shipping_address_1,
+                            "factuurstraat" => $order->get_shipping_address_1(),
                             "factuurstad" => $order->shipping_city,
                             "factuurpostcode" => $order->shipping_postcode,
-                            "poststraat" => $order->shipping_address_1,
+                            "poststraat" => $order->get_shipping_address_1(),
                             "poststad" => $order->shipping_city,
                             "postpostcode" => $order->shipping_postcode,
                             "telefoon" => $order->shipping_phone,
@@ -270,9 +270,9 @@
                         "achternaam" => $order->shipping_last_name,
                         "postcode" => $order->shipping_postcode,
                         "stad" => $order->shipping_city,
-                        "straat" => $order->shipping_address_1,
+                        "straat" => $order->get_shipping_address_1(),
                         "telefoon" => $order->billing_phone,
-                        "email" => $order->billing_email
+                        "email" => $order->get_billing_email()
                     )
                 )
             );
@@ -291,13 +291,13 @@
     # Returns API request ready to be encoded in Json
     # Used for sending new project data to Rentman
     # Includes contact, relevant materials & rent dates
-    function setup_newproject_request($url, $token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
+    function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         # Get Order data and rent dates
         $order = new WC_Order($order_id);
-        $comp = $order->billing_company;
-        $proj = $comp . " Project";
-        $notitie = "Bestelnummer in WooCommerce: " . $order_id . ".\n" . $order->customer_note;
-        $ext_ref = $order->billing_reference;
+        $comp = $order->get_billing_company();
+        $proj = $comp . " Webshop Project";
+        $notitie = "Bestelnummer in WooCommerce: " . $order_id . ".\n" . $order->get_customer_note();
+        $ext_ref = get_post_meta($order_id, '_billing_reference', true);
 
         $dates = get_dates();
         $startdate = $dates['from_date'];
@@ -309,7 +309,7 @@
 
         # Get List of Materials and create arrays by using
         # that list for the json request
-        $shippingbtw = ($order->order_shipping) / 1.21;
+        $shippingbtw = $order->get_total_shipping() / 1.21;
         $materials = get_material_array($order_id);
         $materialsize = sizeof($materials);
 
@@ -327,20 +327,11 @@
                 $rate = current($rates);
                 $tax = (floatval($rate['rate']) / 100);
             }
-            if ($product->product_type == 'rentable'){
+            if ($product->get_type() == 'rentable'){
                 $rentableProduct = true;
                 break;
             }
         }
-
-        # Receive the right Btwcode
-        $message = json_encode(receive_btwcode_request($token, $tax));
-
-        # Send Request & Receive Response
-        $received = do_request($url, $message);
-        $parsed = json_decode($received, true);
-        $parsed = parseResponse($parsed);
-        $taxcode = current(array_keys($parsed['response']['items']['Btwcode']));
 
         # Call the right function for the request generation
         if ($rentableProduct){
@@ -366,7 +357,7 @@
                 "contact_person" => $contact_person,
                 "location_contact" => $location_contact
             );
-            $object_data = rentRequest($order_data, $fees, $taxcode);
+            $object_data = rentRequest($order_data, $fees);
         }
         else{
             $count = -6;
@@ -389,14 +380,14 @@
                 "contact_person" => $contact_person,
                 "location_contact" => $location_contact
             );
-            $object_data = saleRequest($order_data, $fees, $taxcode);
+            $object_data = saleRequest($order_data, $fees);
         }
 
         return $object_data;
     }
 
     # Function that generates a new project request for rentable products
-    function rentRequest($order_data, $fees, $taxcode){
+    function rentRequest($order_data, $fees){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -404,7 +395,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -454,8 +445,7 @@
                             "korting_totaal" => $fees[1],
                             "korting_transport" => $fees[2],
                             "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact'],
-                            "btwcode" => $taxcode
+                            "locatie_persoon" => $order_data['location_contact']
                         )
                     )
                 ),
@@ -509,7 +499,7 @@
     }
 
     # Function that generates a new project request for rentable products
-    function saleRequest($order_data, $fees, $taxcode){
+    function saleRequest($order_data, $fees){
         # Represents request object
         $object_data = array(
             "requestType" => "create",
@@ -517,7 +507,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $order_data['token'],
@@ -562,8 +552,7 @@
                             "korting_totaal" => $fees[1],
                             "korting_transport" => $fees[2],
                             "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact'],
-                            "btwcode" => $taxcode
+                            "locatie_persoon" => $order_data['location_contact']
                         )
                     )
                 ),
@@ -612,7 +601,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -647,7 +636,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -671,12 +660,8 @@
                     "height",
                     "length",
                     "width",
-                    "img",
-                    array(
-                        "btwcode" => array(
-                            "tarief"
-                        )
-                    ),
+                    "images",
+                    "standaardtarief",
                     "aantal"
                 )
             ),
@@ -710,7 +695,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -765,7 +750,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -793,7 +778,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -837,7 +822,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -862,7 +847,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,
@@ -884,7 +869,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.9.0"
+                "version" => "4.10.0"
             ),
             "account" => get_option('plugin-account'),
             "token" => $token,

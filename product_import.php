@@ -49,11 +49,27 @@
                             add_category($folder);
                         }
 
+                        # Get all possible tax values
+                        $warning1 = __('<b>Let op! De volgende BTW waardes zijn aangetroffen:','rentalshop');
+                        $taxwarning = $warning1 . ' ';
+                        $taxArray = array();
+                        foreach ($prod_array as $product){
+                            $tax = $product['btw'] * 100;
+                            if (!(in_array($tax, $taxArray))){
+                                $taxwarning = $taxwarning . $tax . '% ';
+                                array_push($taxArray, $tax);
+                            }
+                        }
+
+                        $warning2 = __('Zorg ervoor dat de BTW in WooCommerce hieraan gelijk is.</b>', 'rentalshop');
+                        $taxwarning = $taxwarning . '<br>' . $warning2;
+
                         # Prepare Script
                         wp_register_script('admin_add_product', plugins_url('js/admin_import.js', __FILE__));
                         wp_localize_script('admin_add_product', 'products', $prod_array);
                         wp_localize_script('admin_add_product', 'folders', $file_array);
                         wp_localize_script('admin_add_product', 'arrayindex', '0');
+                        wp_localize_script('admin_add_product', 'taxWarning', $taxwarning);
                         wp_localize_script('admin_add_product', 'string1', __('<b>Producten klaar:</b> ', 'rentalshop'));
                         wp_localize_script('admin_add_product', 'string2', __('<br>Verwerken..', 'rentalshop'));
                         wp_localize_script('admin_add_product', 'string3', __('<br>Irrelevante producten en mappen zijn verwijderd', 'rentalshop'));
@@ -103,7 +119,6 @@
             $longdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_long'];
             $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data']['omschrijving'];
             $modDate = $parsed['response']['items']['Materiaal'][$x]['data']['modified'];
-            $btwcode = $parsed['response']['items']['Materiaal'][$x]['data']['btwcode'];
 
             # Check if product already exists in database
             $noDiff = false;
@@ -135,7 +150,7 @@
                     "folder_id" => $parsed['response']['items']['Materiaal'][$x]['data']['folder'],
                     "mod_date" => $modDate,
                     "weight" => $parsed['response']['items']['Materiaal'][$x]['data']['gewicht'],
-                    "btw" => $parsed['response']['items']['Btwcode'][$btwcode]['data']['tarief'],
+                    "btw" => $parsed['response']['items']['Materiaal'][$x]['data']['standaardtarief'],
                     "verhuur" => $parsed['response']['items']['Materiaal'][$x]['data']['verhuur'],
                     "length" => $parsed['response']['items']['Materiaal'][$x]['data']['length'],
                     "width" => $parsed['response']['items']['Materiaal'][$x]['data']['width'],
