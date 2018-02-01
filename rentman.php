@@ -6,7 +6,7 @@
      * Plugin URI: https://rentman.io
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.10.0
+     * Version: 4.10.1
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -68,6 +68,7 @@
         register_setting('plugin-settings', 'plugin-account');
         register_setting('plugin-settings', 'plugin-checkavail');
         register_setting('plugin-settings', 'plugin-checkdisc');
+        register_setting('plugin-settings', 'plugin-checkstock');
         register_setting('plugin-settings', 'plugin-enddate');
         register_setting('plugin-settings', 'plugin-lasttime');
         register_setting('plugin-settings', 'plugin-password');
@@ -92,7 +93,7 @@
     # Check if 'GitHub Updater' plugin is active
     function check_github_updater() {
         # Show message if 'GitHub Updater' plugin is inactive
-        if (!is_plugin_active('github-updater-develop/github-updater.php')){
+        if (!is_plugin_active('github-updater-develop/github-updater.php') && !is_plugin_active('github-updater/github-updater.php')){
             _e("<div class='updated'><p>Let op: Installeer en activeer de GitHub Updater plugin (https://github.com/afragen/github-updater) om automatisch naar updates te zoeken voor de Rentman 4G plugin!</p></div>", 'rentalshop');
         }
     }
@@ -101,7 +102,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.10.0</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.10.1</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
@@ -136,9 +137,11 @@
         <?php # Buttons for availability check and discount
         $availCheck = get_option('plugin-checkavail');
         $discountCheck = get_option('plugin-checkdisc');
-        if ($availCheck == '' or $discountCheck == ''){
+        $stockCheck = get_option('plugin-checkstock');
+        if ($availCheck == '' or $discountCheck == '' or $stockCheck == ''){
             update_option('plugin-checkdisc', 0);
             update_option('plugin-checkavail', 0);
+            update_option('plugin-checkstock', 0);
         } ?>
 
         <?php _e('<hr><h3>Instellingen</h3>', 'rentalshop'); ?>
@@ -162,6 +165,18 @@
                 } ?>>Yes
                 </option>
                 <option value="0" <?php if (get_option('plugin-checkdisc') == 0){
+                    echo "selected";
+                } ?>>No
+                </option>
+            </select>
+            <!-- If checked, displays the stock of the materials on the product pages -->
+            <?php _e('<br><br><strong>Voorraad weergeven op productpagina  </strong>', 'rentalshop'); ?>
+            <select name='plugin-checkstock'>
+                <option value="1" <?php if (get_option('plugin-checkstock') == 1){
+                    echo "selected";
+                } ?>>Yes
+                </option>
+                <option value="0" <?php if (get_option('plugin-checkstock') == 0){
                     echo "selected";
                 } ?>>No
                 </option>
@@ -217,6 +232,7 @@
         if (isset($_POST['change-settings'])){
             update_option('plugin-checkdisc', $_POST['plugin-checkdisc']);
             update_option('plugin-checkavail', $_POST['plugin-checkavail']);
+            update_option('plugin-checkstock', $_POST['plugin-checkstock']);
             echo "<meta http-equiv='refresh' content='0'>";
         }
 
@@ -350,8 +366,11 @@
 
         # Check the PHP time limit
         $timelimit = ini_get('max_execution_time');
-        if ($timelimit < 30)
-            _e('Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de plugin hierdoor niet goed.. &#10005;<br>', 'rentalshop');
+        if ($timelimit < 30){
+            echo '<p style="color:red;">';
+            _e('Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de plugin hierdoor niet goed..', 'rentalshop');
+            echo '</p>';
+        }
         else{
             _e('PHP tijdslimiet is in orde &#10003;<br>', 'rentalshop');
         }
@@ -372,7 +391,9 @@
         if (file_exists($targetUrl)){
             _e('Toevoegen van afbeeldingen is gelukt &#10003;<br>', 'rentalshop');
         } else{
-            _e('Toevoegen van afbeeldingen is mislukt.. &#10005;<br>', 'rentalshop');
+            echo '<p style="color:red;">';
+            _e('Toevoegen van afbeeldingen is mislukt..', 'rentalshop');
+            echo '</p>';
             echo "&bull; Copy Error: " . $errors['type'];
             echo "<br />\n&bull; " . $errors['message'] . '<br>';
             if (!ini_get('allow_url_fopen')){ # Show possible solution if the copy function fails
@@ -394,9 +415,7 @@
     # Check if given login data is complete
     function completedata()
     {
-        if (false == get_option('plugin-account') or false == get_option('plugin-username')
-            or false == get_option('plugin-password')
-        )
+        if (false == get_option('plugin-account') or false == get_option('plugin-username') or false == get_option('plugin-password'))
             return false;
         return true;
     }

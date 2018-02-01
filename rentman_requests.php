@@ -1,6 +1,23 @@
 <?php
     // ------------- Rentman Request Functions ------------- \\
 
+    // ---------------------------------\\
+    // --------| BASE REQUEST |-------- \\
+    // ---------------------------------\\
+
+    # Returns base request used in all API requests
+    function getBaseRequest($sRequestType){
+        return array(
+            "requestType" => $sRequestType,
+            "client" => array(
+                "language" => "1",
+                "type" => "webshopplugin",
+                "version" => "4.10.1"
+            ),
+            "account" => get_option('plugin-account')
+        );
+    }
+
     // --------------------------\\
     // --------| LOGIN |-------- \\
     // --------------------------\\
@@ -9,17 +26,9 @@
     # Login Request
     function setup_login_request()
     {
-        $login_data = array(
-            "requestType" => "login",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "user" => get_option('plugin-username'),
-            "password" => get_option('plugin-password')
-        );
+        $login_data = getBaseRequest('login');
+        $login_data["user"] = get_option('plugin-username');
+        $login_data["password"] = get_option('plugin-password');
         return $login_data;
     }
 
@@ -31,27 +40,19 @@
     # Checks if a user already exists by their email
     function setup_check_request($token, $mail){
         # Check if contact already exists (by email)
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Contact",
-            "columns" => array(
-                "Contact" => array(
-                    "naam",
-                    "id",
-                    "personeelkorting",
-                    "totaalkorting",
-                    "transportkorting"
-                )
-            ),
-            "query" => array("email" => $mail)
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Contact";
+        $object_data["columns"] = array(
+            "Contact" => array(
+                "naam",
+                "id",
+                "personeelkorting",
+                "totaalkorting",
+                "transportkorting"
+            )
         );
+        $object_data["query"] = array("email" => $mail);
         return $object_data;
     }
 
@@ -59,35 +60,27 @@
     # Checks if a location already exists by their address
     function setup_location_request($token, $address, $email){
         # Check if contact already exists (by address)
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Contact",
-            "columns" => array(
-                "Contact" => array(
-                    "naam",
-                    "id"
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Contact";
+        $object_data["columns"] = array(
+            "Contact" => array(
+                "naam",
+                "id"
+            )
+        );
+        $object_data["query"] = array(
+            "conditions" => array(
+                array(
+                    "key" => "bezoekstraat",
+                    "value" => $address
+                ),
+                array(
+                    "key" => "email",
+                    "value" => $email
                 )
             ),
-            "query" => array(
-                "conditions" => array(
-                    array(
-                        "key" => "bezoekstraat",
-                        "value" => $address
-                    ),
-                    array(
-                        "key" => "email",
-                        "value" => $email
-                    )
-                ),
-                "operator" => "AND"
-            )
+            "operator" => "AND"
         );
         return $object_data;
     }
@@ -103,12 +96,12 @@
         # Check if the new contact is a company or not
         if ($company == ''){
             $type = "particulier";
-            $firstname = $order->billing_first_name;
-            $lastname = $order->billing_last_name;
+            $firstname = $order->get_billing_first_name();
+            $lastname = $order->get_billing_last_name();
         } else{
             $type = "bedrijf";
-            $firstname = $order->billing_first_name;
-            $lastname = $order->billing_last_name;
+            $firstname = $order->get_billing_first_name();
+            $lastname = $order->get_billing_last_name();
             if ($firstname != '' && $lastname != ''){
                 $attachperson = array("Person" => array(-2));
                 $attached = true;
@@ -118,50 +111,41 @@
         }
 
         # Setup of the request
-        $object_data = array(
-            "requestType" => "create",
-            "apiVersion" => 1,
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Contact",
-            "columns" => array(
-                "Contact" => array()
-            ),
-            "items" => array(
-                "Contact" => array(
-                    "-1" => array(
-                        "values" => array(
-                            "id" => "-1",
-                            "voornaam" => $firstname,
-                            "naam" => $lastname,
-                            "contactpersoon" => "",
-                            "bedrijf" => $order->get_billing_company(),
-                            "email" => $order->get_billing_email(),
-                            "bezoekstraat" => $order->get_billing_address_1(),
-                            "bezoekstad" => $order->billing_city,
-                            "bezoekpostcode" => $order->billing_postcode,
-                            "factuurstraat" => $order->get_billing_address_1(),
-                            "factuurstad" => $order->billing_city,
-                            "factuurpostcode" => $order->billing_postcode,
-                            "poststraat" => $order->get_billing_address_1(),
-                            "poststad" => $order->billing_city,
-                            "postpostcode" => $order->billing_postcode,
-                            "telefoon" => $order->billing_phone,
-                            "type" => $type
-                        ),
-                        "links" => $attachperson
-                    )
-                ),
-                "Person" => array()
-            ),
-            "parentId" => 900,
-            "parenType" => "Contact"
+        $object_data = getBaseRequest('create');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Contact";
+        $object_data["columns"] = array(
+            "Contact" => array()
         );
+        $object_data["items"] = array(
+            "Contact" => array(
+                "-1" => array(
+                    "values" => array(
+                        "id" => "-1",
+                        "voornaam" => $firstname,
+                        "naam" => $lastname,
+                        "contactpersoon" => "",
+                        "bedrijf" => $order->get_billing_company(),
+                        "email" => $order->get_billing_email(),
+                        "bezoekstraat" => $order->get_billing_address_1(),
+                        "bezoekstad" => $order->get_billing_city(),
+                        "bezoekpostcode" => $order->get_billing_postcode(),
+                        "factuurstraat" => $order->get_billing_address_1(),
+                        "factuurstad" => $order->get_billing_city(),
+                        "factuurpostcode" => $order->get_billing_postcode(),
+                        "poststraat" => $order->get_billing_address_1(),
+                        "poststad" => $order->get_billing_city(),
+                        "postpostcode" => $order->get_billing_postcode(),
+                        "telefoon" => $order->get_billing_phone(),
+                        "type" => $type
+                    ),
+                    "links" => $attachperson
+                )
+            ),
+            "Person" => array()
+        );
+        $object_data["parentId"] = 900;
+        $object_data['parenType'] = "Contact";
 
         # Attach the Person data for companies where the names have also
         # been filled in
@@ -170,21 +154,21 @@
                 "-2" => array(
                     "values" => array(
                         "id" => -2,
-                        "voornaam" => $order->billing_first_name,
-                        "achternaam" => $order->billing_last_name,
-                        "postcode" => $order->billing_postcode,
-                        "stad" => $order->billing_city,
+                        "voornaam" => $order->get_billing_first_name(),
+                        "achternaam" => $order->get_billing_last_name(),
+                        "postcode" => $order->get_billing_postcode(),
+                        "stad" => $order->get_billing_city(),
                         "straat" => $order->get_billing_address_1(),
-                        "telefoon" => $order->billing_phone,
+                        "telefoon" => $order->get_billing_phone(),
                         "email" => $order->get_billing_email()
                     )
                 )
             );
-            $object_data['items']['Person'] = $person;
-            $object_data['items']['Contact'][-1]["values"]["contactpersoon"] = -2;
+            $object_data["items"]["Person"] = $person;
+            $object_data["items"]["Contact"][-1]["values"]["contactpersoon"] = -2;
         } else { # Remove the Person data from the request if not
-            unset($object_data['items']['Contact'][-1]["values"]["contactpersoon"]);
-            unset($object_data['items']['Person']);
+            unset($object_data["items"]["Contact"][-1]["values"]["contactpersoon"]);
+            unset($object_data["items"]["Person"]);
         }
         return $object_data;
     }
@@ -193,19 +177,19 @@
     # For sending new location data as a user to Rentman
     function setup_newlocation_request($token, $order_id){
         $order = new WC_Order($order_id);
-        $company = $order->shipping_company;
+        $company = $order->get_shipping_company();
         $attachperson = array();
         $attached = false;
 
         # Check if the new contact is a company or not
         if ($company == ''){
             $type = "particulier";
-            $firstname = $order->shipping_first_name;
-            $lastname = $order->shipping_last_name;
+            $firstname = $order->get_shipping_first_name();
+            $lastname = $order->get_shipping_last_name();
         } else{
             $type = "bedrijf";
-            $firstname = $order->shipping_first_name;
-            $lastname = $order->shipping_last_name;
+            $firstname = $order->get_shipping_first_name();
+            $lastname = $order->get_shipping_last_name();
             if ($firstname != '' && $lastname != ''){
                 $attachperson = array("Person" => array(-2));
                 $attached = true;
@@ -214,51 +198,41 @@
             }
         }
 
-        # Setup of the request
-        $object_data = array(
-            "requestType" => "create",
-            "apiVersion" => 1,
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Contact",
-            "columns" => array(
-                "Contact" => array()
-            ),
-            "items" => array(
-                "Contact" => array(
-                    "-1" => array(
-                        "values" => array(
-                            "id" => "-1",
-                            "voornaam" => $firstname,
-                            "naam" => $lastname,
-                            "contactpersoon" => "",
-                            "bedrijf" => $order->shipping_company,
-                            "email" => $order->shipping_email,
-                            "bezoekstraat" => $order->get_shipping_address_1(),
-                            "bezoekstad" => $order->shipping_city,
-                            "bezoekpostcode" => $order->shipping_postcode,
-                            "factuurstraat" => $order->get_shipping_address_1(),
-                            "factuurstad" => $order->shipping_city,
-                            "factuurpostcode" => $order->shipping_postcode,
-                            "poststraat" => $order->get_shipping_address_1(),
-                            "poststad" => $order->shipping_city,
-                            "postpostcode" => $order->shipping_postcode,
-                            "telefoon" => $order->shipping_phone,
-                            "type" => $type
-                        ),
-                        "links" => $attachperson
-                    )
-                ),
-                "Person" => array()
-            ),
-            "parentId" => 900,
-            "parenType" => "Contact"
+        $object_data = getBaseRequest('create');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Contact";
+        $object_data["columns"] = array(
+            "Contact" => array()
         );
+        $object_data["items"] = array(
+            "Contact" => array(
+                "-1" => array(
+                    "values" => array(
+                        "id" => "-1",
+                        "voornaam" => $firstname,
+                        "naam" => $lastname,
+                        "contactpersoon" => "",
+                        "bedrijf" => $order->get_shipping_company(),
+                        "email" => get_post_meta($order_id, '_shipping_email', true),
+                        "bezoekstraat" => $order->get_shipping_address_1(),
+                        "bezoekstad" => $order->get_shipping_city(),
+                        "bezoekpostcode" => $order->get_shipping_postcode(),
+                        "factuurstraat" => $order->get_shipping_address_1(),
+                        "factuurstad" => $order->get_shipping_city(),
+                        "factuurpostcode" => $order->get_shipping_postcode(),
+                        "poststraat" => $order->get_shipping_address_1(),
+                        "poststad" => $order->get_shipping_city(),
+                        "postpostcode" => $order->get_shipping_postcode(),
+                        "telefoon" => get_post_meta($order_id, '_shipping_phone', true),
+                        "type" => $type
+                    ),
+                    "links" => $attachperson
+                )
+            ),
+            "Person" => array()
+        );
+        $object_data['parentId'] = 900;
+        $object_data['parenType'] = "Contact";
 
         # Attach the Person data for companies where the names have also been filled in
         if ($attached){
@@ -266,20 +240,20 @@
                 "-2" => array(
                     "values" => array(
                         "id" => -2,
-                        "voornaam" => $order->shipping_first_name,
-                        "achternaam" => $order->shipping_last_name,
-                        "postcode" => $order->shipping_postcode,
-                        "stad" => $order->shipping_city,
+                        "voornaam" => $order->get_shipping_first_name(),
+                        "achternaam" => $order->get_shipping_last_name(),
+                        "postcode" => $order->get_shipping_postcode(),
+                        "stad" => $order->get_shipping_city(),
                         "straat" => $order->get_shipping_address_1(),
-                        "telefoon" => $order->billing_phone,
-                        "email" => $order->get_billing_email()
+                        "telefoon" => get_post_meta($order_id, '_shipping_phone', true),
+                        "email" => get_post_meta($order_id, '_shipping_email', true)
                     )
                 )
             );
-            $object_data['items']['Person'] = $person;
-            $object_data['items']['Contact'][-1]["values"]["contactpersoon"] = -2;
+            $object_data["items"]["Person"] = $person;
+            $object_data["items"]["Contact"][-1]["values"]["contactpersoon"] = -2;
         } else{ # Remove the Person data from the request
-            unset($object_data['items']['Person']);
+            unset($object_data["items"]["Person"]);
         }
         return $object_data;
     }
@@ -389,111 +363,102 @@
     # Function that generates a new project request for rentable products
     function rentRequest($order_data, $fees){
         # Represents request object
-        $object_data = array(
-            "requestType" => "create",
-            "apiVersion" => 1,
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $order_data['token'],
-            "itemType" => "Project",
-            "columns" => array(
-                "Project" => array()
-            ),
-            "items" => array(
-                "Project" => array(
-                    "-1" => array(
-                        "values" => array(
-                            "id" => "-1",
-                            "naam" => $order_data['proj'],
-                            "opdrachtgever" => $order_data['contact_id'],
-                            "opdrachtgever_persoon" => $order_data['contact_person'],
-                            "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact'],
-                            "referentie" => $order_data['ext_ref'],
-                            "gebruiksperiode" => -2,
-                            "planperiode" => -2
+        $object_data = getBaseRequest('create');
+        $object_data["token"] = $order_data['token'];
+        $object_data["itemType"] = "Project";
+        $object_data["columns"] = array(
+            "Project" => array()
+        );
+        $object_data["items"] = array(
+            "Project" => array(
+                "-1" => array(
+                    "values" => array(
+                        "id" => "-1",
+                        "naam" => $order_data['proj'],
+                        "opdrachtgever" => $order_data['contact_id'],
+                        "opdrachtgever_persoon" => $order_data['contact_person'],
+                        "locatie" => $order_data['transport_id'],
+                        "locatie_persoon" => $order_data['location_contact'],
+                        "referentie" => $order_data['ext_ref'],
+                        "gebruiksperiode" => -2,
+                        "planperiode" => -2
+                    ),
+                    "links" => array(
+                        "Tijd" => array(
+                            -2
                         ),
-                        "links" => array(
-                            "Tijd" => array(
-                                -2
-                            ),
-                            "MateriaalCat" => array(
-                                -3
-                            ),
-                            "Subproject" => array(
-                                -4
-                            ),
-                            "Projectnotitie" => array(
-                                -5
-                            ),
-                            "Functie" => array(
-                                -6
-                            )
-                        )
-                    )
-                ),
-                "Subproject" => array(
-                    "-4" => array(
-                        "values" => array(
-                            "id" => -4,
-                            "naam" => $order_data['proj'],
-                            "korting_personeel" => $fees[0],
-                            "korting_totaal" => $fees[1],
-                            "korting_transport" => $fees[2],
-                            "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact']
-                        )
-                    )
-                ),
-                "Tijd" => array(
-                    "-2" => array(
-                        "values" => array(
-                            "van" => $order_data['startdate'],
-                            "tot" => $order_data['enddate'],
-                            "naam" => __("Huurperiode",'rentalshop'),
-                            "subproject" => -4
-                        )
-                    )
-                ),
-                "MateriaalCat" => array(
-                    "-3" => array(
-                        "values" => array(
-                            "subproject" => -4,
-                            "van" => $order_data['startdate'],
-                            "tot" => $order_data['enddate'],
-                            "gebruikvan" => $order_data['startdate'],
-                            "gebruiktot" => $order_data['enddate'],
-                            "planvan" => $order_data['startdate'],
-                            "plantot" => $order_data['enddate']
+                        "MateriaalCat" => array(
+                            -3
                         ),
-                        "links" => $order_data['planarray']
-                    )
-                ),
-                "Projectnotitie" => array(
-                    "-5" => array(
-                        "values" => array(
-                            "subproject" => -4,
-                            "naam" => 'WebShop',
-                            "omschrijving" => $order_data['notitie']
+                        "Subproject" => array(
+                            -4
+                        ),
+                        "Projectnotitie" => array(
+                            -5
+                        ),
+                        "Functie" => array(
+                            -6
                         )
                     )
-                ),
-                "Functie" => array(
-                    "-6" => array(
-                        "values" => array(
-                            "subproject" => -4,
-                            "naamintern" => 'Shipping',
-                            "prijs_vast" => $order_data['shippingBTW'],
-                            "type" => "T"
-                        )
+                )
+            ),
+            "Subproject" => array(
+                "-4" => array(
+                    "values" => array(
+                        "id" => -4,
+                        "naam" => $order_data['proj'],
+                        "korting_personeel" => $fees[0],
+                        "korting_totaal" => $fees[1],
+                        "korting_transport" => $fees[2],
+                        "locatie" => $order_data['transport_id'],
+                        "locatie_persoon" => $order_data['location_contact']
                     )
-                ),
-                "Planningmateriaal" => planmaterial_array($order_data['materials'], $order_data['planarray'], $order_data['order_id'], $order_data['contact_id'], -7)
-            )
+                )
+            ),
+            "Tijd" => array(
+                "-2" => array(
+                    "values" => array(
+                        "van" => $order_data['startdate'],
+                        "tot" => $order_data['enddate'],
+                        "naam" => __("Huurperiode",'rentalshop'),
+                        "subproject" => -4
+                    )
+                )
+            ),
+            "MateriaalCat" => array(
+                "-3" => array(
+                    "values" => array(
+                        "subproject" => -4,
+                        "van" => $order_data['startdate'],
+                        "tot" => $order_data['enddate'],
+                        "gebruikvan" => $order_data['startdate'],
+                        "gebruiktot" => $order_data['enddate'],
+                        "planvan" => $order_data['startdate'],
+                        "plantot" => $order_data['enddate']
+                    ),
+                    "links" => $order_data['planarray']
+                )
+            ),
+            "Projectnotitie" => array(
+                "-5" => array(
+                    "values" => array(
+                        "subproject" => -4,
+                        "naam" => 'WebShop',
+                        "omschrijving" => $order_data['notitie']
+                    )
+                )
+            ),
+            "Functie" => array(
+                "-6" => array(
+                    "values" => array(
+                        "subproject" => -4,
+                        "naamintern" => 'Shipping',
+                        "prijs_vast" => $order_data['shippingBTW'],
+                        "type" => "T"
+                    )
+                )
+            ),
+            "Planningmateriaal" => planmaterial_array($order_data['materials'], $order_data['planarray'], $order_data['order_id'], $order_data['contact_id'], -7)
         );
         return $object_data;
     }
@@ -501,90 +466,81 @@
     # Function that generates a new project request for rentable products
     function saleRequest($order_data, $fees){
         # Represents request object
-        $object_data = array(
-            "requestType" => "create",
-            "apiVersion" => 1,
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $order_data['token'],
-            "itemType" => "Project",
-            "columns" => array(
-                "Project" => array()
-            ),
-            "items" => array(
-                "Project" => array(
-                    "-1" => array(
-                        "values" => array(
-                            "id" => "-1",
-                            "naam" => $order_data['proj'],
-                            "opdrachtgever" => $order_data['contact_id'],
-                            "opdrachtgever_persoon" => $order_data['contact_person'],
-                            "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact'],
-                            "referentie" => $order_data['ext_ref'],
+        $object_data = getBaseRequest('create');
+        $object_data["token"] = $order_data['token'];
+        $object_data["itemType"] = "Project";
+        $object_data["columns"] = array(
+            "Project" => array()
+        );
+        $object_data["items"] = array(
+            "Project" => array(
+                "-1" => array(
+                    "values" => array(
+                        "id" => "-1",
+                        "naam" => $order_data['proj'],
+                        "opdrachtgever" => $order_data['contact_id'],
+                        "opdrachtgever_persoon" => $order_data['contact_person'],
+                        "locatie" => $order_data['transport_id'],
+                        "locatie_persoon" => $order_data['location_contact'],
+                        "referentie" => $order_data['ext_ref'],
+                    ),
+                    "links" => array(
+                        "Subproject" => array(
+                            -2
                         ),
-                        "links" => array(
-                            "Subproject" => array(
-                                -2
-                            ),
-                            "MateriaalCat" => array(
-                                -3
-                            ),
-                            "Projectnotitie" => array(
-                                -4
-                            ),
-                            "Functie" => array(
-                                -5
-                            )
-                        )
-                    )
-                ),
-                "Subproject" => array(
-                    "-2" => array(
-                        "values" => array(
-                            "id" => -2,
-                            "naam" => $order_data['proj'],
-                            "korting_personeel" => $fees[0],
-                            "korting_totaal" => $fees[1],
-                            "korting_transport" => $fees[2],
-                            "locatie" => $order_data['transport_id'],
-                            "locatie_persoon" => $order_data['location_contact']
-                        )
-                    )
-                ),
-                "MateriaalCat" => array(
-                    "-3" => array(
-                        "values" => array(
-                            "subproject" => -2
+                        "MateriaalCat" => array(
+                            -3
                         ),
-                        "links" => $order_data['planarray']
-                    )
-                ),
-                "Projectnotitie" => array(
-                    "-4" => array(
-                        "values" => array(
-                            "subproject" => -2,
-                            "naam" => 'WebShop',
-                            "omschrijving" => $order_data['notitie']
+                        "Projectnotitie" => array(
+                            -4
+                        ),
+                        "Functie" => array(
+                            -5
                         )
                     )
-                ),
-                "Functie" => array(
-                    "-5" => array(
-                        "values" => array(
-                            "subproject" => -2,
-                            "naamintern" => 'Shipping',
-                            "prijs_vast" => $order_data['shippingBTW'],
-                            "type" => "T"
-                        )
+                )
+            ),
+            "Subproject" => array(
+                "-2" => array(
+                    "values" => array(
+                        "id" => -2,
+                        "naam" => $order_data['proj'],
+                        "korting_personeel" => $fees[0],
+                        "korting_totaal" => $fees[1],
+                        "korting_transport" => $fees[2],
+                        "locatie" => $order_data['transport_id'],
+                        "locatie_persoon" => $order_data['location_contact']
                     )
-                ),
-                "Planningmateriaal" => planmaterial_array($order_data['materials'], $order_data['planarray'], $order_data['order_id'], $order_data['contact_id'], -6)
-            )
+                )
+            ),
+            "MateriaalCat" => array(
+                "-3" => array(
+                    "values" => array(
+                        "subproject" => -2
+                    ),
+                    "links" => $order_data['planarray']
+                )
+            ),
+            "Projectnotitie" => array(
+                "-4" => array(
+                    "values" => array(
+                        "subproject" => -2,
+                        "naam" => 'WebShop',
+                        "omschrijving" => $order_data['notitie']
+                    )
+                )
+            ),
+            "Functie" => array(
+                "-5" => array(
+                    "values" => array(
+                        "subproject" => -2,
+                        "naamintern" => 'Shipping',
+                        "prijs_vast" => $order_data['shippingBTW'],
+                        "type" => "T"
+                    )
+                )
+            ),
+            "Planningmateriaal" => planmaterial_array($order_data['materials'], $order_data['planarray'], $order_data['order_id'], $order_data['contact_id'], -6)
         );
         return $object_data;
     }
@@ -596,31 +552,23 @@
     # Returns API request ready to be encoded in Json
     # For importing folders
     function setup_folder_request($token){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Folder",
-            "columns" => array(
-                "Folder" => array(
-                    "naam",
-                    "id",
-                    array(
-                        "parent" => array(
-                            "naam",
-                            "id"
-                        )
-                    ),
-                    "numberofitems"
-                )
-            ),
-            "query" => array("operator" => "AND", "conditions" => [])
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Folder";
+        $object_data["columns"] = array(
+            "Folder" => array(
+                "naam",
+                "id",
+                array(
+                    "parent" => array(
+                        "naam",
+                        "id"
+                    )
+                ),
+                "numberofitems"
+            )
         );
+        $object_data["query"] = array("operator" => "AND", "conditions" => []);
         return $object_data;
     }
 
@@ -631,53 +579,45 @@
     # Returns API request ready to be encoded in Json
     # For importing products
     function setup_import_request($token){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Materiaal",
-            "columns" => array(
-                "Materiaal" => array(
-                    "naam",
-                    "verhuurprijs",
-                    "verhuur",
-                    "shop_description_long",
-                    "shop_description_short",
-                    "omschrijving",
-                    "modified",
-                    array(
-                        "folder" => array(
-                            "naam",
-                            "parent"
-                        )
-                    ),
-                    "gewicht",
-                    "height",
-                    "length",
-                    "width",
-                    "images",
-                    "standaardtarief",
-                    "aantal"
-                )
-            ),
-            "query" => array(
-                "conditions" => array(
-                    array(
-                        "key" => "tijdelijk",
-                        "value" => false
-                    ),
-                    array(
-                        "key" => "in_shop",
-                        "value" => true
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Materiaal";
+        $object_data["columns"] = array(
+            "Materiaal" => array(
+                "naam",
+                "verhuurprijs",
+                "verhuur",
+                "shop_description_long",
+                "shop_description_short",
+                "omschrijving",
+                "modified",
+                array(
+                    "folder" => array(
+                        "naam",
+                        "parent"
                     )
                 ),
-                "operator" => "AND"
+                "gewicht",
+                "height",
+                "length",
+                "width",
+                "images",
+                "standaardtarief",
+                "aantal"
             )
+        );
+        $object_data["query"] = array(
+            "conditions" => array(
+                array(
+                    "key" => "tijdelijk",
+                    "value" => false
+                ),
+                array(
+                    "key" => "in_shop",
+                    "value" => true
+                )
+            ),
+            "operator" => "AND"
         );
         return $object_data;
     }
@@ -689,43 +629,34 @@
             $idList = rentman_ids();
         else
             $idList = list_of_ids($prodList);
-        $file_data = array(
-            "requestType" => "query",
-            "apiVersion" => 1,
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Files",
-            "columns" => array(
-                "Files" => array(
-                    "url",
-                    "item"
-                )
-            ),
-            "query" => array(
-                "conditions" => array(
-                    array(
-                        "linkedTo" => "Materiaal",
-                        "reverse" => false,
-                        "query" => array(
-                            "id" => $idList
-                        )
-                    ),
-                    array(
-                        "key" => "image",
-                        "value" => true
-                    ),
-                    array(
-                        "key" => "in_shop",
-                        "value" => true
+        $file_data = getBaseRequest('query');
+        $file_data["token"] = $token;
+        $file_data["itemType"] = "Files";
+        $file_data["columns"] = array(
+            "Files" => array(
+                "url",
+                "item"
+            )
+        );
+        $file_data["query"] = array(
+            "conditions" => array(
+                array(
+                    "linkedTo" => "Materiaal",
+                    "reverse" => false,
+                    "query" => array(
+                        "id" => $idList
                     )
                 ),
-                "operator" => "AND"
-            )
+                array(
+                    "key" => "image",
+                    "value" => true
+                ),
+                array(
+                    "key" => "in_shop",
+                    "value" => true
+                )
+            ),
+            "operator" => "AND"
         );
         return $file_data;
     }
@@ -745,24 +676,16 @@
             $endDate = $dates['to_date'];
         }
         $endDate = date("Y-m-j", strtotime("+1 day", strtotime($endDate)));
-        $object_data = array(
-            "requestType" => "modulefunction",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "module" => "Availability",
-            "parameters" => array(
-                "van" => $startDate,
-                "tot" => $endDate,
-                "materiaal" => $identifier,
-                "aantal" => $quantity
-            ),
-            "method" => "is_available"
+        $object_data = getBaseRequest('modulefunction');
+        $object_data["token"] = $token;
+        $object_data["module"] = "Availability";
+        $object_data["parameters"] = array(
+            "van" => $startDate,
+            "tot" => $endDate,
+            "materiaal" => $identifier,
+            "aantal" => $quantity
         );
+        $object_data["method"] = "is_available";
         return $object_data;
     }
 
@@ -773,43 +696,36 @@
     # Returns API request ready to be encoded in Json
     # For getting staffel by staffelgroup
     function setup_staffel_request($token, $totaldays, $staffelgroup){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Staffel",
-            "columns" => array(
-                "Staffel" => array(
-                    "id",
-                    "displayname",
-                    "staffel",
-                    "staffelgroep",
-                    "van",
-                    "tot"
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Staffel";
+        $object_data["columns"] = array(
+            "Staffel" => array(
+                "id",
+                "displayname",
+                "staffel",
+                "staffelgroep",
+                "van",
+                "tot"
+            )
+        );
+        $object_data["query"] = array(
+            "conditions" => array(
+                array(
+                    "key" => "staffelgroep",
+                    "value" => $staffelgroup
+                ),
+                array(
+                    "key" => "van",
+                    "value" => $totaldays,
+                    "comparator" => "<="
+                ),
+                array(
+                    "key" => "tot",
+                    "value" => $totaldays,
+                    "comparator" => ">="
                 )
-            ),
-            "query" => array(
-                "conditions" => array(
-                    array(
-                        "key" => "staffelgroep",
-                        "value" => $staffelgroup
-                    ),
-                    array(
-                        "key" => "van",
-                        "value" => $totaldays,
-                        "comparator" => "<="
-                    ),
-                    array(
-                        "key" => "tot",
-                        "value" => $totaldays,
-                        "comparator" => ">="
-                    )
-                ))
+            )
         );
         return $object_data;
     }
@@ -817,72 +733,48 @@
     # Returns API request ready to be encoded in Json
     # For getting staffelgroups
     function setup_staffelgroup_request($token, $product_id){
-        $object_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Materiaal",
-            "columns" => array(
-                "Materiaal" => array(
-                    "naam",
-                    "verhuurprijs",
-                    "staffelgroep",
-                    "verhuur"
-                )
-            ),
-            "query" => array("id" => $product_id)
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Materiaal";
+        $object_data["columns"] = array(
+            "Materiaal" => array(
+                "naam",
+                "verhuurprijs",
+                "staffelgroep",
+                "verhuur"
+            )
         );
+        $object_data["query"] = array("id" => $product_id);
         return $object_data;
     }
 
     # Setup API request that returns the fees of products
     function setup_discount_request($token, $contact_id, $materials){
-        $object_data = array(
-            "requestType" => "modulefunction",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "module" => "Webshop",
-            "parameters" => array(
-                "contact" => $contact_id,
-                "materialen" => $materials
-            ),
-            "method" => "calculateDiscount"
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["module"] = "Webshop";
+        $object_data["parameters"] = array(
+            "contact" => $contact_id,
+            "materialen" => $materials
         );
+        $object_data["method"] = "calculateDiscount";
         return $object_data;
     }
 
     # Setup API request that returns the ID of the Btwcode that
     # is linked to the tax value in Rentman
     function receive_btwcode_request($token, $tax){
-        $tax_data = array(
-            "requestType" => "query",
-            "client" => array(
-                "language" => "1",
-                "type" => "webshopplugin",
-                "version" => "4.10.0"
-            ),
-            "account" => get_option('plugin-account'),
-            "token" => $token,
-            "itemType" => "Btwcode",
-            "columns" => array(
-                "Btwcode" => array(
-                    "naam",
-                    "id",
-                    "tarief"
-                )
-            ),
-            "query" => array("tarief" => $tax)
+        $object_data = getBaseRequest('query');
+        $object_data["token"] = $token;
+        $object_data["itemType"] = "Btwcode";
+        $object_data["columns"] = array(
+            "Btwcode" => array(
+                "naam",
+                "id",
+                "tarief"
+            )
         );
-        return $tax_data;
+        $object_data["query"] = array("tarief" => $tax);
+        return $object_data;
     }
 ?>

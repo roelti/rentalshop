@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2018-01-19 13:16+0100\n"
-"PO-Revision-Date: 2018-01-19 13:17+0100\n"
+"POT-Creation-Date: 2018-01-30 16:25+0100\n"
+"PO-Revision-Date: 2018-01-30 16:26+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -19,23 +19,23 @@ msgstr ""
 msgid "'"
 msgstr "'"
 
-#: product_availability.php:11
+#: product_availability.php:12
 msgid " op voorraad"
 msgstr " auf Vorrat"
 
-#: product_availability.php:12
+#: product_availability.php:13
 msgid "Totale voorraad onbekend"
 msgstr "Gesamtvorrat unbekannt"
 
-#: product_availability.php:44 product_availability.php:92
+#: product_availability.php:46 product_availability.php:94
 msgid "Van:"
 msgstr "Von:"
 
-#: product_availability.php:46 product_availability.php:94
+#: product_availability.php:48 product_availability.php:96
 msgid "Tot:"
 msgstr "Bis:"
 
-#: product_availability.php:48
+#: product_availability.php:50
 msgid ""
 "Let op: u kan de datums voor ander materiaal pas in de winkelwagen weer "
 "wijzigen!"
@@ -43,75 +43,75 @@ msgstr ""
 "Notiz: Du kannst das Datum des Materials auch gleich im Warenkorb wieder "
 "anpassen!"
 
-#: product_availability.php:54
+#: product_availability.php:56
 msgid "<h3>Geselecteerde datums: </h3> <p><b>Van </b>"
 msgstr "<h3>Selektierte Daten: </h3> <p><b>von </b>"
 
-#: product_availability.php:54 product_availability.php:123
+#: product_availability.php:56 product_availability.php:125
 msgid "<b> tot </b>"
 msgstr "<b> bis </b>"
 
-#: product_availability.php:84
+#: product_availability.php:86
 msgid "<h2>Verhuurperiode</h2>"
 msgstr "<h2>Mietzeitraum</h2>"
 
-#: product_availability.php:99
+#: product_availability.php:101
 msgid "Update Huurperiode"
 msgstr "Update Mietzeitraum"
 
-#: product_availability.php:123
+#: product_availability.php:125
 msgid "<h3>Geselecteerde datums </h3> <p><b>Van </b>"
 msgstr "<h3>Selektierte Daten </h3> <p><b>von </b>"
 
-#: product_availability.php:138
+#: product_availability.php:140
 msgid "Reserveer"
 msgstr "Reservieren"
 
-#: product_availability.php:141
+#: product_availability.php:143
 msgid "Aan winkelmandje toevoegen"
 msgstr "Zum Warenkorb hinzufügen"
 
-#: product_availability.php:237
+#: product_availability.php:239
 msgid "Product is niet beschikbaar!"
 msgstr "Artikel ist nicht verfügbar!"
 
-#: product_availability.php:238
+#: product_availability.php:240
 msgid "Product is misschien niet beschikbaar!"
 msgstr "Artikel ist vielleicht nicht verfügbar!"
 
-#: product_availability.php:239
+#: product_availability.php:241
 msgid "Product is beschikbaar!"
 msgstr "Artikel ist verfügbar!"
 
-#: product_availability.php:283
+#: product_availability.php:285
 msgid "Er ging iets mis.. Kloppen de datums wel?"
 msgstr "Es ging etwas schief. Stimmen die eigegebenen Daten?"
 
-#: product_availability.php:322
+#: product_availability.php:324
 msgid "Er zijn slechts "
 msgstr "Es gibt nur "
 
-#: product_availability.php:322
+#: product_availability.php:324
 msgid " beschikbaar in die tijdsperiode."
 msgstr " verfügbar in diesem Zeitraum."
 
-#: product_availability.php:325
+#: product_availability.php:327
 msgid "Let op: "
 msgstr "Pass auf: "
 
-#: product_availability.php:325
+#: product_availability.php:327
 msgid " van de "
 msgstr " vom "
 
-#: product_availability.php:325
+#: product_availability.php:327
 msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
 msgstr " sind vielleicht nicht verfügbar in diesem Zeitraum."
 
-#: product_availability.php:328
+#: product_availability.php:330
 msgid "Uw geselecteerde aantal "
 msgstr "Deine ausgewählte Anzahl "
 
-#: product_availability.php:328
+#: product_availability.php:330
 msgid " is beschikbaar in die tijdsperiode!"
 msgstr " ist verfügbar in diesem Zeitraum!"
 
@@ -169,11 +169,11 @@ msgstr "<b>Artikel gelöscht:</b> "
 msgid "<br>Resetten was succesvol!"
 msgstr "<br>Reset war erfolgreich!"
 
-#: product_import.php:360
+#: product_import.php:361
 msgid "Verder lezen"
 msgstr "Weiterlesen"
 
-#: product_import.php:377
+#: product_import.php:378
 msgid "Rentable"
 msgstr "Rentable"
 
@@ -209,7 +209,7 @@ msgstr "Kundenrabatt"
 msgid "Dagprijs"
 msgstr "Tagespreis"
 
-#: rentman.php:96
+#: rentman.php:97
 msgid ""
 "<div class='updated'><p>Let op: Installeer en activeer de GitHub Updater "
 "plugin (https://github.com/afragen/github-updater) om automatisch naar "
@@ -219,47 +219,51 @@ msgstr ""
 "Updater Plugin (https://github.com/afragen/github-updater) um automatisch "
 "nach Updates für das Rentman 4G Plugin zu suchen!</p></div>"
 
-#: rentman.php:104
-msgid "<h1>Rentman Product Import - v4.10.0</h1><hr><br>"
-msgstr "<h1>Rentman Artikel Import - v4.10.0</h1><hr><br>"
+#: rentman.php:105
+msgid "<h1>Rentman Product Import - v4.10.1</h1><hr><br>"
+msgstr "<h1>Rentman Artikel Import - v4.10.1</h1><hr><br>"
 
-#: rentman.php:106
+#: rentman.php:107
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
 msgstr "<h3>Log dich hier mit deinen Rentman 4G Daten ein</h3>"
 
-#: rentman.php:112
+#: rentman.php:113
 msgid "<strong>Gebruikersnaam</strong>"
 msgstr "<strong>Benutzername</strong>"
 
-#: rentman.php:114
+#: rentman.php:115
 msgid "<strong>Wachtwoord</strong>"
 msgstr "<strong>Passwort</strong>"
 
-#: rentman.php:116
+#: rentman.php:117
 msgid "Gegevens controleren"
 msgstr "Angaben kontrollieren"
 
-#: rentman.php:144
+#: rentman.php:147
 msgid "<hr><h3>Instellingen</h3>"
 msgstr "<hr><h3>Einstellungen</h3>"
 
-#: rentman.php:146
+#: rentman.php:149
 msgid "<strong>Check beschikbaarheid voor sturen  </strong>"
 msgstr "<strong>Check Verfügbarkeit bevor Senden  </strong>"
 
-#: rentman.php:158
+#: rentman.php:161
 msgid "<br><br><strong>Korting contact uit Rentman overnemen  </strong>"
 msgstr "<br><br><strong>Kontaktrabatt auf Rentman übernehmen  </strong>"
 
-#: rentman.php:172
+#: rentman.php:173
+msgid "<br><br><strong>Voorraad weergeven op productpagina  </strong>"
+msgstr "<br><br><strong>Vorrat auf der Produktseite anzeigen  </strong>"
+
+#: rentman.php:187
 msgid "Wijzigingen Opslaan"
 msgstr "Änderungen speichern"
 
-#: rentman.php:175
+#: rentman.php:190
 msgid "Update afbeeldingen van producten"
 msgstr "Bilder von Artikeln aktualisieren"
 
-#: rentman.php:177
+#: rentman.php:192
 msgid ""
 "Druk op de onderstaande knop wanneer je afbeeldingen in Rentman hebt "
 "gewijzigd<br>\n"
@@ -269,19 +273,19 @@ msgstr ""
 "<br>\n"
 "            um die Änderungen in WooCommerce anzuwenden."
 
-#: rentman.php:184
+#: rentman.php:199
 msgid "Afbeeldingen Updaten"
 msgstr "Bilder aktualisieren"
 
-#: rentman.php:187
+#: rentman.php:202
 msgid "<h3>De afbeeldingen worden opgehaald..</h3>"
 msgstr "<h3>Die Bilder werden geladen.</h3>"
 
-#: rentman.php:189
+#: rentman.php:204
 msgid "Importeer materiaal uit Rentman"
 msgstr "Importier Material auf Rentman"
 
-#: rentman.php:191
+#: rentman.php:206
 msgid ""
 "Druk op de onderstaande knop om te zoeken naar nieuwe of gewijzigde "
 "producten en deze<br>\n"
@@ -292,19 +296,19 @@ msgstr ""
 "            aus deinem Rentman Account in deinem WooCommerce Webshop "
 "anzuwenden."
 
-#: rentman.php:193
+#: rentman.php:208
 msgid "-- Meest recente check voor updates: "
 msgstr "-- Letzte Checks nach Aktualisierungen: "
 
-#: rentman.php:201
+#: rentman.php:216
 msgid "Producten Importeren"
 msgstr "Artikel importieren"
 
-#: rentman.php:206
+#: rentman.php:221
 msgid "Reset"
 msgstr "Reset"
 
-#: rentman.php:210
+#: rentman.php:225
 msgid ""
 "<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze "
 "pagina niet!</h3>"
@@ -312,15 +316,15 @@ msgstr ""
 "<h3>Daten werden importiert. Das kann einige Minuten dauern. Diese Seite "
 "bitte nicht verlassen!</h3>"
 
-#: rentman.php:310
+#: rentman.php:326
 msgid "Dit is geen Rentman 4 account! &#10005;<br>"
 msgstr "Das ist kein Rentman 4G Account! &#10005;<br>"
 
-#: rentman.php:318
+#: rentman.php:334
 msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
 msgstr "<strong>Nicht alle Pflichtfelder sind ausgefüllt</strong>"
 
-#: rentman.php:335
+#: rentman.php:351
 msgid ""
 "<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
 "h4>"
@@ -328,43 +332,43 @@ msgstr ""
 "<h4>Die Verbindung mit der Rentman API war nicht erfolgreich. Stimmen deine "
 "Daten?</h4>"
 
-#: rentman.php:337
+#: rentman.php:353
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
 msgstr "<h4>Die Verbindung mit der Rentman API war erfolgreich!</h4>"
 
-#: rentman.php:346
+#: rentman.php:362
 msgid "<b>Compatibiliteitscontrole..</b><br>"
 msgstr "<b>Kombatibilitätskontrolle.</b><br>"
 
-#: rentman.php:354
+#: rentman.php:371
 msgid ""
 "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
-"plugin hierdoor niet goed.. &#10005;<br>"
+"plugin hierdoor niet goed.."
 msgstr ""
-"Achtung, das PHP Zeitlimit ist kürzer als 30 Sekunden! Möglicherweise "
-"funktioniert das Plugin dadurch nicht gut. &#10005;<br>"
+"Wichtig: Das PHP Zeitlimit ist unter 30 Sekunden eingestellt! Das Plugin "
+"könnte dadurch evtl. nicht richtig funktionieren."
 
-#: rentman.php:356
+#: rentman.php:375
 msgid "PHP tijdslimiet is in orde &#10003;<br>"
 msgstr "PHP Zeitlimit ist in Ordnung &#10003;<br>"
 
-#: rentman.php:361
+#: rentman.php:380
 msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 msgstr "Ordner erstellt am <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 
-#: rentman.php:364
+#: rentman.php:383
 msgid "De Rentman map voor afbeeldingen is aanwezig &#10003;<br>"
 msgstr "Der Rentman Ordner für Bilder ist vorhanden &#10003;<br>"
 
-#: rentman.php:373
+#: rentman.php:392
 msgid "Toevoegen van afbeeldingen is gelukt &#10003;<br>"
 msgstr "Das Hinzufügen von Bilder war erfolgreich &#10003;<br>"
 
-#: rentman.php:375
-msgid "Toevoegen van afbeeldingen is mislukt.. &#10005;<br>"
-msgstr "Das Hinzufügen von Bilder war nicht erfolgreich. &#10005;<br>"
+#: rentman.php:395
+msgid "Toevoegen van afbeeldingen is mislukt.."
+msgstr "Das Hinzufügen von Bilder war nicht erfolgreich."
 
-#: rentman.php:379
+#: rentman.php:400
 msgid ""
 "&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer "
 "dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
@@ -372,7 +376,7 @@ msgstr ""
 "&bull; <i>url_fopen()</i> is disabled in der <i>php.ini</i> Datei. Probier "
 "das zu ändern und versuche ob das Problem damit gelöst ist.<br>"
 
-#: rentman.php:388
+#: rentman.php:409
 msgid ""
 "Let op: er ontbreekt een .htaccess bestand in de 'uploads/rentman/' map. "
 "Mogelijk worden de afbeeldingen niet correct weergegeven..<br>"
@@ -380,7 +384,7 @@ msgstr ""
 "Achtung: Es fehlt eine .htaccess Datei im 'uploads/rentman/' Ordner. "
 "Möglicherweise werden die Bilder nicht richtig angezeigt.<br>"
 
-#: rentman.php:390
+#: rentman.php:411
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
 msgstr "Bilder können angezeigt werden &#10003;<br>"
 
@@ -408,9 +412,24 @@ msgstr "Telefon"
 msgid "Telefoonnummer"
 msgstr "Telefonnummer"
 
-#: rentman_project.php:93 rentman_project.php:108 rentman_requests.php:457
+#: rentman_project.php:93 rentman_project.php:108 rentman_requests.php:423
 msgid "Huurperiode"
 msgstr "Mietzeitraum"
+
+#~ msgid ""
+#~ "<p style=\"color:red;\">Let op, de PHP tijdslimiet is lager dan 30 "
+#~ "seconden! Mogelijk werkt de plugin hierdoor niet goed..</p>&#10005;<br>"
+#~ msgstr ""
+#~ "<p style=\"color:red;\">Achtung, das PHP Zeitlimit ist kürzer als 30 "
+#~ "Sekunden! Möglicherweise funktioniert das Plugin dadurch nicht gut.</"
+#~ "p>&#10005;<br>"
+
+#~ msgid ""
+#~ "<p style=\"color:red;\">Toevoegen van afbeeldingen is mislukt..</"
+#~ "p>&#10005;<br>"
+#~ msgstr ""
+#~ "<p style=\"color:red;\">Das Hinzufügen von Bilder war nicht erfolgreich.</"
+#~ "p>&#10005;<br>"
 
 #~ msgid "<h2>VERHUURPERIODE</h2>"
 #~ msgstr "<h2>MIETZEITRAUM</h2>"
@@ -460,13 +479,6 @@ msgstr "Mietzeitraum"
 
 #~ msgid "Transportkorting"
 #~ msgstr "Transportrabatt"
-
-#~ msgid ""
-#~ "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
-#~ "plugin hierdoor niet goed..<br>"
-#~ msgstr ""
-#~ "Wichtig: Das PHP Zeitlimit ist unter 30 Sekunden eingestellt! Das Plugin "
-#~ "könnte dadurch evtl. nicht richtig funktionieren.<br>"
 
 #~ msgid "PHP tijdlimiet is in orde<br>"
 #~ msgstr "PHP Zeitlimit ist in Ordnung<br>"

@@ -48,7 +48,7 @@
                     $parsed = json_decode($received, true);
                     $parsed = parseResponse($parsed);
                     $contact_id = current($parsed['response']['items']['Contact']);
-                    $contact_person = current($parsed['response']['items']['Contact'])['data']['contactpersoon'];
+                    $contact_person = isset(current($parsed['response']['items']['Contact'])['data']['contactpersoon']) ? current($parsed['response']['items']['Contact'])['data']['contactpersoon'] : '';
                     $fees = array();
                     for ($x = 0; $x <= 2; $x++) {
                         array_push($fees, 0);

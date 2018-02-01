@@ -7,15 +7,17 @@
         $pf = new WC_Product_Factory();
         $product = $pf->get_product($post->ID);
         if ($product->get_type() == 'rentable'){
-            # Display stock quantity of current product
-            $stock = __(' op voorraad', 'rentalshop');
-            $nostock = __('Totale voorraad onbekend', 'rentalshop');
-            if ($product->get_stock_quantity() == '')
-                echo $nostock . '<br><br>';
-            else if ($product->get_stock_quantity() == 0)
-                echo '&#10005; ' . $product->get_stock_quantity() . $stock . '<br><br>';
-            else
-                echo '&#10003; ' . $product->get_stock_quantity() . $stock . '<br><br>';
+            # Display stock quantity of current product if enabled
+            if (get_option('plugin-checkstock') == 1){
+                $stock = __(' op voorraad', 'rentalshop');
+                $nostock = __('Totale voorraad onbekend', 'rentalshop');
+                if ($product->get_stock_quantity() == '')
+                    echo $nostock . '<br><br>';
+                else if ($product->get_stock_quantity() == 0)
+                    echo '&#10005; ' . $product->get_stock_quantity() . $stock . '<br><br>';
+                else
+                    echo '&#10003; ' . $product->get_stock_quantity() . $stock . '<br><br>';
+            }
 
             # Checks if there already is a 'Rentable' product in the shopping cart
             $rentableProduct = false;

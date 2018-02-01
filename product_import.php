@@ -125,7 +125,7 @@
             $product_id = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $x));
             if ($product_id){
                 # Post Exists, now check update time
-                $updated = check_updated($x, $modDate);
+                $updated = check_updated($x, $modDate, $product_id);
                 if ($updated == false){
                     # Post has not been updated
                     $noDiff = true;
@@ -189,7 +189,7 @@
     # Get all 'Rentable' products stored in WooCommerce
     function get_product_list(){
         $full_product_list = array();
-        $args = array('post_type' => 'product', 'posts_per_page' => -1, 'rentman_imported' => true);
+        $args = array('post_type' => 'product', 'post_status' => 'any', 'posts_per_page' => -1, 'rentman_imported' => true);
         $posts = get_posts($args);
         for ($x = 0; $x < sizeof($posts); $x++){
             $product = $posts[$x];
@@ -308,7 +308,7 @@
     }
 
     # Checks if last modified date is different
-    function check_updated($sku, $lastmodified){
+    function check_updated($sku, $lastmodified, $post_id){
         global $wpdb;
         $newestdate = substr($lastmodified, 0, 10) . ' ' . substr($lastmodified, 11, 8);
         $postID = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $sku));
@@ -316,7 +316,8 @@
         $postdate = substr($getDate, 0, 10) . ' ' . substr($getDate, 11, 8);
         $rentDate = strtotime($newestdate);
         $wooDate = strtotime($postdate);
-        if ($wooDate >= $rentDate)
+        $trash = get_post_status($post_id);
+        if ($wooDate >= $rentDate && $trash != 'trash')
             return false; # Has not been updated
 
         # Product has been updated, delete old post
