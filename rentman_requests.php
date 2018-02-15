@@ -12,7 +12,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.10.1"
+                "version" => "4.10.2"
             ),
             "account" => get_option('plugin-account')
         );

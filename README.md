@@ -1,6 +1,6 @@
-Rentman 4G WooCommerce Plugin - Version 4.10.1
+Rentman 4G WooCommerce Plugin - Version 4.10.2
 
-Release: 01-02-2018
+Release: 15-02-2018
 -----------------------------
 * Consult the User Manual (stored in the zip-file) first before contacting our support. You will find answers to common questions and other useful information there.
 * Still experiencing problems? Make sure to send a WooCommerce system status report with your support ticket.

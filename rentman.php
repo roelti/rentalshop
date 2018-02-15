@@ -6,7 +6,7 @@
      * Plugin URI: https://rentman.io
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.10.1
+     * Version: 4.10.2
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -102,7 +102,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.10.1</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.10.2</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
