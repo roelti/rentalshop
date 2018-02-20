@@ -107,7 +107,7 @@
     # updated and adds them to a list
     function convert_items($parsed, $lower, $higher){
         global $wpdb;
-        $prodList = array(); # array that stores new/updates products
+        $prodList = array(); # array that stores new/updated products
         $checkList = array(); # array containing id's of all checked products
 
         for ($x = $lower; $x <= $higher; $x++) {
@@ -125,10 +125,14 @@
             $product_id = $wpdb->get_var($wpdb->prepare("SELECT post_id FROM $wpdb->postmeta WHERE meta_key='_sku' AND meta_value='%s' LIMIT 1", $x));
             if ($product_id){
                 # Post Exists, now check update time
-                $updated = check_updated($x, $modDate, $product_id);
-                if ($updated == false){
-                    # Post has not been updated
+                if (get_option('plugin-checkoverwrite') == 1) // Do not overwrite existing products
                     $noDiff = true;
+                else {
+                    $updated = check_updated($x, $modDate, $product_id);
+                    if ($updated == false){
+                        # Post has not been updated
+                        $noDiff = true;
+                    }
                 }
             }
 
@@ -161,7 +165,8 @@
             }
         }
         # Delete products in WooCommerce shop that are not in the product list
-        compare_and_delete($checkList);
+        if (get_option('plugin-checkoverwrite') == 0) // Only do this if overwriting is enabled
+            compare_and_delete($checkList);
 
         return $prodList; # Return array of objects for later use
     }

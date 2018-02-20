@@ -6,7 +6,7 @@
      * Plugin URI: https://rentman.io
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.10.2
+     * Version: 4.10.3
      * Author: Rentman
      * Text Domain: rentalshop
      */
@@ -68,6 +68,7 @@
         register_setting('plugin-settings', 'plugin-account');
         register_setting('plugin-settings', 'plugin-checkavail');
         register_setting('plugin-settings', 'plugin-checkdisc');
+        register_setting('plugin-settings', 'plugin-checkoverwrite');
         register_setting('plugin-settings', 'plugin-checkstock');
         register_setting('plugin-settings', 'plugin-enddate');
         register_setting('plugin-settings', 'plugin-lasttime');
@@ -102,7 +103,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.10.2</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.10.3</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
@@ -137,10 +138,12 @@
         <?php # Buttons for availability check and discount
         $availCheck = get_option('plugin-checkavail');
         $discountCheck = get_option('plugin-checkdisc');
+        $overwriteCheck = get_option('plugin-checkoverwrite');
         $stockCheck = get_option('plugin-checkstock');
-        if ($availCheck == '' or $discountCheck == '' or $stockCheck == ''){
+        if ($availCheck == '' or $discountCheck == '' or $overwriteCheck == '' or $stockCheck == ''){
             update_option('plugin-checkdisc', 0);
             update_option('plugin-checkavail', 0);
+            update_option('plugin-checkoverwrite', 0);
             update_option('plugin-checkstock', 0);
         } ?>
 
@@ -165,6 +168,18 @@
                 } ?>>Yes
                 </option>
                 <option value="0" <?php if (get_option('plugin-checkdisc') == 0){
+                    echo "selected";
+                } ?>>No
+                </option>
+            </select>
+            <!-- If checked, existing Rentman products will not be overwritten during the import -->
+            <?php _e('<br><br><strong>Schakel het overschrijven van bestaande Rentman-producten uit  </strong>', 'rentalshop'); ?>
+            <select name='plugin-checkoverwrite'>
+                <option value="1" <?php if (get_option('plugin-checkoverwrite') == 1){
+                    echo "selected";
+                } ?>>Yes
+                </option>
+                <option value="0" <?php if (get_option('plugin-checkoverwrite') == 0){
                     echo "selected";
                 } ?>>No
                 </option>
@@ -232,6 +247,7 @@
         if (isset($_POST['change-settings'])){
             update_option('plugin-checkdisc', $_POST['plugin-checkdisc']);
             update_option('plugin-checkavail', $_POST['plugin-checkavail']);
+            update_option('plugin-checkoverwrite', $_POST['plugin-checkoverwrite']);
             update_option('plugin-checkstock', $_POST['plugin-checkstock']);
             echo "<meta http-equiv='refresh' content='0'>";
         }
