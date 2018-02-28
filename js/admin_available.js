@@ -70,7 +70,7 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.10.3"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.10.4"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);

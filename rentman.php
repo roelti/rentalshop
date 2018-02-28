@@ -6,9 +6,11 @@
      * Plugin URI: https://rentman.io
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.10.3
+     * Version: 4.10.4
      * Author: Rentman
      * Text Domain: rentalshop
+     * WC requires at least: 3.0.0
+     * WC tested up to: 3.3.3
      */
 
     # Start session
@@ -95,7 +97,7 @@
     function check_github_updater() {
         # Show message if 'GitHub Updater' plugin is inactive
         if (!is_plugin_active('github-updater-develop/github-updater.php') && !is_plugin_active('github-updater/github-updater.php')){
-            _e("<div class='updated'><p>Let op: Installeer en activeer de GitHub Updater plugin (https://github.com/afragen/github-updater) om automatisch naar updates te zoeken voor de Rentman 4G plugin!</p></div>", 'rentalshop');
+            _e("<div class='notice notice-warning is-dismissible'><p>Let op: Installeer en activeer de GitHub Updater plugin (https://github.com/afragen/github-updater) om automatisch naar updates te zoeken voor de Rentman 4G plugin!</p></div>", 'rentalshop');
         }
     }
 
@@ -103,7 +105,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.10.3</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.10.4</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
