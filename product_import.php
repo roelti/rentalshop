@@ -14,7 +14,7 @@
                 $url = receive_endpoint();
 
                 # First, obtain all the products from Rentman
-                $message = json_encode(setup_import_request($token), JSON_PRETTY_PRINT);
+                $message = json_encode(setup_import_request(), JSON_PRETTY_PRINT);
 
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
@@ -30,13 +30,13 @@
 
                     # Build arrays containing all imported products and image files
                     $prod_array = convert_items($parsed, $firstItem, $lastItem);
-                    $file_array = get_files($prod_array, $token, $url);
+                    $file_array = get_files($prod_array, $url);
 
                     # If one or more products have been found, create the product categories
                     # and register and localize the admin_import.js file
                     if (sizeof($prod_array) > 0) {
                         # Import the product categories
-                        $message = json_encode(setup_folder_request($token), JSON_PRETTY_PRINT);
+                        $message = json_encode(setup_folder_request(), JSON_PRETTY_PRINT);
                         $received = do_request($url, $message);
                         $parsed = json_decode($received, true);
                         $parsed = parseResponse($parsed);

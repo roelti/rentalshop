@@ -12,7 +12,7 @@
             "client" => array(
                 "language" => "1",
                 "type" => "webshopplugin",
-                "version" => "4.10.4"
+                "version" => "4.11.0"
             ),
             "account" => get_option('plugin-account')
         );
@@ -38,10 +38,10 @@
 
     # Returns API request ready to be encoded in Json
     # Checks if a user already exists by their email
-    function setup_check_request($token, $mail){
+    function setup_check_request($mail){
         # Check if contact already exists (by email)
         $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Contact";
         $object_data["columns"] = array(
             "Contact" => array(
@@ -58,10 +58,10 @@
 
     # Returns API request ready to be encoded in Json
     # Checks if a location already exists by their address
-    function setup_location_request($token, $address, $email){
-        # Check if contact already exists (by address)
+    function setup_location_request($address, $email){
+        # Check if contact already exists (by address and email)
         $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Contact";
         $object_data["columns"] = array(
             "Contact" => array(
@@ -87,7 +87,7 @@
 
     # Returns API request ready to be encoded in Json
     # For sending new user data to Rentman
-    function setup_newuser_request($token, $order_id){
+    function setup_newuser_request($order_id){
         $order = new WC_Order($order_id);
         $company = $order->get_billing_company();
         $attachperson = array();
@@ -112,7 +112,7 @@
 
         # Setup of the request
         $object_data = getBaseRequest('create');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Contact";
         $object_data["columns"] = array(
             "Contact" => array()
@@ -175,7 +175,7 @@
 
     # Returns API request ready to be encoded in Json
     # For sending new location data as a user to Rentman
-    function setup_newlocation_request($token, $order_id){
+    function setup_newlocation_request($order_id){
         $order = new WC_Order($order_id);
         $company = $order->get_shipping_company();
         $attachperson = array();
@@ -199,7 +199,7 @@
         }
 
         $object_data = getBaseRequest('create');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Contact";
         $object_data["columns"] = array(
             "Contact" => array()
@@ -265,7 +265,7 @@
     # Returns API request ready to be encoded in Json
     # Used for sending new project data to Rentman
     # Includes contact, relevant materials & rent dates
-    function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
+    function setup_newproject_request($order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         # Get Order data and rent dates
         $order = new WC_Order($order_id);
         $comp = $order->get_billing_company();
@@ -283,7 +283,6 @@
 
         # Get List of Materials and create arrays by using
         # that list for the json request
-        $shippingbtw = $order->get_total_shipping() / 1.21;
         $materials = get_material_array($order_id);
         $materialsize = sizeof($materials);
 
@@ -307,6 +306,8 @@
             }
         }
 
+        $tax = $tax + 1;
+        $shippingbtw = $order->get_total_shipping() / $tax;
         # Call the right function for the request generation
         if ($rentableProduct){
             $count = -7;
@@ -316,7 +317,7 @@
                 $count--;
             }
             $order_data = array(
-                "token" => $token,
+                "token" => get_token(),
                 "proj" => $proj,
                 "contact_id" => $contact_id,
                 "transport_id" => $transport_id,
@@ -341,7 +342,7 @@
                 $count--;
             }
             $order_data = array(
-                "token" => $token,
+                "token" => get_token(),
                 "proj" => $proj,
                 "contact_id" => $contact_id,
                 "transport_id" => $transport_id,
@@ -551,9 +552,9 @@
 
     # Returns API request ready to be encoded in Json
     # For importing folders
-    function setup_folder_request($token){
+    function setup_folder_request(){
         $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Folder";
         $object_data["columns"] = array(
             "Folder" => array(
@@ -578,9 +579,9 @@
 
     # Returns API request ready to be encoded in Json
     # For importing products
-    function setup_import_request($token){
+    function setup_import_request(){
         $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Materiaal";
         $object_data["columns"] = array(
             "Materiaal" => array(
@@ -624,13 +625,13 @@
 
     # Returns API request ready to be encoded in Json
     # For getting image files for every product
-    function setup_file_request($token, $prodList, $globalimages = false){
+    function setup_file_request($prodList, $globalimages = false){
         if ($globalimages)
             $idList = rentman_ids();
         else
             $idList = list_of_ids($prodList);
         $file_data = getBaseRequest('query');
-        $file_data["token"] = $token;
+        $file_data["token"] = get_token();
         $file_data["itemType"] = "Files";
         $file_data["columns"] = array(
             "Files" => array(
@@ -666,7 +667,7 @@
     // --------------------------------------------- \\
 
     # Setup API request that checks the availability of the product
-    function available_request($token, $identifier, $quantity, $updating = false, $sdate, $edate){
+    function available_request($identifier, $quantity, $updating = false, $sdate, $edate){
         if ($updating){
             $startDate = $sdate;
             $endDate = $edate;
@@ -677,7 +678,7 @@
         }
         $endDate = date("Y-m-j", strtotime("+1 day", strtotime($endDate)));
         $object_data = getBaseRequest('modulefunction');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["module"] = "Availability";
         $object_data["parameters"] = array(
             "van" => $startDate,
@@ -695,9 +696,9 @@
 
     # Returns API request ready to be encoded in Json
     # For getting staffel by staffelgroup
-    function setup_staffel_request($token, $totaldays, $staffelgroup){
+    function setup_staffel_request($totaldays, $staffelgroup){
         $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Staffel";
         $object_data["columns"] = array(
             "Staffel" => array(
@@ -732,9 +733,9 @@
 
     # Returns API request ready to be encoded in Json
     # For getting staffelgroups
-    function setup_staffelgroup_request($token, $product_id){
+    function setup_staffelgroup_request($product_id){
         $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["itemType"] = "Materiaal";
         $object_data["columns"] = array(
             "Materiaal" => array(
@@ -749,32 +750,15 @@
     }
 
     # Setup API request that returns the fees of products
-    function setup_discount_request($token, $contact_id, $materials){
+    function setup_discount_request($contact_id, $materials){
         $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
+        $object_data["token"] = get_token();
         $object_data["module"] = "Webshop";
         $object_data["parameters"] = array(
             "contact" => $contact_id,
             "materialen" => $materials
         );
         $object_data["method"] = "calculateDiscount";
-        return $object_data;
-    }
-
-    # Setup API request that returns the ID of the Btwcode that
-    # is linked to the tax value in Rentman
-    function receive_btwcode_request($token, $tax){
-        $object_data = getBaseRequest('query');
-        $object_data["token"] = $token;
-        $object_data["itemType"] = "Btwcode";
-        $object_data["columns"] = array(
-            "Btwcode" => array(
-                "naam",
-                "id",
-                "tarief"
-            )
-        );
-        $object_data["query"] = array("tarief" => $tax);
         return $object_data;
     }
 ?>

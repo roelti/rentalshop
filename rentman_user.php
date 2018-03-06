@@ -22,14 +22,13 @@
         if ($rentableProduct){
             if (apply_filters('rentman/add_customer', true)) {
                 $url = receive_endpoint();
-                $token = get_option('plugin-token');
                 $billing = $order->get_billing_address_1();
                 $shipping = $order->get_shipping_address_1();
                 $contact_person = "";
                 $location_contact = "";
 
                 # Setup Request to send JSON
-                $message = json_encode(setup_check_request($token, $order->get_billing_email()), JSON_PRETTY_PRINT);
+                $message = json_encode(setup_check_request($order->get_billing_email()), JSON_PRETTY_PRINT);
 
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
@@ -41,7 +40,7 @@
                 if (empty($contactarr)) {
                     # Contact doesn't exist yet, so do a create request
                     # Setup Request to send JSON
-                    $message = json_encode(setup_newuser_request($token, $order_id), JSON_PRETTY_PRINT);
+                    $message = json_encode(setup_newuser_request($order_id), JSON_PRETTY_PRINT);
 
                     # Send Request & Receive Response
                     $received = do_request($url, $message);
@@ -63,7 +62,7 @@
 
                 if ($billing != $shipping && $shipping != '') { # Get Rentman Contact for location
                     # Setup Request to send JSON
-                    $message = json_encode(setup_location_request($token, $order->get_shipping_address_1(), $order->shipping_email), JSON_PRETTY_PRINT);
+                    $message = json_encode(setup_location_request($order->get_shipping_address_1(), get_post_meta($order_id, '_shipping_email', true)), JSON_PRETTY_PRINT);
 
                     # Send Request & Receive Response
                     $received = do_request($url, $message);
@@ -74,13 +73,13 @@
                     if (empty($contactarr)) {
                         # Contact doesn't exist yet, so do a create request
                         # Setup Request to send JSON
-                        $message = json_encode(setup_newlocation_request($token, $order_id), JSON_PRETTY_PRINT);
+                        $message = json_encode(setup_newlocation_request($order_id), JSON_PRETTY_PRINT);
                         # Send Request & Receive Response
                         $received = do_request($url, $message);
                         $parsed = json_decode($received, true);
                         $parsed = parseResponse($parsed);
                         $transport_id = current($parsed['response']['items']['Contact']);
-                        $location_contact = current($parsed['response']['items']['Contact'])['data']['contactpersoon'];
+                        $location_contact = isset(current($parsed['response']['items']['Contact'])['data']['contactpersoon']) ? current($parsed['response']['items']['Contact'])['data']['contactpersoon'] : '';
                     } else {
                         $transport_id = current($parsed['response']['items']['Contact']);
                     }

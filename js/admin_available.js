@@ -29,8 +29,7 @@ function quickCheck() {
         var toDate = endDate;
     }
     if (fromDate == null || toDate == null || fromDate == ""|| toDate == "" || fromDate > toDate){
-        document.getElementsByClassName("availLog")[0].innerHTML = unavailable;
-        document.getElementsByClassName("availLog")[0].style = "color:red";
+        document.getElementsByClassName("availLog")[0].innerHTML = "";
     }
     else {
         var productID = document.getElementsByClassName("sku")[0].innerText;
@@ -70,9 +69,10 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.10.4"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.11.0"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);
+        console.log(typeof(token));
     }
 }

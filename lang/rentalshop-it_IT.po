@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2018-03-01 15:56+0100\n"
-"PO-Revision-Date: 2018-03-01 15:56+0100\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2018-03-06 14:43+0100\n"
+"PO-Revision-Date: 2018-03-06 14:44+0100\n"
+"Last-Translator: Ermanno Valvason <e.valvason@gmail.com>\n"
 "Language-Team: \n"
-"Language: de\n"
+"Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,193 +21,191 @@ msgstr "'"
 
 #: product_availability.php:12
 msgid " op voorraad"
-msgstr " auf Vorrat"
+msgstr " in stock"
 
 #: product_availability.php:13
 msgid "Totale voorraad onbekend"
-msgstr "Gesamtvorrat unbekannt"
+msgstr "Disponibilità sconosciuta"
 
 #: product_availability.php:46 product_availability.php:94
 msgid "Van:"
-msgstr "Von:"
+msgstr "Da:"
 
 #: product_availability.php:48 product_availability.php:96
 msgid "Tot:"
-msgstr "Bis:"
+msgstr "A:"
 
 #: product_availability.php:50
 msgid ""
 "Let op: u kan de datums voor ander materiaal pas in de winkelwagen weer "
 "wijzigen!"
 msgstr ""
-"Notiz: Du kannst das Datum des Materials auch gleich im Warenkorb wieder "
-"anpassen!"
+"Importante: è possibile modificare le date di noleggio direttamente dal "
+"carrello!"
 
 #: product_availability.php:56
 msgid "<h3>Geselecteerde datums: </h3> <p><b>Van </b>"
-msgstr "<h3>Selektierte Daten: </h3> <p><b>von </b>"
+msgstr "<h3>Date selezionate: </h3> <p><b>Da </b>"
 
 #: product_availability.php:56 product_availability.php:125
 msgid "<b> tot </b>"
-msgstr "<b> bis </b>"
+msgstr "<b> a </b>"
 
 #: product_availability.php:86
 msgid "<h2>Verhuurperiode</h2>"
-msgstr "<h2>Mietzeitraum</h2>"
+msgstr "<h2>Periodo di noleggio</h2>"
 
 #: product_availability.php:101
 msgid "Update Huurperiode"
-msgstr "Update Mietzeitraum"
+msgstr "Aggiorna date"
 
 #: product_availability.php:125
 msgid "<h3>Geselecteerde datums </h3> <p><b>Van </b>"
-msgstr "<h3>Selektierte Daten </h3> <p><b>von </b>"
+msgstr "<h3>Date selezionate: </h3> <p><b>Da </b>"
 
 #: product_availability.php:140
 msgid "Reserveer"
-msgstr "Reservieren"
+msgstr "Prenota"
 
 #: product_availability.php:143
 msgid "Aan winkelmandje toevoegen"
-msgstr "Zum Warenkorb hinzufügen"
+msgstr "Aggiungi al carrello"
 
 #: product_availability.php:239
 msgid "Product is niet beschikbaar!"
-msgstr "Artikel ist nicht verfügbar!"
+msgstr "Il prodotto non è disponibile!"
 
 #: product_availability.php:240
 msgid "Product is misschien niet beschikbaar!"
-msgstr "Artikel ist vielleicht nicht verfügbar!"
+msgstr "Il prodotto potrebbe non essere disponibile!"
 
 #: product_availability.php:241
 msgid "Product is beschikbaar!"
-msgstr "Artikel ist verfügbar!"
+msgstr "Il prodotto è disponibile!"
 
 #: product_availability.php:285
 msgid "Er ging iets mis.. Kloppen de datums wel?"
-msgstr "Es ging etwas schief. Stimmen die eigegebenen Daten?"
+msgstr "Qualcosa è andato storto. Le date sono corrette?"
 
 #: product_availability.php:323
 msgid "Er zijn slechts "
-msgstr "Es gibt nur "
+msgstr "Ci sono solo "
 
 #: product_availability.php:323
 msgid " beschikbaar in die tijdsperiode."
-msgstr " verfügbar in diesem Zeitraum."
+msgstr "disponibile in quel periodo."
 
 #: product_availability.php:326
 msgid "Let op: "
-msgstr "Pass auf: "
+msgstr "Importante: "
 
 #: product_availability.php:326
 msgid " van de "
-msgstr " vom "
+msgstr " di quello "
 
 #: product_availability.php:326
 msgid " zijn misschien niet beschikbaar in die tijdsperiode.."
-msgstr " sind vielleicht nicht verfügbar in diesem Zeitraum."
+msgstr " Potrebbe non essere disponibile in quel periodo"
 
 #: product_availability.php:329
 msgid "Uw geselecteerde aantal "
-msgstr "Deine ausgewählte Anzahl "
+msgstr "La quantità selezionata di "
 
 #: product_availability.php:329
 msgid " is beschikbaar in die tijdsperiode!"
-msgstr " ist verfügbar in diesem Zeitraum!"
+msgstr "disponibile in quel periodo."
 
 #: product_import.php:7
 msgid "<h4>Importeren mislukt! Kloppen uw inloggegevens wel?</h4>"
-msgstr "<h4>Import nicht erfolgreich! Stimmen deine Login-Daten?</h4>"
+msgstr "<h4>Importazione fallita! I tuoi dati di accesso sono corretti?</h4>"
 
 #: product_import.php:53
 msgid "<b>Let op! De volgende BTW waardes zijn aangetroffen:"
-msgstr "<b>Achtung! Die folgenden Steuern wurden gefunden:"
+msgstr "<b>Attenzione! Sono stati trovati i seguenti valori IVA:"
 
 #: product_import.php:64
 msgid "Zorg ervoor dat de BTW in WooCommerce hieraan gelijk is.</b>"
-msgstr ""
-"Stellen Sie sicher, dass die Mehrwertsteuer in WooCommerce die gleiche ist.</"
-"b>"
+msgstr "Assicurati che l'IVA in WooCommerce sia la stessa.</b>"
 
 #: product_import.php:73
 msgid "<b>Producten klaar:</b> "
-msgstr "<b>Artikel fertig:</b> "
+msgstr "<b>Prodotti completati:</b> "
 
 #: product_import.php:74
 msgid "<br>Verwerken.."
-msgstr "<br>Wird verarbeitet."
+msgstr "<br>Elaborazione.."
 
 #: product_import.php:75
 msgid "<br>Irrelevante producten en mappen zijn verwijderd"
-msgstr "<br>Irrelevante Artikel und Ordner sind entfernt"
+msgstr "<br>Prodotti e categorie non necessari rimossi"
 
 #: product_import.php:76
 msgid "<h3>Importeren geslaagd!</h3>"
-msgstr "<h3>Import erfolgreich!</h3>"
+msgstr "<h3>Importazione completata!</h3>"
 
 #: product_import.php:79
 msgid "<br><b>Er zijn geen nieuwe Rentman producten gevonden!</b> "
-msgstr "<br><b>Es wurden keine neuen Rentman Artikel gefunden!</b> "
+msgstr "<br><b>Nessun nuovo prodotto trovato!</b> "
 
 #: product_import.php:83
 msgid "<br>Er zijn geen producten gevonden op uw Rentman account..<br>"
-msgstr "<br>Es wurden keine Artikel gefunden auf deinem Rentman Account.<br>"
+msgstr "<br>Nessun prodotto trovato nel tuo account Rentman..<br>"
 
 #: product_import.php:93
 msgid "<br><br><b>Geimporteerde Producten:</b><br>"
-msgstr "<br><br><b>Importierte Artikel:</b><br>"
+msgstr "<br><br><b>Prodotti importati:</b><br>"
 
 #: product_import.php:211
 msgid "Geen informatie beschikbaar"
-msgstr "Keine Information verfügbar"
+msgstr "Nessuna informazione disponibile"
 
 #: product_import.php:290
 msgid "<b>Producten verwijderd:</b> "
-msgstr "<b>Artikel gelöscht:</b> "
+msgstr "<b>Prodotti eliminati:</b> "
 
 #: product_import.php:291
 msgid "<br>Resetten was succesvol!"
-msgstr "<br>Reset war erfolgreich!"
+msgstr "<br>Reset avvenuto con successo!"
 
 #: product_import.php:366
 msgid "Verder lezen"
-msgstr "Weiterlesen"
+msgstr "Dettagli"
 
 #: product_import.php:383
 msgid "Rentable"
-msgstr "Rentable"
+msgstr "Noleggiabile"
 
 #: product_media.php:89
 msgid "<b>Er zijn geen producten of afbeeldingen gevonden..</b>"
-msgstr "<b>Es wurden keine Artikel oder Bilder gefunden.</b>"
+msgstr "<b>Nessun prodotto o immagine trovati..</b>"
 
 #: product_media.php:97
 msgid "<b>Afbeeldingsgroepen klaar:</b> "
-msgstr "<b>Bildgruppen fertig:</b> "
+msgstr "<b>Gruppi di immagini terminati:</b> "
 
 #: product_media.php:98
 msgid "<b>Afbeeldingen updaten geslaagd!</b> "
-msgstr "<b>Bilder erfolgreich aktualisiert!</b> "
+msgstr "<b>Aggiornamento immagini completato!</b> "
 
 #: product_prices.php:50
 msgid "Kortingsprijs: "
-msgstr "Rabattpreis: "
+msgstr "Prezzo scontato: "
 
 #: product_prices.php:93
 msgid "Extra "
-msgstr "Extra"
+msgstr "Extra "
 
 #: product_prices.php:93
 msgid " dagen"
-msgstr " Tage"
+msgstr " giorni"
 
 #: product_prices.php:141
 msgid "Klantkorting"
-msgstr "Kundenrabatt"
+msgstr "Sconto del cliente"
 
 #: product_prices.php:279 product_prices.php:282
 msgid "Dagprijs"
-msgstr "Tagespreis"
+msgstr "Prezzo giornaliero"
 
 #: rentman.php:100
 msgid ""
@@ -216,62 +214,63 @@ msgid ""
 "updater) om automatisch naar updates te zoeken voor de Rentman 4G plugin!</"
 "p></div>"
 msgstr ""
-"<div class='notice notice-warning is-dismissible'><p>Achtung: Installiere "
-"und aktiviere das GitHub Updater Plugin (https://github.com/afragen/github-"
-"updater) um automatisch nach Updates für das Rentman 4G Plugin zu suchen!</"
-"p></div>"
+"<div class='notice notice-warning is-dismissible'><p>Nota: installa e attiva "
+"il plugin GitHub Updater (https://github.com/afragen/github-updater) per "
+"cercare automaticamente gli aggiornamenti per il plug-in Rentman 4G!</p></"
+"div>"
 
 #: rentman.php:108
 msgid "<h1>Rentman Product Import - v4.11.0</h1><hr><br>"
-msgstr "<h1>Rentman Artikel Import - v4.11.0</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.11.0</h1><hr><br>"
 
 #: rentman.php:110
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
-msgstr "<h3>Log dich hier mit deinen Rentman 4G Daten ein</h3>"
+msgstr "<h3>Inserisci le tue credenziali di accesso a Rentman 4G</h3>"
 
 #: rentman.php:116
 msgid "<strong>Gebruikersnaam</strong>"
-msgstr "<strong>Benutzername</strong>"
+msgstr "<strong>Username</strong>"
 
 #: rentman.php:118
 msgid "<strong>Wachtwoord</strong>"
-msgstr "<strong>Passwort</strong>"
+msgstr "<strong>Password</strong>"
 
 #: rentman.php:120
 msgid "Gegevens controleren"
-msgstr "Angaben kontrollieren"
+msgstr "Invia credenziali di accesso"
 
 #: rentman.php:153
 msgid "<hr><h3>Instellingen</h3>"
-msgstr "<hr><h3>Einstellungen</h3>"
+msgstr "<hr><h3>Impostazioni</h3>"
 
 #: rentman.php:155
 msgid "<strong>Check beschikbaarheid voor sturen  </strong>"
-msgstr "<strong>Check Verfügbarkeit bevor Senden  </strong>"
+msgstr "<strong>Verifica la disponibilità per l'invio  </strong>"
 
 #: rentman.php:167
 msgid "<br><br><strong>Korting contact uit Rentman overnemen  </strong>"
-msgstr "<br><br><strong>Kontaktrabatt auf Rentman übernehmen  </strong>"
+msgstr "<br><br><strong>Usa lo sconto del contatto su Rentman  </strong>"
 
 #: rentman.php:179
 msgid ""
 "<br><br><strong>Schakel het overschrijven van bestaande Rentman-producten "
 "uit  </strong>"
 msgstr ""
-"<br><br><strong>Deaktiviere das Überschreiben existierender Rentman "
-"Produkte  </strong>"
+"<br><br><strong>Disabilitare la sovrascrittura dei prodotti Rentman "
+"esistenti  </strong>"
 
 #: rentman.php:191
 msgid "<br><br><strong>Voorraad weergeven op productpagina  </strong>"
-msgstr "<br><br><strong>Vorrat auf der Produktseite anzeigen  </strong>"
+msgstr ""
+"<br><br><strong>Visualizza l'inventario sulla pagina del prodotto  </strong>"
 
 #: rentman.php:205
 msgid "Wijzigingen Opslaan"
-msgstr "Änderungen speichern"
+msgstr "Salva"
 
 #: rentman.php:208
 msgid "Update afbeeldingen van producten"
-msgstr "Bilder von Artikeln aktualisieren"
+msgstr "Aggiorna immagini prodotti"
 
 #: rentman.php:210
 msgid ""
@@ -279,21 +278,20 @@ msgid ""
 "gewijzigd<br>\n"
 "            om de wijzigingen toe te passen in WooCommerce."
 msgstr ""
-"Drücke auf den untenstehenden Knopf, wenn du Bilder in Rentman geändert hast."
-"<br>\n"
-"            um die Änderungen in WooCommerce anzuwenden."
+"Premi questo pulsante quando modifichi le immagini in Rentman per<br>\n"
+"                aggiornarle in WooCommerce."
 
 #: rentman.php:217
 msgid "Afbeeldingen Updaten"
-msgstr "Bilder aktualisieren"
+msgstr "Aggiorna immagini"
 
 #: rentman.php:220
 msgid "<h3>De afbeeldingen worden opgehaald..</h3>"
-msgstr "<h3>Die Bilder werden geladen.</h3>"
+msgstr "<h3>Avvio importazione immagini...</h3>"
 
 #: rentman.php:222
 msgid "Importeer materiaal uit Rentman"
-msgstr "Importier Material auf Rentman"
+msgstr "Importa prodotti da Rentman"
 
 #: rentman.php:224
 msgid ""
@@ -301,18 +299,17 @@ msgid ""
 "producten en deze<br>\n"
 "            van je Rentman account naar je WooCommerce shop over te zetten."
 msgstr ""
-"Drück auf den untenstehenden Knopf um nach neuen oder aktualisierten "
-"Artikeln zu suchen und diese<br>\n"
-"            aus deinem Rentman Account in deinem WooCommerce Webshop "
-"anzuwenden."
+"Premi questo pulsante per traferire nel webshop i nuovi prodotti o "
+"aggiornare quelli già presenti<br>\n"
+"                nel webshop WooCommerce."
 
 #: rentman.php:226
 msgid "-- Meest recente check voor updates: "
-msgstr "-- Letzte Checks nach Aktualisierungen: "
+msgstr "-- Aggiornamento più recente: "
 
 #: rentman.php:234
 msgid "Producten Importeren"
-msgstr "Artikel importieren"
+msgstr "Importa prodotti"
 
 #: rentman.php:239
 msgid "Reset"
@@ -323,270 +320,275 @@ msgid ""
 "<h3>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze "
 "pagina niet!</h3>"
 msgstr ""
-"<h3>Daten werden importiert. Das kann einige Minuten dauern. Diese Seite "
-"bitte nicht verlassen!</h3>"
+"<h3>Importazione avviata... Ci vorrà qualche minuto, nel frattempo non "
+"chiudere questa pagina!</h3>"
 
 #: rentman.php:345
 msgid "Dit is geen Rentman 4 account! &#10005;<br>"
-msgstr "Das ist kein Rentman 4G Account! &#10005;<br>"
+msgstr "Questo non è un account Rentman 4 ! &#10005;<br>"
 
 #: rentman.php:370
 msgid "<strong>Niet alle verplichte velden zijn ingevuld</strong>"
-msgstr "<strong>Nicht alle Pflichtfelder sind ausgefüllt</strong>"
+msgstr "<strong>Completare tutti i campi obbligatori</strong>"
 
 #: rentman.php:387
 msgid ""
 "<h4>De verbinding met de Rentman API is mislukt! Kloppen uw gegevens wel?</"
 "h4>"
 msgstr ""
-"<h4>Die Verbindung mit der Rentman API war nicht erfolgreich. Stimmen deine "
-"Daten?</h4>"
+"<h4>Connessione a RENTMAN API fallita. Le credenziali di accesso sono "
+"corrette?</h4>"
 
 #: rentman.php:389
 msgid "<h4>De verbinding met de Rentman API was succesvol!</h4>"
-msgstr "<h4>Die Verbindung mit der Rentman API war erfolgreich!</h4>"
+msgstr "<h4>Connessione a RENTMAN API avvenuta con successo!</h4>"
 
 #: rentman.php:398
 msgid "<b>Compatibiliteitscontrole..</b><br>"
-msgstr "<b>Kombatibilitätskontrolle.</b><br>"
+msgstr "<b>Controllo di compatibilità in corso..</b><br>"
 
 #: rentman.php:407
 msgid ""
 "Let op, de PHP tijdslimiet is lager dan 30 seconden! Mogelijk werkt de "
 "plugin hierdoor niet goed.."
 msgstr ""
-"Wichtig: Das PHP Zeitlimit ist unter 30 Sekunden eingestellt! Das Plugin "
-"könnte dadurch evtl. nicht richtig funktionieren."
+"Importante: il PHP time limit è minore a 30 secondi! Il plugin potrebbe non "
+"funzionare correttamente.."
 
 #: rentman.php:411
 msgid "PHP tijdslimiet is in orde &#10003;<br>"
-msgstr "PHP Zeitlimit ist in Ordnung &#10003;<br>"
+msgstr "Il PHP time limit è OK &#10003;<br>"
 
 #: rentman.php:416
 msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i> &#10003;<br>"
-msgstr "Ordner erstellt am <i>wp-content/uploads/rentman/</i> &#10003;<br>"
+msgstr "Cartella creata in <i>wp-content/uploads/rentman/</i> &#10003;<br>"
 
 #: rentman.php:419
 msgid "De Rentman map voor afbeeldingen is aanwezig &#10003;<br>"
-msgstr "Der Rentman Ordner für Bilder ist vorhanden &#10003;<br>"
+msgstr "La cartella Rentman per le immagini è esistente &#10003;<br>"
 
 #: rentman.php:428
 msgid "Toevoegen van afbeeldingen is gelukt &#10003;<br>"
-msgstr "Das Hinzufügen von Bilder war erfolgreich &#10003;<br>"
+msgstr "Aggiunta delle immagini riuscita &#10003;<br>"
 
 #: rentman.php:431
 msgid "Toevoegen van afbeeldingen is mislukt.."
-msgstr "Das Hinzufügen von Bilder war nicht erfolgreich."
+msgstr "L'aggiunta di immagini non è riuscita."
 
 #: rentman.php:436
 msgid ""
 "&bull; <i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer "
 "dit te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
 msgstr ""
-"&bull; <i>url_fopen()</i> is disabled in der <i>php.ini</i> Datei. Probier "
-"das zu ändern und versuche ob das Problem damit gelöst ist.<br>"
+"&bull; <i>url_fopen()</i> è disabilitato nel file <i>php.ini</i>. Prova a "
+"cambiarlo e verifica se il problema è risolto.<br>"
 
 #: rentman.php:445
 msgid ""
 "Let op: er ontbreekt een .htaccess bestand in de 'uploads/rentman/' map. "
 "Mogelijk worden de afbeeldingen niet correct weergegeven..<br>"
 msgstr ""
-"Achtung: Es fehlt eine .htaccess Datei im 'uploads/rentman/' Ordner. "
-"Möglicherweise werden die Bilder nicht richtig angezeigt.<br>"
+"Importante: manca un file .htaccess nella cartella 'uploads/rentman/' ! Le "
+"immagini importate potrebbero non essere visualizzate correttamente..<br>"
 
 #: rentman.php:447
 msgid "Afbeeldingen kunnen weergegeven worden &#10003;<br>"
-msgstr "Bilder können angezeigt werden &#10003;<br>"
+msgstr "Le immagini possono essere visualizzate &#10003;<br>"
 
 #: rentman_project.php:65
 msgid "Externe referentie"
-msgstr "Externe Referenz"
+msgstr "Riferimento esterno"
 
 #: rentman_project.php:66
 msgid "Externe referentie (optioneel)"
-msgstr "Externe Referenz (optional)"
+msgstr "Riferimento esterno (opzionale)"
 
 #: rentman_project.php:72
 msgid "E-mailadres"
-msgstr "E-Mail-Adresse"
+msgstr "Email"
 
 #: rentman_project.php:73
 msgid "E-mail"
-msgstr "E-Mail"
+msgstr "Email"
 
 #: rentman_project.php:79
 msgid "Telefoon"
-msgstr "Telefon"
+msgstr "Telefono"
 
 #: rentman_project.php:80
 msgid "Telefoonnummer"
-msgstr "Telefonnummer"
+msgstr "Telefono"
 
 #: rentman_project.php:91 rentman_project.php:106 rentman_requests.php:423
 msgid "Huurperiode"
-msgstr "Mietzeitraum"
+msgstr "Periodo di noleggio"
 
 #~ msgid ""
 #~ "<p style=\"color:red;\">Let op, de PHP tijdslimiet is lager dan 30 "
 #~ "seconden! Mogelijk werkt de plugin hierdoor niet goed..</p>&#10005;<br>"
 #~ msgstr ""
-#~ "<p style=\"color:red;\">Achtung, das PHP Zeitlimit ist kürzer als 30 "
-#~ "Sekunden! Möglicherweise funktioniert das Plugin dadurch nicht gut.</"
-#~ "p>&#10005;<br>"
+#~ "<p style=\"color:red;\">Beware, the PHP time limit is lower than 30 "
+#~ "seconds! The plugin might not work correctly.. </p>&#10005;<br>"
 
 #~ msgid ""
 #~ "<p style=\"color:red;\">Toevoegen van afbeeldingen is mislukt..</"
 #~ "p>&#10005;<br>"
-#~ msgstr ""
-#~ "<p style=\"color:red;\">Das Hinzufügen von Bilder war nicht erfolgreich.</"
-#~ "p>&#10005;<br>"
+#~ msgstr "<p style=\"color:red;\">Addition of images failed..</p>&#10005;<br>"
+
+#~ msgid "<b>Let op! De BTW in Rentman is gelijk aan "
+#~ msgstr "<b>Caution! The product taxes in Rentman are equal to "
+
+#~ msgid ") en de BTW in WooCommerce ("
+#~ msgstr ") and the taxes in WooCommerce ("
+
+#~ msgid ") komen niet overeen!</b>"
+#~ msgstr ") do not match!</b>"
 
 #~ msgid "<h2>VERHUURPERIODE</h2>"
-#~ msgstr "<h2>MIETZEITRAUM</h2>"
+#~ msgstr "<h2>RENT PERIOD</h2>"
 
 #~ msgid "Prijs inclusief BTW: "
-#~ msgstr "Preis inkl. Mwst.: "
+#~ msgstr "Price including taxes: "
 
 #~ msgid "BTW"
-#~ msgstr "Mwst."
+#~ msgstr "Tax"
 
 #~ msgid " (inclusief BTW)"
-#~ msgstr " (inkl. Mwst.)"
+#~ msgstr " (including taxes)"
 
 #~ msgid "Einddatum"
-#~ msgstr "Enddatum"
+#~ msgstr "End date"
 
 #~ msgid "Begindatum"
-#~ msgstr "Startdatum"
+#~ msgstr "Start date"
 
 #~ msgid "Referentie"
-#~ msgstr "Referenz"
+#~ msgstr "Reference"
 
 #~ msgid "<b>Er zijn geen Rentman producten in je webshop!</b>"
-#~ msgstr "<b>Es gibt keine Rentman Artikel in deinem Webshop!</b>"
+#~ msgstr "<b>There aren't any Rentman products in your webshop!</b>"
 
 #~ msgid "<b>Afbeeldingen voor bestaande producten zijn bijgewerkt!</b>"
-#~ msgstr "<b>Die Bilder deiner existierenden Artikel wurden geändert!</b>"
+#~ msgstr "<b>The images of existing products have been updated!</b>"
 
 #~ msgid "<br>Afbeeldingen voor bestaande producten zijn bijgewerkt!"
-#~ msgstr "<br>Die Bilder deiner existierenden Artikel wurden geändert!"
+#~ msgstr "<br>Images for existing products have been updated!"
 
 #~ msgid "<br>Afbeeldingen voor bestaande producten zijn geupdatet!"
-#~ msgstr "<br>Die Bilder deiner existierenden Artikel wurden aktualisiert!"
+#~ msgstr "<br>Images for existing products have been updated!"
 
 #~ msgid ""
 #~ "Er ontbreekt een .htaccess bestand in de 'wp-content/uploads/rentman/' "
 #~ "map &#10005;<br>"
 #~ msgstr ""
-#~ "Die .htaccess Datei fehlt in dem 'wp-content/uploads/rentman/' Ordner "
-#~ "&#10005;<br>"
+#~ "The .htaccess file is missing from the 'wp-content/uploads/rentman/' "
+#~ "folder &#10005;<br>"
 
 #~ msgid "Afbeeldingen kunnen toegevoegd worden &#10003;<br>"
-#~ msgstr "Bilder können zugefügt werden &#10003;<br>"
+#~ msgstr "Images can be uploaded &#10003;<br>"
 
 #~ msgid "Afbeeldingen toevoegen is mislukt.. &#10005;<br>"
-#~ msgstr "Bilder hinzufügen war nicht erfolgreich &#10005;<br>"
+#~ msgstr "Image upload has failed.. &#10005;<br>"
 
 #~ msgid "Transportkorting"
-#~ msgstr "Transportrabatt"
+#~ msgstr "Shipping Fee"
 
 #~ msgid "PHP tijdlimiet is in orde<br>"
-#~ msgstr "PHP Zeitlimit ist in Ordnung<br>"
+#~ msgstr "PHP time limit is okay<br>"
 
 #~ msgid "Map aangemaakt op <i>wp-content/uploads/rentman/</i><br>"
-#~ msgstr "Ordner erstellt in <i>wp-content/uploads/rentman/</i><br>"
+#~ msgstr "Folder created at <i>wp-content/uploads/rentman/</i><br>"
 
 #~ msgid "De Rentman map voor afbeeldingen is aanwezig<br>"
-#~ msgstr "Der Rentman Ordner vor Bilder ist vorhanden<br>"
+#~ msgstr "The Rentman folder for images exists<br>"
 
 #~ msgid "Afbeeldingen kunnen toegevoegd worden<br>"
-#~ msgstr "Bilder können hinzugefügt werden<br>"
+#~ msgstr "No errors when adding images<br>"
 
 #~ msgid "Afbeeldingen toevoegen is mislukt..<br>"
-#~ msgstr "Das Hinzufügen von Bilder war nicht erfolgreich.<br>"
+#~ msgstr "Adding images has failed..<br>"
 
 #~ msgid ""
 #~ "<i>url_fopen()</i> is disabled in het <i>php.ini</i> bestand. Probeer dit "
 #~ "te wijzigen en kijk of het probleem daarmee is opgelost.<br>"
 #~ msgstr ""
-#~ "<i>url_fopen()</i> is disabled in der <i>php.ini</i> Datei. Bitte "
-#~ "Einstellungen kontrollieren und danach überprüfen, ob dadurch der Fehler "
-#~ "behoben ist.<br>"
+#~ "<i>url_fopen()</i> is disabled in the <i>php.ini</i> file. Try to change "
+#~ "this and check whether the error has been resolved.<br>"
 
 #~ msgid "Tot en met:"
-#~ msgstr "Bis einschl.:"
+#~ msgstr "To:"
 
 #~ msgid "<b>Oude producten verwijderd:</b> "
-#~ msgstr "<b>Alte Artikel gelöscht:</b> "
+#~ msgstr "<b>Old products deleted:</b> "
 
 #~ msgid "<br>Verwijderen was succesvol!"
-#~ msgstr "<br>Das Löschen war erfolgreich!"
+#~ msgstr "<br>Deletion was successful!"
 
 #~ msgid " Resetten was succesvol!<br>"
-#~ msgstr "Zurücksetzen war erfolgreich!<br>"
+#~ msgstr "Reset successful!<br>"
 
 #~ msgid "<h1>Rentman Product Import - v11.01.17</h1><hr><br>"
-#~ msgstr "<h1>Rentman Produkt Import - v11.01.17</h1><hr><br>"
+#~ msgstr "<h1>Rentman Product Import - v11.01.17</h1><hr><br>"
 
 #~ msgid ""
 #~ "<b>Bezig met importeren.. Dit kan enkele minuten duren, dus verlaat deze "
 #~ "pagina niet!</b>"
 #~ msgstr ""
-#~ "<b>Daten werden importiert. Das kann einige Minuten dauern. Diese Seite "
-#~ "bitte nicht verlassen!</b>"
+#~ "<b>Starting import.. This might take a few minutes, so do not leave this "
+#~ "page!</b>"
 
 #~ msgid "<br>Aantal nieuwe/gewijzigde producten: "
-#~ msgstr "<br>Nummer der neuen oder aktualisierten Produkte:  "
+#~ msgstr "<br>Number of new or updated products found:  "
 
 #~ msgid "<br>Producten "
-#~ msgstr "<br>Artikel "
+#~ msgstr "<br>Products "
 
 #~ msgid " tot en met "
-#~ msgstr " bis einschließlich "
+#~ msgstr " up to and including "
 
 #~ msgid " klaar"
-#~ msgstr " fertig"
+#~ msgstr " finished"
 
 #~ msgid "<br>Klaar met importeren!"
-#~ msgstr "<br>Import abgeschlossen!"
+#~ msgstr "<br>Import complete!"
 
 #~ msgid "<b>Bezig met importeren.. Verlaat deze pagina niet!</b>"
-#~ msgstr "<b>Daten werden importiert. Diese Seite bitte nicht verlassen!</b>"
+#~ msgstr "<b>Starting import.. Do not leave this page!</b>"
 
 #~ msgid "<b>Zoeken naar nieuwe en gewijzigde producten...</b>"
-#~ msgstr "<b>Suche nach neuen oder aktualisierten Artikeln.</b>"
+#~ msgstr "<b>Checking for new and updated products...</b>"
 
 #~ msgid "<br><b>Aantal nieuwe/gewijzigde Rentman producten:</b> "
-#~ msgstr "<br><b>Anzahl der neuen oder geänderten Rentman Artikel:</b> "
+#~ msgstr "<br><b>New/Updated Rentman Products found:</b> "
 
 #~ msgid "<br><br><b>Verwijderde Producten:</b>"
-#~ msgstr "<br><br><b>Gelöschte Artikel:</b>"
+#~ msgstr "<br><br><b>Deleted Products:</b>"
 
 #~ msgid " Geen<br>"
-#~ msgstr " Keine<br>"
+#~ msgstr " None<br>"
 
 #~ msgid "Contact bestaat nog niet<br>"
-#~ msgstr "Kontakt existiert noch nicht<br>"
+#~ msgstr "Contact not exist yet<br>"
 
 #~ msgid "<h3>Geselecteerde datums: </h3> <p><b>Van</b>"
-#~ msgstr "<h3>Ausgewähltes Datum: </h3> <p><b>Von</b>"
+#~ msgstr "<h3>Selected dates: </h3> <p><b>From</b>"
 
 #~ msgid "<b>tot</b>"
-#~ msgstr "<b>bis</b>"
+#~ msgstr "<b>to</b>"
 
 #~ msgid "Opslaan"
-#~ msgstr "Speichern"
+#~ msgstr "Save Changes"
 
 #~ msgid "<h3>Selected dates: </h3> <p><b>From</b>"
-#~ msgstr "<h3>Ausgewählte Daten: </h3> <p><b>Von</b>"
+#~ msgstr "<h3>Selected dates: </h3> <p><b>From</b>"
 
 #~ msgid "Wijzigingen opslaan"
-#~ msgstr "Änderungen speichern"
+#~ msgstr "Save Changes"
 
 #~ msgid "Let op: je kan de datums pas in de winkelwagen weer wijzigen!"
 #~ msgstr ""
-#~ "Notiz: Du kannst das Datum des Materials auch gleich im Warenkorb wieder "
-#~ "anpassen!"
+#~ "Important: You can change the rent dates for other materials that you "
+#~ "want to rent in the cart!"
 
 #~ msgid "Add To Cart"
-#~ msgstr "Zum Warenkorb hinzufügen"
+#~ msgstr "Add To Cart"

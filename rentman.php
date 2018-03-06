@@ -6,7 +6,7 @@
      * Plugin URI: https://rentman.io
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.10.4
+     * Version: 4.11.0
      * Author: Rentman
      * Text Domain: rentalshop
      * WC requires at least: 3.0.0
@@ -105,7 +105,7 @@
     function menu_display()
     {
         ?>
-        <?php _e('<h1>Rentman Product Import - v4.10.4</h1><hr><br>', 'rentalshop') ?>
+        <?php _e('<h1>Rentman Product Import - v4.11.0</h1><hr><br>', 'rentalshop') ?>
         <img src="https://rentman.io/img/rentman-logo.svg" alt="Rentman" height="42" width="42">
         <?php _e('<h3>Log hier in met uw Rentman 4G gegevens</h3>', 'rentalshop') ?>
         <form method="post" , action="options.php">
@@ -131,6 +131,7 @@
 
         $token = login_user(); # Receive token when signing in
         update_option('plugin-token', $token); # Save new token in database
+
         if (false == get_option('plugin-lasttime'))
             $lastTime = 'Never'; # Product Import hasn't been done before
         else
@@ -261,7 +262,7 @@
 
         # If 'Update Images' button has been pressed, call function from product_import.php
         if (isset($_POST['image-rentman'])){
-            update_images($token);
+            update_images();
         }
 
         # Import Products with certain index in array (called by admin_import.js)
@@ -343,6 +344,23 @@
         if ($parsed['version'] != 4) # Check whether it is a Rentman 4 account
             _e('Dit is geen Rentman 4 account! &#10005;<br>', 'rentalshop');
         return $parsed['endpoint'] . '/api.php';
+    }
+
+    # Returns token and checks whether the type is correct
+    function get_token()
+    {
+        $token = get_option('plugin-token');
+        if (!is_string($token)){
+            $url = receive_endpoint();
+            $message = json_encode(setup_login_request(), JSON_PRETTY_PRINT);
+            # Do API request
+            $received = do_request($url, $message);
+            # Reset Token
+            $parsed = json_decode($received, true);
+            $token = $parsed['response']['token'];
+            update_option('plugin-token', $token);
+        }
+        return $token;
     }
 
     # Main function for user login

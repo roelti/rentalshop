@@ -13,7 +13,6 @@
         $tax = 1 + (floatval($rate['rate']) / 100);
         # Receive endpoint and token
         $url = receive_endpoint();
-        $token = get_option('plugin-token');
 
         if (get_post_meta($post->ID, 'rentman_imported', true) == true){
             if (get_option('plugin-checkdisc') == 1){
@@ -21,7 +20,7 @@
                     $current_user = wp_get_current_user();
                     if ($current_user->ID != 0) {
                         # Setup request to send JSON
-                        $message = json_encode(setup_check_request($token, $current_user->user_email), JSON_PRETTY_PRINT);
+                        $message = json_encode(setup_check_request($current_user->user_email), JSON_PRETTY_PRINT);
 
                         # Send request and receive response
                         $received = do_request($url, $message);
@@ -41,7 +40,7 @@
                         $materials = array($product->get_sku());
 
                         # Setup request, send request and receive response
-                        $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
+                        $message = json_encode(setup_discount_request($contact_id, $materials), JSON_PRETTY_PRINT);
                         $received = do_request($url, $message);
                         $parsed = json_decode($received, true);
                         $parsed = parseResponse($parsed);
@@ -76,17 +75,16 @@
         $endDate = strtotime($dates['to_date']);
         $totaldays = abs($endDate - $fromDate);
         $totaldays = ceil($totaldays / (3600*24)) + 1;
-        $token = get_option('plugin-token');
 
         # Fill staffel array with data from the cart
         $items = WC()->cart->get_cart();
         foreach ($items as $item => $values){
             $product = wc_get_product($values['data']->get_id());
-            $staffelgroup = get_staffelgroup($token, $product->get_sku());
+            $staffelgroup = get_staffelgroup($product->get_sku());
             if ($staffelgroup == null)
                 $staffels[$product->get_sku()] = '1.0';
             else
-                $staffels[$product->get_sku()] = get_staffel($token, $totaldays, $staffelgroup);
+                $staffels[$product->get_sku()] = get_staffel($totaldays, $staffelgroup);
         }
 
         # Calculate the additional fee and add it to the cart
@@ -104,10 +102,9 @@
                 if ($current_user->ID != 0) {
                     # Receive endpoint and token
                     $url = receive_endpoint();
-                    $token = get_option('plugin-token');
 
                     # Setup request to send JSON
-                    $message = json_encode(setup_check_request($token, $current_user->user_email), JSON_PRETTY_PRINT);
+                    $message = json_encode(setup_check_request($current_user->user_email), JSON_PRETTY_PRINT);
 
                     # Send request and receive response
                     $received = do_request($url, $message);
@@ -132,7 +129,7 @@
                     }
 
                     # Setup request, send request and receive response
-                    $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
+                    $message = json_encode(setup_discount_request($contact_id, $materials), JSON_PRETTY_PRINT);
                     $received = do_request($url, $message);
                     $parsed = json_decode($received, true);
                     $parsed = parseResponse($parsed);
@@ -148,11 +145,11 @@
     }
 
     # Get daily fee multiplier from Rentman
-    function get_staffel($token, $totaldays, $staffelgroup){
+    function get_staffel($totaldays, $staffelgroup){
         $url = receive_endpoint();
 
         # Setup request to send JSON
-        $message = json_encode(setup_staffel_request($token, $totaldays, $staffelgroup), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_staffel_request($totaldays, $staffelgroup), JSON_PRETTY_PRINT);
 
         # Send request and receive response
         $received = do_request($url, $message);
@@ -165,11 +162,11 @@
     }
 
     # Get staffelgroup of products in cart
-    function get_staffelgroup($token, $product_id){
+    function get_staffelgroup($product_id){
         $url = receive_endpoint();
 
         # Setup request to send JSON
-        $message = json_encode(setup_staffelgroup_request($token, $product_id), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_staffelgroup_request($product_id), JSON_PRETTY_PRINT);
 
         # Send request and receive response
         $received = do_request($url, $message);
@@ -196,18 +193,17 @@
         $endDate = strtotime($dates['to_date']);
         $totaldays = abs($endDate - $fromDate);
         $totaldays = ceil($totaldays / (3600*24)) + 1;
-        $token = get_option('plugin-token');
 
         # Get staffel data for all items
         foreach($order->get_items() as $key => $lineItem){
             $product_id = $lineItem['product_id'];
             $product = wc_get_product($product_id);
             # Receive the right staffel depending on the staffelgroup
-            $staffelgroup = get_staffelgroup($token, $product->get_sku());
+            $staffelgroup = get_staffelgroup($product->get_sku());
             if ($staffelgroup == null)
                 $staffels[$product->get_sku()] = '1,0';
             else
-                $staffels[$product->get_sku()] = get_staffel($token, $totaldays, $staffelgroup);
+                $staffels[$product->get_sku()] = get_staffel($totaldays, $staffelgroup);
         }
         return $staffels;
     }
@@ -221,7 +217,6 @@
 
             # Receive endpoint and token
             $url = receive_endpoint();
-            $token = get_option('plugin-token');
 
             # Create array with all materials from the order
             foreach ($order->get_items() as $key => $lineItem) {
@@ -231,7 +226,7 @@
             }
 
             # Setup request, send request and receive response
-            $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
+            $message = json_encode(setup_discount_request($contact_id, $materials), JSON_PRETTY_PRINT);
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
             $parsed = parseResponse($parsed);

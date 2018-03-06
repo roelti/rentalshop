@@ -234,7 +234,7 @@
         wp_localize_script('admin_availability', 'endDate', $enddate);
         wp_localize_script('admin_availability', 'endPoint', receive_endpoint());
         wp_localize_script('admin_availability', 'rm_account', get_option('plugin-account'));
-        wp_localize_script('admin_availability', 'rm_token', get_option('plugin-token'));
+        wp_localize_script('admin_availability', 'rm_token', get_token());
         wp_localize_script('admin_availability', 'cart_amount', (string)$quantity);
         wp_localize_script('admin_availability', 'unavailable', __("Product is niet beschikbaar!", "rentalshop"));
         wp_localize_script('admin_availability', 'maybe', __("Product is misschien niet beschikbaar!", "rentalshop"));
@@ -287,7 +287,6 @@
                     # Continue with the check if 'Check availability for sending' is set to yes
                     if (get_option('plugin-checkavail') == 1) {
                         $url = receive_endpoint();
-                        $token = get_option('plugin-token');
 
                         # Check if the item is already in the cart and adjust
                         # the input quantity accordingly
@@ -302,7 +301,7 @@
                         }
 
                         # Setup Request to send JSON
-                        $message = json_encode(available_request($token, $product->get_sku(), $quantity, true, $sdate, $edate), JSON_PRETTY_PRINT);
+                        $message = json_encode(available_request($product->get_sku(), $quantity, true, $sdate, $edate), JSON_PRETTY_PRINT);
 
                         # Send Request & Receive Response
                         $received = do_request($url, $message);

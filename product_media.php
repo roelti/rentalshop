@@ -80,11 +80,11 @@
     }
 
     # Function that updates the images of products
-    function update_images($token){
+    function update_images(){
         # Get the endpoint url
         $url = receive_endpoint();
         # Update the images of all imported products
-        $current_files = get_files(Array(), $token, $url, true);
+        $current_files = get_files(Array(), $url, true);
         if (sizeof($current_files) == 0){
             _e('<b>Er zijn geen producten of afbeeldingen gevonden..</b>', 'rentalshop');
             return;
@@ -100,9 +100,9 @@
     }
 
     # Returns list of image file url's for every product
-    function get_files($prodList, $token, $url, $globalimages = false){
+    function get_files($prodList, $url, $globalimages = false){
         $fileList = array();
-        $message = json_encode(setup_file_request($token, $prodList, $globalimages), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_file_request($prodList, $globalimages), JSON_PRETTY_PRINT);
         $received = do_request($url, $message);
 
         # Parse the API response
