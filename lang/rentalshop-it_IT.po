@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rentman\n"
-"POT-Creation-Date: 2018-03-06 14:43+0100\n"
-"PO-Revision-Date: 2018-03-06 14:44+0100\n"
+"POT-Creation-Date: 2018-03-13 14:17+0100\n"
+"PO-Revision-Date: 2018-03-13 14:18+0100\n"
 "Last-Translator: Ermanno Valvason <e.valvason@gmail.com>\n"
 "Language-Team: \n"
 "Language: it_IT\n"
@@ -60,8 +60,10 @@ msgid "Update Huurperiode"
 msgstr "Aggiorna date"
 
 #: product_availability.php:125
-msgid "<h3>Geselecteerde datums </h3> <p><b>Van </b>"
-msgstr "<h3>Date selezionate: </h3> <p><b>Da </b>"
+msgid ""
+"<h3>Geselecteerde datums </h3> <p class=\"rentman-rental-period\"><b>Van </b>"
+msgstr ""
+"<h3>Date selezionate: </h3> <p class=\"rentman-rental-period\"><b>Da </b>"
 
 #: product_availability.php:140
 msgid "Reserveer"
@@ -220,8 +222,8 @@ msgstr ""
 "div>"
 
 #: rentman.php:108
-msgid "<h1>Rentman Product Import - v4.11.0</h1><hr><br>"
-msgstr "<h1>Rentman Product Import - v4.11.0</h1><hr><br>"
+msgid "<h1>Rentman Product Import - v4.11.1</h1><hr><br>"
+msgstr "<h1>Rentman Product Import - v4.11.1</h1><hr><br>"
 
 #: rentman.php:110
 msgid "<h3>Log hier in met uw Rentman 4G gegevens</h3>"
@@ -419,7 +421,7 @@ msgstr "Telefono"
 msgid "Telefoonnummer"
 msgstr "Telefono"
 
-#: rentman_project.php:91 rentman_project.php:106 rentman_requests.php:423
+#: rentman_project.php:91 rentman_project.php:106 rentman_requests.php:424
 msgid "Huurperiode"
 msgstr "Periodo di noleggio"
 

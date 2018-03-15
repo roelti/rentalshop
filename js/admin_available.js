@@ -69,10 +69,10 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.11.0"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.11.1"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
         console.log(data);
-        console.log(typeof(token));
+        console.log("Type of token: " + typeof(token));
     }
 }
