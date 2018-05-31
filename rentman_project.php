@@ -5,12 +5,14 @@
     function add_project($order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         if (apply_filters('rentman/creating_project', true)) {
             $url = receive_endpoint();
+            $token = get_option('plugin-rentman-token');
 
             # Setup New Project Request to send JSON
-            $message = json_encode(setup_newproject_request($order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
+            $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
 
             # Send Request & Receive Response
             do_request($url, $message);
+            //echo json_encode(json_decode($received), JSON_PRETTY_PRINT);
         }
     }
 
@@ -62,22 +64,22 @@
     # Adds checkout fields for the external reference, shipping phone number and shipping email
     function adjust_checkout($fields){
         $fields['billing']['billing_reference'] = array(
-            'label'     => __('Externe referentie', 'rentalshop'),
-            'placeholder'   => __('Externe referentie (optioneel)', 'rentalshop'),
+            'label'     => __('External reference', 'rentalshop'),
+            'placeholder'   => __('External reference (optional)', 'rentalshop'),
             'required'  => false,
             'class'     => array('form-row-wide'),
             'clear'     => true
         );
         $fields['shipping']['shipping_email'] = array(
-            'label'     => __('E-mailadres', 'rentalshop'),
-            'placeholder'   => __('E-mail', 'rentalshop'),
+            'label'     => __('Email address', 'rentalshop'),
+            'placeholder'   => __('Email address', 'rentalshop'),
             'required'  => true,
             'class'     => array('form-row-wide'),
             'clear'     => true
         );
         $fields['shipping']['shipping_phone'] = array(
-            'label'     => __('Telefoon', 'rentalshop'),
-            'placeholder'   => __('Telefoonnummer', 'rentalshop'),
+            'label'     => __('Phone', 'rentalshop'),
+            'placeholder'   => __('Phone number', 'rentalshop'),
             'required'  => true,
             'class'     => array('form-row-wide'),
             'clear'     => true
@@ -88,7 +90,7 @@
     # Adds the rental period data to the order data in the confirmation email
     function add_dates_to_email($fields, $sent_to_admin, $order){
         $fields['rental_period'] = array(
-            'label' => __('Huurperiode', 'rentalshop'),
+            'label' => __('Rental period', 'rentalshop'),
             'value' => get_post_meta($order->id, 'rental_period', true),
         );
         return $fields;
@@ -103,6 +105,6 @@
 
     # Displays the rental period data on the order details page
     function display_dates_in_order($order){
-        echo '<p><strong>' . __('Huurperiode', 'rentalshop') . ':</strong> ' . get_post_meta($order->get_id(), 'rental_period', true) . '</p>';
+        echo '<p><strong>' . __('Rental period', 'rentalshop') . ':</strong> ' . get_post_meta($order->get_id(), 'rental_period', true) . '</p>';
     }
 ?>

@@ -6,6 +6,7 @@
     function add_category($folder){
         # Insert WooCommerce Term
         $categoryIDs = get_option('plugin-rentmanIDs', []); // get global category array
+
         if (!is_array($categoryIDs)){
             $categoryIDs = [];
             update_option('plugin-rentmanIDs', $categoryIDs); // update if not an array
@@ -35,6 +36,14 @@
                 $categoryIDs[$folder[0]] = $current_id; // add the product ID to array
                 update_option('plugin-rentmanIDs', $categoryIDs); // update the array
             }
+        }else{
+          # If folder name is changed, update in WordPress
+            if($folder[1] != $receive_term->name) {
+                wp_update_term($receive_term->term_id, 'product_cat', array(
+                    'name' => $folder[1],
+                    'slug' => sanitize_title($folder[1])
+                ));
+            }
         }
     }
 
@@ -44,7 +53,7 @@
         $idList = [];
         $switch = true;
         $counter = 1;
-		$lastkey = end($parsed['response']['items']['Folder'])['data']['id'];
+		    $lastkey = end($parsed['response']['items']['Folder'])['data']['id'];
         $categoriesLeft = true;
         # Organize the folders based on their parent
         while ($categoriesLeft){
@@ -52,13 +61,16 @@
                 $name = isset($parsed['response']['items']['Folder'][$counter]['data']['naam']) ? $parsed['response']['items']['Folder'][$counter]['data']['naam'] : null;
                 $id = isset($parsed['response']['items']['Folder'][$counter]['data']['id']) ? $parsed['response']['items']['Folder'][$counter]['data']['id'] : null;
                 $parent = isset($parsed['response']['items']['Folder'][$counter]['data']['parent']) ? $parsed['response']['items']['Folder'][$counter]['data']['parent'] : null;
+                //$sortorder = isset($parsed['response']['items']['Folder'][$counter]['data']['volgorde']) ? $parsed['response']['items']['Folder'][$counter]['data']['parent'] : null;
                 if (!isset($idList[$id])){ # Check if the item already has been added
                     if ($parent == null) {
+                        //array_push($folderList, array($id, $name, $parent,$sortorder));
                         array_push($folderList, array($id, $name, $parent));
                         $idList[$id] = true;
                     }
                     else{ # Check if parent has already been created
                         if (isset($idList[$parent])){
+                            //array_push($folderList, array($id, $name, $parent,$sortorder));
                             array_push($folderList, array($id, $name, $parent));
                             $idList[$id] = true;
                         }

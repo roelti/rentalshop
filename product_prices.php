@@ -13,14 +13,15 @@
         $tax = 1 + (floatval($rate['rate']) / 100);
         # Receive endpoint and token
         $url = receive_endpoint();
+        $token = get_option('plugin-rentman-token');
 
         if (get_post_meta($post->ID, 'rentman_imported', true) == true){
-            if (get_option('plugin-checkdisc') == 1){
+            if (get_option('plugin-rentman-checkdisc') == 1){
                 if (apply_filters('rentman/add_discount_fields', true)) {
                     $current_user = wp_get_current_user();
                     if ($current_user->ID != 0) {
                         # Setup request to send JSON
-                        $message = json_encode(setup_check_request($current_user->user_email), JSON_PRETTY_PRINT);
+                        $message = json_encode(setup_check_request($token, $current_user->user_email), JSON_PRETTY_PRINT);
 
                         # Send request and receive response
                         $received = do_request($url, $message);
@@ -40,14 +41,14 @@
                         $materials = array($product->get_sku());
 
                         # Setup request, send request and receive response
-                        $message = json_encode(setup_discount_request($contact_id, $materials), JSON_PRETTY_PRINT);
+                        $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
                         $received = do_request($url, $message);
                         $parsed = json_decode($received, true);
                         $parsed = parseResponse($parsed);
 
                         # Receive array of discounts
                         $discounts = $parsed['response']['value'];
-                        $notice = __('Kortingsprijs: ', 'rentalshop');
+                        $notice = __('Discount price: ', 'rentalshop');
 
                         # Display discount if there is one
                         $taxprice = $product->get_price() * $tax;
@@ -75,36 +76,38 @@
         $endDate = strtotime($dates['to_date']);
         $totaldays = abs($endDate - $fromDate);
         $totaldays = ceil($totaldays / (3600*24)) + 1;
+        $token = get_option('plugin-rentman-token');
 
         # Fill staffel array with data from the cart
         $items = WC()->cart->get_cart();
         foreach ($items as $item => $values){
             $product = wc_get_product($values['data']->get_id());
-            $staffelgroup = get_staffelgroup($product->get_sku());
+            $staffelgroup = get_staffelgroup($token, $product->get_sku());
             if ($staffelgroup == null)
                 $staffels[$product->get_sku()] = '1.0';
             else
-                $staffels[$product->get_sku()] = get_staffel($totaldays, $staffelgroup);
+                $staffels[$product->get_sku()] = get_staffel($token, $totaldays, $staffelgroup);
         }
 
         # Calculate the additional fee and add it to the cart
         $fee = calculate_fee($staffels);
         apply_customer_discount($staffels);
-        WC()->cart->add_fee(__('Extra ','rentalshop') . ($totaldays - 1) . __(' dagen','rentalshop'), $fee, true, 'standard');
+        WC()->cart->add_fee(__('Extra ','rentalshop') . ($totaldays - 1) . __(' days','rentalshop'), $fee, true, 'standard');
     }
 
     # Apply customer discount on the prices of the products
     function apply_customer_discount($staffels){
         # Check if discount check is enabled
-        if (get_option('plugin-checkdisc') == 1){
+        if (get_option('plugin-rentman-checkdisc') == 1){
             if (apply_filters('rentman/apply_discount', true)) {
                 $current_user = wp_get_current_user();
                 if ($current_user->ID != 0) {
                     # Receive endpoint and token
                     $url = receive_endpoint();
+                    $token = get_option('plugin-rentman-token');
 
                     # Setup request to send JSON
-                    $message = json_encode(setup_check_request($current_user->user_email), JSON_PRETTY_PRINT);
+                    $message = json_encode(setup_check_request($token, $current_user->user_email), JSON_PRETTY_PRINT);
 
                     # Send request and receive response
                     $received = do_request($url, $message);
@@ -129,7 +132,7 @@
                     }
 
                     # Setup request, send request and receive response
-                    $message = json_encode(setup_discount_request($contact_id, $materials), JSON_PRETTY_PRINT);
+                    $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
                     $received = do_request($url, $message);
                     $parsed = json_decode($received, true);
                     $parsed = parseResponse($parsed);
@@ -138,18 +141,18 @@
                     $discounts = $parsed['response']['value'];
                     $totaldiscount = $contact['data']['totaalkorting'];
                     $discount = calculate_discount($discounts, $staffels, $totaldiscount);
-                    WC()->cart->add_fee(__('Klantkorting', 'rentalshop'), $discount, true, 'standard');
+                    WC()->cart->add_fee(__('Customer Discount', 'rentalshop'), $discount, true, 'standard');
                 }
             }
         }
     }
 
     # Get daily fee multiplier from Rentman
-    function get_staffel($totaldays, $staffelgroup){
+    function get_staffel($token, $totaldays, $staffelgroup){
         $url = receive_endpoint();
 
         # Setup request to send JSON
-        $message = json_encode(setup_staffel_request($totaldays, $staffelgroup), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_staffel_request($token, $totaldays, $staffelgroup), JSON_PRETTY_PRINT);
 
         # Send request and receive response
         $received = do_request($url, $message);
@@ -162,11 +165,11 @@
     }
 
     # Get staffelgroup of products in cart
-    function get_staffelgroup($product_id){
+    function get_staffelgroup($token, $product_id){
         $url = receive_endpoint();
 
         # Setup request to send JSON
-        $message = json_encode(setup_staffelgroup_request($product_id), JSON_PRETTY_PRINT);
+        $message = json_encode(setup_staffelgroup_request($token, $product_id), JSON_PRETTY_PRINT);
 
         # Send request and receive response
         $received = do_request($url, $message);
@@ -193,30 +196,32 @@
         $endDate = strtotime($dates['to_date']);
         $totaldays = abs($endDate - $fromDate);
         $totaldays = ceil($totaldays / (3600*24)) + 1;
+        $token = get_option('plugin-rentman-token');
 
         # Get staffel data for all items
         foreach($order->get_items() as $key => $lineItem){
             $product_id = $lineItem['product_id'];
             $product = wc_get_product($product_id);
             # Receive the right staffel depending on the staffelgroup
-            $staffelgroup = get_staffelgroup($product->get_sku());
+            $staffelgroup = get_staffelgroup($token, $product->get_sku());
             if ($staffelgroup == null)
                 $staffels[$product->get_sku()] = '1,0';
             else
-                $staffels[$product->get_sku()] = get_staffel($totaldays, $staffelgroup);
+                $staffels[$product->get_sku()] = get_staffel($token, $totaldays, $staffelgroup);
         }
         return $staffels;
     }
 
     # Get discount array for project export
     function get_all_discounts($order_id, $contact_id){
-        if (get_option('plugin-checkdisc') == 1) {
+        if (get_option('plugin-rentman-checkdisc') == 1) {
             $order = new WC_Order($order_id);
             $materials = array();
             $pf = new WC_Product_Factory();
 
             # Receive endpoint and token
             $url = receive_endpoint();
+            $token = get_option('plugin-rentman-token');
 
             # Create array with all materials from the order
             foreach ($order->get_items() as $key => $lineItem) {
@@ -226,7 +231,7 @@
             }
 
             # Setup request, send request and receive response
-            $message = json_encode(setup_discount_request($contact_id, $materials), JSON_PRETTY_PRINT);
+            $message = json_encode(setup_discount_request($token, $contact_id, $materials), JSON_PRETTY_PRINT);
             $received = do_request($url, $message);
             $parsed = json_decode($received, true);
             $parsed = parseResponse($parsed);
@@ -276,10 +281,10 @@
     {
         switch ($translated_text){
             case 'Subtotaal' :
-                $translated_text = __("Dagprijs","rentalshop");
+                $translated_text = __("Daily price","rentalshop");
                 break;
             case 'Winkelmand Subtotaal' :
-                $translated_text = __("Dagprijs","rentalshop");
+                $translated_text = __("Daily price","rentalshop");
                 break;
         }
         return $translated_text;

@@ -4,8 +4,6 @@
 jQuery().ready(function()
 {
     jQuery("#deleteStatus").html(string1 + "0%");
-    console.log('Delete List:');
-    console.log(products);
     applyAjax();
 });
 
