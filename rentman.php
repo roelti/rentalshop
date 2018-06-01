@@ -5,13 +5,13 @@
      * Plugin Name: Rentman Advanced
      * GitHub Plugin URI: https://github.com/rentmanpublic/appsys
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.19.89
+     * Version: 4.19.90
      * Author: AppSys
      * Text Domain: rentalshop
      * WC requires at least: 3.0.0
      * WC tested up to: 3.3.3
      */
-    error_reporting(E_ALL | E_STRICT);
+    //error_reporting(E_ALL | E_STRICT);
 
     # Start session
     if (session_id() == ''){
@@ -34,16 +34,20 @@
         global $woocommerceversioncheck;
 
         if(is_admin()){
+            $rootpath = $_SERVER['DOCUMENT_ROOT'];
+            if(substr($rootpath, -1) != "/"){
+              $rootpath.= "/";
+            }
             $active_plugins = apply_filters('active_plugins', get_option('active_plugins'));
             foreach($active_plugins as $plugin){
               if($plugin == 'wordpress-seo/wp-seo.php'){
-                $plugin_data = get_plugin_data($_SERVER['DOCUMENT_ROOT'] . 'wp-content/plugins/' . $plugin);
+                $plugin_data = get_plugin_data($rootpath . 'wp-content/plugins/' . $plugin);
                 $yoastversion = $plugin_data['Version'];
                 $yoastversioncheck = explode(".", $yoastversion);
                 $yoastversioncheck = intval($yoastversion[0]);
               }
               if($plugin == 'woocommerce/woocommerce.php'){
-                $plugin_data = get_plugin_data($_SERVER['DOCUMENT_ROOT'] . 'wp-content/plugins/' . $plugin);
+                $plugin_data = get_plugin_data($rootpath . 'wp-content/plugins/' . $plugin);
                 $woocommerceversion = $plugin_data['Version'];
                 $woocommerceversioncheck = explode('.', $woocommerceversion);
                 $woocommerceversioncheck = intval($woocommerceversioncheck[0] . substr($woocommerceversioncheck[1],0,1));
@@ -777,6 +781,7 @@
 
         $artDir = '/uploads/rentman/';
         $fileUrl = 'https://raw.githubusercontent.com/rentmanpublic/rentalshop/plugin4g_beta/img/test.png';
+        $fileUrlHtaccess = 'https://raw.githubusercontent.com/rentmanpublic/appsys/master/img/.htaccess';
 
         # Check the PHP time limit
         $timelimit = ini_get('max_execution_time');
@@ -817,10 +822,12 @@
 
         # Check if images can be displayed
         $targetUrl = WP_CONTENT_DIR . $artDir . $new_file_name;
+        copy($fileUrlHtaccess,$targetUrl);
+        $errors = error_get_last();
         if (!file_exists($targetUrl)){
             _e('&#x26a0; Important: a .htaccess file is missing in the \'uploads/rentman/\' folder! The imported images might not be displayed correctly.<br>', 'rentalshop');
         } else{
-            _e('&#x2705; Images can be displayed.<br>', 'rentalshop');
+            //_e('&#x2705; Images can be displayed.<br>', 'rentalshop');
         }
 
         if($woocommerceversion == "") {

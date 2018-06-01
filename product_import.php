@@ -30,7 +30,7 @@
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
                 $parsed = json_decode($received, true);
-                $parsed = parseResponse($parsed);                
+                $parsed = parseResponse($parsed);
 
                 # Receive ID's of first and last product in response
                 $listLength = sizeof($parsed['response']['links']['Materiaal']);
