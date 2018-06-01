@@ -3,9 +3,9 @@
 
     /**
      * Plugin Name: Rentman Advanced
-     * GitHub Plugin URI: https://github.com/rentmanpublic/appsys
+     * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop/tree/appsys
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.19.91
+     * Version: 4.19.92
      * Author: AppSys
      * Text Domain: rentalshop
      * WC requires at least: 3.0.0
@@ -55,7 +55,7 @@
             }
             require 'plugin-update-checker/plugin-update-checker.php';
             $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	             'https://github.com/rentmanpublic/appsys',
+	             'https://github.com/rentmanpublic/rentalshop/tree/appsys',
 	              __FILE__,
 	               'unique-plugin-or-theme-slug'
             );
@@ -780,8 +780,8 @@
         }
 
         $artDir = '/uploads/rentman/';
-        $fileUrl = 'https://raw.githubusercontent.com/rentmanpublic/rentalshop/plugin4g_beta/img/test.png';
-        $fileUrlHtaccess = 'https://raw.githubusercontent.com/rentmanpublic/appsys/master/img/.htaccess';
+        $fileUrl = 'https://raw.githubusercontent.com/rentmanpublic/rentalshop/appsys/img/test.png';
+        $fileUrlHtaccess = 'https://raw.githubusercontent.com/rentmanpublic/rentalshop/appsys/img/.htaccess';
 
         # Check the PHP time limit
         $timelimit = ini_get('max_execution_time');
