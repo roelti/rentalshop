@@ -2,14 +2,14 @@
   // ------------- Adding the date fields for the rental period ------------- \\
   # Adds date fields to 'Rentable' products in the store
   function add_custom_field(){
-      global $post;
+    global $post;
       $pf = new WC_Product_Factory();
       $product = $pf->get_product($post->ID);
-      //$terms = get_the_terms($product->id, 'product_type');
-      //$product_type = !empty($terms) ? sanitize_title(current($terms)->name) : 'simple';
-      //if ($product_type == 'rentable'){
-
       if ($product->get_type() == 'rentable'){
+      /*$terms = get_the_terms($product->id, 'product_type');
+      $product_type = !empty($terms) ? sanitize_title(current($terms)->name) : 'simple';
+      if ($product_type == 'rentable'){*/
+      //if ($product->get_type() == 'rentable'){
           # Display stock quantity of current product if enabled
           if (get_option('plugin-rentman-checkstock') == 1){
               $stock = __(' in stock', 'rentalshop');

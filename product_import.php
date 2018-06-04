@@ -97,7 +97,7 @@
                         $warning2 = __('Make sure that the taxes in WooCommerce are set to the same value.</b>', 'rentalshop');
                         $taxwarning = $taxwarning . '<br>' . $warning2;
 
-                        # Prepare Script
+                        # Prepare Script                        
                         wp_register_script('admin_add_product', plugins_url('js/admin_import.js', __FILE__));
                         wp_localize_script('admin_add_product', 'products', $prod_array);
                         wp_localize_script('admin_add_product', 'folders', $images_array);
