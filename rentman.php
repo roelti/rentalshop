@@ -13,6 +13,7 @@
      */
     //error_reporting(E_ALL | E_STRICT);
 
+
     # Start session
     if (session_id() == ''){
         session_start();
