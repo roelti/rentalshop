@@ -2,14 +2,14 @@ Rentman 4G WooCommerce Plugin - Version Advanced 4.20.0 - By AppSys
 
 Release: 06-06-2018
 -----------------------------
--Products will be updated instead of deleted
--Better image management, delete and cleaning up of images if applicable
--Seo-friendly names for images
--Possibility to add alternative text to images
--Possibility to place a product in the spotlight
--Adding tags to products is also possible
--Integration of seo title, keyword and description within the Rentman app
--Possibility to import custom fields (for materials) created on the Rentman side
+-Products will be updated instead of deleted<br />
+-Better image management, delete and cleaning up of images if applicable<br />
+-Seo-friendly names for images<br />
+-Possibility to add alternative text to images<br />
+-Possibility to place a product in the spotlight<br />
+-Adding tags to products is also possible<br />
+-Integration of seo title, keyword and description within the Rentman app<br />
+-Possibility to import custom fields (for materials) created on the Rentman side<br />
 -Linking PDF files to a product
 
 Installation process
