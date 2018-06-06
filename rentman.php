@@ -3,7 +3,7 @@
 
     /**
      * Plugin Name: Rentman Advanced
-     * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop/tree/master
+     * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
      * Version: 4.20.0
      * Author: AppSys
@@ -56,7 +56,7 @@
             }
             require 'plugin-update-checker/plugin-update-checker.php';
             $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	             'https://github.com/rentmanpublic/rentalshop/tree/master',
+	             'https://github.com/rentmanpublic/rentalshop',
 	              __FILE__,
 	               'unique-plugin-or-theme-slug'
             );
