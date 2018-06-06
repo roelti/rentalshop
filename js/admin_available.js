@@ -1,8 +1,25 @@
 // ----- JavaScript functions for availability ----- \\
 
 // Initiate the availability functions
-jQuery().ready(function()
-{
+jQuery().ready(function(){
+    var minDate = jQuery("#start-date").attr("min");
+    jQuery('#start-date, #end-date').on('input',function(e){
+      if(jQuery("#start-date").val().length > 10){
+          jQuery("#start-date").val(minDate);
+      }
+      if(jQuery("#end-date").val().length > 10){
+          jQuery("#end-date").val(minDate);
+      }
+      if(jQuery("#start-date").val() < minDate){
+          jQuery("#start-date").val(minDate);
+      }
+      if(jQuery("#end-date").val() < minDate){
+          jQuery("#end-date").val(minDate);
+      }
+      if(jQuery("#start-date").val() > jQuery("#end-date").val()){
+          jQuery("#end-date").val(jQuery("#start-date").val());
+      }
+    });
     attachFunction();
     quickCheck();
 });
@@ -16,6 +33,8 @@ function attachFunction() {
 
 // Function that applies the availability check when changes are made on the page
 function quickCheck() {
+    jQuery(".availLog").html("...");
+    jQuery(".availLog").css("color", "#4C4C4C");
     if (document.contains(document.getElementsByName("start_date")[0])) {
         var fromDate = document.getElementsByName("start_date")[0].value;
         var toDate = document.getElementsByName("end_date")[0].value;
@@ -29,7 +48,8 @@ function quickCheck() {
         var toDate = endDate;
     }
     if (fromDate == null || toDate == null || fromDate == ""|| toDate == "" || fromDate > toDate){
-        document.getElementsByClassName("availLog")[0].innerHTML = "";
+        document.getElementsByClassName("availLog")[0].innerHTML = unavailable;
+        document.getElementsByClassName("availLog")[0].style = "color:red";
     }
     else {
         var productID = document.getElementsByClassName("sku")[0].innerText;
@@ -50,7 +70,6 @@ function quickCheck() {
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);
-                console.log(json);
                 var maxcon = json.response.value.maxconfirmed;
                 var maxopt = json.response.value.maxoption;
                 // Show correct message depending on the values of maxconfirmed and maxoption
@@ -69,10 +88,8 @@ function quickCheck() {
             }
         }
         var data = JSON.stringify({"requestType":"modulefunction","client":{"language":1,"type":"webshopplugin",
-            "version":"4.11.1"},"account":account,"token":token,"module":"Availability","parameters":{
+            "version":"4.10.4"},"account":account,"token":token,"module":"Availability","parameters":{
             "van":fromDate,"tot":toDate,"materiaal":productID,"aantal":totalamount},"method":"is_available"});
         xhr.send(data);
-        console.log(data);
-        console.log("Type of token: " + typeof(token));
     }
 }

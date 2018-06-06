@@ -1,10 +1,34 @@
-Rentman 4G WooCommerce Plugin - Version 4.11.1
+Rentman 4G WooCommerce Plugin - Version Advanced 4.20.0 - By AppSys
 
-Release: 15-03-2018
+Release: 06-06-2018
 -----------------------------
-After a long beta phase and extensive testing, the Rentman 4G WooCommerce plugin will not receive regular updates anymore. The User Manual (stored in the zip-file) contains an overview of frequently asked questions and answers. Unfortunately, support for the plugin will be limited. Customization of the plugin is mostly your own responsibility.
+-Products will be updated instead of deleted
+-Better image management, delete and cleaning up of images if applicable
+-Seo-friendly names for images
+-Possibility to add alternative text to images
+-Possibility to place a product in the spotlight
+-Adding tags to products is also possible
+-Integration of seo title, keyword and description within the Rentman app
+-Possibility to import custom fields (for materials) created on the Rentman side
+-Linking PDF files to a product
 
-* Please attach a WooCommerce system status report to your support ticket if you are still experiencing problems after consulting the User Manual.
-* Make sure to update Wordpress and WooCommerce regularly in order to prevent compatibility issues.
-* It is recommended to reset the products and categories if you are currently using an outdated version of the plugin (especially if you are still using version 4.9.0 or older).
-* The webshop plugin does not contain functionality to handle kits. Kits are handled as normal items and therefore the shown availability is incorrect. Because of this, kits are not correctly forwarded in the connected Rentman account. This is missing functionality that we will add in the future but not in the short term.
+Installation process
+-----------------------------
+1. If you already have an older version (lower then 4.20.0) of the plugin installed
+we recommend to deactivate and delete this first.
+2. Go to the Wordpress Admin Panel and upload the ZIP file in the plugins
+screen. Alternatively, you can also manually unzip the ZIP file in the
+wordpress/wp-content/plugins folder onto the server.
+3. Activate the Rentman plugin.
+4. Navigate to WooCommerce -> Rentman in the Wordpress admin panel.
+5. Submit your Rentman 4G login credentials to continue.
+6. When your credentials have been approved, press the 'Update Products'
+(=Import-tab) button to load all products from Rentman and their respective categories.
+7. After the import has finished, the plugin will display the tax rates that have
+been found in Rentman for the imported products. You have to create your
+own tax classes in WooCommerce that match these rates.
+8. Finally, check the settings for availability, discounts and stock display.
+
+Support
+-----------------------------
+<webdesign@appsysictgroup.com>

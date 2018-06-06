@@ -4,14 +4,12 @@
 jQuery().ready(function()
 {
     jQuery("#deleteStatus").html(string1 + "0%");
-    console.log('Delete List:');
-    console.log(products);
     applyAjax();
 });
 
 // Recursive function that sends product indices to PHP until the
 // whole array has been covered
-function applyAjax(){
+function applyAjax(){    
     jQuery.ajax({
         type: "POST",
         url: 'admin.php?page=rentman-shop&delete_products',
