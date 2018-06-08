@@ -1,6 +1,6 @@
 Rentman 4G WooCommerce Plugin - Version Advanced 4.20.1 - By AppSys
 
-Release: 06-06-2018
+Release: 08-06-2018
 -----------------------------
 -Products will be updated instead of deleted<br />
 -Better image management, delete and cleaning up of images if applicable<br />
