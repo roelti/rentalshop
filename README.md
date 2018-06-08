@@ -1,4 +1,4 @@
-Rentman 4G WooCommerce Plugin - Version Advanced 4.20.0 - By AppSys
+Rentman 4G WooCommerce Plugin - Version Advanced 4.20.1 - By AppSys
 
 Release: 06-06-2018
 -----------------------------

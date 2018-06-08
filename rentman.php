@@ -5,7 +5,7 @@
      * Plugin Name: Rentman Advanced
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.20.0
+     * Version: 4.20.1
      * Author: AppSys
      * Text Domain: rentalshop
      * WC requires at least: 3.0.0

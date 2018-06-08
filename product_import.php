@@ -30,7 +30,7 @@
                 # Send Request & Receive Response
                 $received = do_request($url, $message);
                 $parsed = json_decode($received, true);
-                $parsed = parseResponse($parsed);                
+                $parsed = parseResponse($parsed);
 
                 # Receive ID's of first and last product in response
                 $listLength = sizeof($parsed['response']['links']['Materiaal']);
@@ -266,14 +266,7 @@
                 if ($parsed['response']['items']['Materiaal'][$x]['data']['shop_featured']) {
                   $featured_on_home = "featured";
                   $featured_on_home_old = "yes";
-                }
-
-                # Get description, last modified date and btwcode from current product
-                $longdesc = $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_long'];
-                $fulldesc = $parsed['response']['items']['Materiaal'][$x]['data']['omschrijving'];
-
-                if ($longdesc == '')
-                    $longdesc = $fulldesc;
+                }                
 
                 # Put all product data in array
                 # If woocommerce_productid is empty an insert will take place, else the product already exists and will be updated
@@ -281,7 +274,7 @@
                     "id" => $x,
                     "name" => trim($parsed['response']['items']['Materiaal'][$x]['data']['naam']),
                     "cost" => $parsed['response']['items']['Materiaal'][$x]['data']['verhuurprijs'],
-                    "long_desc" => $longdesc,
+                    "long_desc" => $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_long'],
                     "short_desc" => $parsed['response']['items']['Materiaal'][$x]['data']['shop_description_short'],
                     "folder_id" => $parsed['response']['items']['Materiaal'][$x]['data']['folder'],
                     "mod_date" => $modDate,
