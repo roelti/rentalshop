@@ -10,7 +10,7 @@
      * Author: AppSys
      * Text Domain: rentalshop
      * WC requires at least: 3.0.0
-     * WC tested up to: 3.3.3
+     * WC tested up to: 3.4.2
      */
     //error_reporting(E_ALL | E_STRICT);
 
@@ -60,7 +60,7 @@
             }
             require 'plugin-update-checker/plugin-update-checker.php';
             $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-	             'https://github.com/rentmanpublic/rentalshop/',
+	             'https://github.com/rentmanpublic/rentalshop',
 	              __FILE__,
 	               'unique-plugin-or-theme-slug'
             );
