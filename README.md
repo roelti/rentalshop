@@ -2,8 +2,8 @@ Rentman 4G WooCommerce Plugin - Version Advanced 4.20.2 - By AppSys
 
 Update 4.20.2
 -----------------------------
--New user manual
--Some code refactoring
+-New user manual<br />
+-Some code refactoring<br />
 -Bugfix for get_plugin_data()
 
 Release: 20-06-2018
