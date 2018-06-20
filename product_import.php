@@ -1,4 +1,5 @@
 <?php
+    // ------------- V4.20.2 ------------- \\
     # convert date to timezone and give it a format
     function convertdate($modifieddate){
         $oDate = new DateTime($modifieddate);
@@ -266,7 +267,7 @@
                 if ($parsed['response']['items']['Materiaal'][$x]['data']['shop_featured']) {
                   $featured_on_home = "featured";
                   $featured_on_home_old = "yes";
-                }                
+                }
 
                 # Put all product data in array
                 # If woocommerce_productid is empty an insert will take place, else the product already exists and will be updated
@@ -621,6 +622,9 @@
     }
 
     function apicheck(){
+        if(!function_exists('get_plugin_data')){
+          require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        }
         $url = 'https://www.appsysit.be/rentman/apicheck.php';
         $fields = array(
             'website'         => get_site_url(),
@@ -647,10 +651,4 @@
             return true; # Product already exists
         }
     }
-
-
-
-
-
-
 ?>

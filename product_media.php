@@ -1,4 +1,5 @@
 <?php
+    // ------------- V4.20.2 ------------- \\
     // ------------- Image File Attachment Functions ------------- \\
     # Attach image file from Rentman to product in Woocommerce
     function attach_pdf($files, $post_id, $sku, $product_name, $token){
@@ -267,7 +268,7 @@
         $productName=substr($parsed['response']['items']['Files'][$file[1]]['data']['name'],0,-4);
       }
       $fileUrl = str_replace(' ', '%20', $file[0]);
-      $rentman_id = $file[1];     
+      $rentman_id = $file[1];
 
       # Get the extension and return when the file is incorrect
       $ext = pathinfo(parse_url($fileUrl)['path'], PATHINFO_EXTENSION);

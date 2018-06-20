@@ -1,6 +1,12 @@
-Rentman 4G WooCommerce Plugin - Version Advanced 4.20.1 - By AppSys
+Rentman 4G WooCommerce Plugin - Version Advanced 4.20.2 - By AppSys
 
-Release: 08-06-2018
+Update 4.20.2
+-----------------------------
+-New user manual
+-Some code refactoring
+-Bugfix for get_plugin_data()
+
+Release: 20-06-2018
 -----------------------------
 -Products will be updated instead of deleted<br />
 -Better image management, delete and cleaning up of images if applicable<br />
@@ -22,12 +28,13 @@ wordpress/wp-content/plugins folder onto the server.
 3. Activate the Rentman plugin.
 4. Navigate to WooCommerce -> Rentman in the Wordpress admin panel.
 5. Submit your Rentman 4G login credentials to continue.
-6. When your credentials have been approved, press the 'Update Products'
-(=Import-tab) button to load all products from Rentman and their respective categories.
-7. After the import has finished, the plugin will display the tax rates that have
+6. When your credentials have been approved, check the 'Settings'-tab for
+availability, discounts, stock display and the time zone you are in.
+7. Press the 'Update Products' (=Import-tab) button to load all products from
+Rentman and their respective categories.
+8. After the import has finished, the plugin will display the tax rates that have
 been found in Rentman for the imported products. You have to create your
 own tax classes in WooCommerce that match these rates.
-8. Finally, check the settings for availability, discounts and stock display.
 
 Support
 -----------------------------

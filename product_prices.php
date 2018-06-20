@@ -1,4 +1,5 @@
 <?php
+    // ------------- V4.20.2 ------------- \\
     // ------------- Main Product Price Functions ------------- \\
 
     # Show the customer discount and tax on the product page

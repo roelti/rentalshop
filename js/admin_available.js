@@ -1,3 +1,4 @@
+// ------------- V4.20.2 ------------- \\
 // ----- JavaScript functions for availability ----- \\
 
 // Initiate the availability functions

@@ -1,3 +1,4 @@
+// ------------- V4.20.2 ------------- \\
 // ----- JavaScript functions for updating the datepickers ----- \\
 // Attach function to #changePeriod button
 jQuery().ready(function(){

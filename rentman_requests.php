@@ -1,4 +1,5 @@
 <?php
+    // ------------- V4.20.2 ------------- \\
     // ------------- Rentman Request Functions ------------- \\
 
     // ---------------------------------\\
@@ -7,6 +8,9 @@
 
     # Returns base request used in all API requests
     function getBaseRequest($sRequestType){
+        if(!function_exists('get_plugin_data')){
+          require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        }
         return array(
             "requestType" => $sRequestType,
             "client" => array(

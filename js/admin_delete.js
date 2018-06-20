@@ -1,3 +1,4 @@
+// ------------- V4.20.2 ------------- \\
 // ----- JavaScript functions for product deletion ----- \\
 
 // Show delete message in the menu
@@ -9,7 +10,7 @@ jQuery().ready(function()
 
 // Recursive function that sends product indices to PHP until the
 // whole array has been covered
-function applyAjax(){    
+function applyAjax(){
     jQuery.ajax({
         type: "POST",
         url: 'admin.php?page=rentman-shop&delete_products',

@@ -1,4 +1,5 @@
 <?php
+    // ------------- V4.20.2 ------------- \\
     // ------------- custom fields to import ------------- \\
 
     # Custom fields for products if necessary (has to match with rentman)

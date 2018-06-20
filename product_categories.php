@@ -1,4 +1,5 @@
 <?php
+    // ------------- V4.20.2 ------------- \\
     // ------------- Rentman Product Category Functions ------------- \\
 
     # Names of (sub)folders have been imported
