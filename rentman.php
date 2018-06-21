@@ -265,6 +265,9 @@
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
         $result = curl_exec($ch);
+        if(curl_errno($ch)){
+          $error_msg = curl_error($ch);
+        }
         curl_close($ch);
 
         $current = "login";
