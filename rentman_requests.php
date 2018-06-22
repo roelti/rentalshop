@@ -269,7 +269,7 @@
     # Returns API request ready to be encoded in Json
     # Used for sending new project data to Rentman
     # Includes contact, relevant materials & rent dates
-    function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
+      function setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         # Get Order data and rent dates
         $order = new WC_Order($order_id);
         $comp = $order->get_billing_company();
@@ -359,7 +359,7 @@
                 "location_contact" => $location_contact
             );
             $object_data = saleRequest($order_data, $fees);
-        }
+        }        
 
         return $object_data;
     }

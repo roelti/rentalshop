@@ -5,15 +5,15 @@
     # Handles API Request for project creation
     function add_project($order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact){
         if (apply_filters('rentman/creating_project', true)) {
-            $url = receive_endpoint();
-            $token = get_option('plugin-rentman-token');
+              $url = receive_endpoint();
+              $token = get_option('plugin-rentman-token');
 
-            # Setup New Project Request to send JSON
-            $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
+              # Setup New Project Request to send JSON
+              $message = json_encode(setup_newproject_request($token, $order_id, $contact_id, $transport_id, $fees, $contact_person, $location_contact), JSON_PRETTY_PRINT);
 
-            # Send Request & Receive Response
-            do_request($url, $message);
-            //echo json_encode(json_decode($received), JSON_PRETTY_PRINT);
+              # Send Request & Receive Response
+              do_request($url, $message);
+              //echo json_encode(json_decode($received), JSON_PRETTY_PRINT);
         }
     }
 

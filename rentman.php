@@ -6,7 +6,7 @@
      * Plugin Name: Rentman Advanced
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.20.2
+     * Version: 4.20.3
      * Author: AppSys
      * Text Domain: rentalshop
      * WC requires at least: 3.0.0
@@ -36,23 +36,19 @@
         global $woocommerceversioncheck;
 
         if(is_admin()){
-            $rootpath = $_SERVER['DOCUMENT_ROOT'];
-            if(substr($rootpath, -1) != "/"){
-              $rootpath.= "/";
-            }
             $active_plugins = apply_filters('active_plugins', get_option('active_plugins'));
             if(!function_exists('get_plugin_data')){
               require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
             }
             foreach($active_plugins as $plugin){
               if($plugin == 'wordpress-seo/wp-seo.php'){
-                $plugin_data = get_plugin_data($rootpath . 'wp-content/plugins/' . $plugin);
+                $plugin_data = get_plugin_data(ABSPATH . 'wp-content/plugins/' . $plugin);
                 $yoastversion = $plugin_data['Version'];
                 $yoastversioncheck = explode(".", $yoastversion);
                 $yoastversioncheck = intval($yoastversion[0]);
               }
               if($plugin == 'woocommerce/woocommerce.php'){
-                $plugin_data = get_plugin_data($rootpath . 'wp-content/plugins/' . $plugin);
+                $plugin_data = get_plugin_data(ABSPATH . 'wp-content/plugins/' . $plugin);
                 $woocommerceversion = $plugin_data['Version'];
                 $woocommerceversioncheck = explode('.', $woocommerceversion);
                 $woocommerceversioncheck = intval($woocommerceversioncheck[0] . substr($woocommerceversioncheck[1],0,1));
