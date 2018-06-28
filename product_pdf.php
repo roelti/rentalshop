@@ -1,5 +1,4 @@
 <?php
-  // ------------- V4.20.2 ------------- \\
   // ------------- Pdf File Attachment Function ------------- \\
   # Adds a pdf download section to the description of a single product page
   function show_product_pdf($content){
@@ -28,4 +27,5 @@
       }
       return $content;
   }
+  
 ?>

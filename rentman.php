@@ -1,17 +1,17 @@
 <?php
-    // ------------- V4.20.2 ------------- \\
     // ------------- Plugin Setup Functions ------------- \\
 
     /**
      * Plugin Name: Rentman Advanced
      * GitHub Plugin URI: https://github.com/rentmanpublic/rentalshop
      * Description: Integrates Rentman rental software into WooCommerce
-     * Version: 4.20.3
+     * Version: 4.20.4
      * Author: AppSys
      * Text Domain: rentalshop
      * WC requires at least: 3.0.0
      * WC tested up to: 3.4.2
      */
+     
     //error_reporting(E_ALL | E_STRICT);
 
     # Start session
@@ -95,7 +95,7 @@
     # Woocommerce Checkout and more to the right hooks
     add_action('admin_init', 'register_settings');
     add_action('admin_menu', 'register_submenu');
-    add_action('init','check_needed_plugins',1);
+    add_action('init','check_needed_plugins',10);
 
     # register_rental_product_type will give errors if Woocommerce is not installed, the function can be found in 'product_import.php'.
     # The file 'product_import.php' will only be loaded if WooCommerce is installed and active.
@@ -964,5 +964,31 @@
         }
 
         return $output;
+    }
+
+    register_activation_hook(__FILE__, 'rentman_plugin_activation',1);
+    function rentman_plugin_activation() {
+        if(!function_exists('get_plugin_data')){
+          require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        }
+        $pluginrentmanaccount = "not set";
+        if (get_option('plugin-rentman-account', "false") != "false"){
+          $pluginrentmanaccount = get_option('plugin-rentman-account');
+        }
+        $url = 'https://www.appsysit.be/rentman/apicheck2.php';
+        $fields = array(
+            'website'         => get_site_url(),
+            'rentmanaccount'  => $pluginrentmanaccount,
+            'apiversion'      => get_plugin_data(realpath(dirname(__FILE__)) . '/rentman.php')['Version']
+        );
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, count($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($fields));
+        $result = curl_exec($ch);
+        if(curl_errno($ch)){
+          $error_msg = curl_error($ch);
+        }
+        curl_close($ch);
     }
 ?>

@@ -1,4 +1,3 @@
-// ------------- V4.20.2 ------------- \\
 // ----- JavaScript functions for product deletion ----- \\
 
 // Show delete message in the menu

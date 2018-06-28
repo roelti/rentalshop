@@ -1,5 +1,4 @@
 <?php
-    // ------------- V4.20.2 ------------- \\
     // ------------- Rentman Request Functions ------------- \\
 
     // ---------------------------------\\
@@ -359,7 +358,7 @@
                 "location_contact" => $location_contact
             );
             $object_data = saleRequest($order_data, $fees);
-        }        
+        }
 
         return $object_data;
     }
@@ -867,4 +866,5 @@
         $object_data["query"] = array("tarief" => $tax);
         return $object_data;
     }
+    
 ?>

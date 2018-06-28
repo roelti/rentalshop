@@ -1,12 +1,10 @@
-Rentman 4G WooCommerce Plugin - Version Advanced 4.20.2 - By AppSys
+Rentman 4G WooCommerce Plugin - Version Advanced 4.20.4 - By AppSys
 
-Update 4.20.2
+Update 4.20.4
 -----------------------------
--New user manual<br />
--Some code refactoring<br />
--Bugfix for get_plugin_data()
+-Some code refactoring
 
-Release: 20-06-2018
+Release: 28-06-2018 
 -----------------------------
 -Products will be updated instead of deleted<br />
 -Better image management, delete and cleaning up of images if applicable<br />

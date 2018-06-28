@@ -1,4 +1,3 @@
-// ------------- V4.20.2 ------------- \\
 // ----- JavaScript functions for tabs in wp-admin ----- \\
 // Make the tabs accessible without reloading the page
 jQuery().ready(function(){

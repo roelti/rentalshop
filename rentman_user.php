@@ -1,5 +1,4 @@
 <?php
-    // ------------- V4.20.2 ------------- \\
     // ------------- Main User Export Function ------------- \\
 
     # Checks if customer from new order already exists
@@ -94,4 +93,5 @@
             }
         }
     }
+    
 ?>

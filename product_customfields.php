@@ -1,5 +1,4 @@
 <?php
-    // ------------- V4.20.2 ------------- \\
     // ------------- custom fields to import ------------- \\
 
     # Custom fields for products if necessary (has to match with rentman)
@@ -10,4 +9,5 @@
     if(is_array(get_option('plugin-rentman-customfields'))){
       $customFields = get_option('plugin-rentman-customfields');
     }
+    
 ?>

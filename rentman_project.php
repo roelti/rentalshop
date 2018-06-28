@@ -1,5 +1,4 @@
 <?php
-    // ------------- V4.20.2 ------------- \\
     // ------------- API Request Functions ------------- \\
 
     # Handles API Request for project creation
@@ -108,4 +107,5 @@
     function display_dates_in_order($order){
         echo '<p><strong>' . __('Rental period', 'rentalshop') . ':</strong> ' . get_post_meta($order->get_id(), 'rental_period', true) . '</p>';
     }
+    
 ?>

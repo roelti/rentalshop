@@ -1,4 +1,3 @@
-// ------------- V4.20.2 ------------- \\
 // ----- JavaScript functions for product import ----- \\
 
 // Show import message in the menu

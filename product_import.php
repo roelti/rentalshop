@@ -1,5 +1,4 @@
 <?php
-    // ------------- V4.20.2 ------------- \\
     # convert date to timezone and give it a format
     function convertdate($modifieddate){
         $oDate = new DateTime($modifieddate);
@@ -654,4 +653,5 @@
             return true; # Product already exists
         }
     }
+    
 ?>

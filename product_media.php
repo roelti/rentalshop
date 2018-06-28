@@ -1,5 +1,4 @@
 <?php
-    // ------------- V4.20.2 ------------- \\
     // ------------- Image File Attachment Functions ------------- \\
     # Attach image file from Rentman to product in Woocommerce
     function attach_pdf($files, $post_id, $sku, $product_name, $token){
@@ -338,4 +337,5 @@
       $fileInformation = array($returnId, $save_path);
       return $fileInformation;
     }
+    
 ?>

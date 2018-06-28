@@ -1,5 +1,4 @@
 <?php
-  // ------------- V4.20.2 ------------- \\
   // ------------- Adding the date fields for the rental period ------------- \\
   # Adds date fields to 'Rentable' products in the store
   function add_custom_field(){
@@ -316,4 +315,5 @@
      }
      return $passed;
  }
+ 
 ?>
