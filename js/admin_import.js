@@ -18,8 +18,6 @@ function applyAjax(){
         data: JSON.stringify({ file_array : folders, array_index : arrayindex, prod_array : products, pdf_array : pdfs, basic_to_advanced: basictoadvanced}),
     	contentType: 'application/json; charset=utf-8',
         success: function(){
-        	  console.log('Current Array Index:');
-    		    console.log(arrayindex);
             var endindex = parseInt(arrayindex) + 5;
             if (endindex > products.length)
                 endindex = products.length;
@@ -43,7 +41,7 @@ function basictoAdvancedFirstImport(){
         url: 'admin.php?page=rentman-shop&basic_to_advanced',
         data: '',
         success: function(){
-            console.log("First import from basic to advanced done");
+            //console.log("First import from basic to advanced done");
         }
     });
 }

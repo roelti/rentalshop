@@ -1,28 +1,26 @@
 // ----- JavaScript functions for availability ----- \\
-
 // Initiate the availability functions
-jQuery().ready(function(){
-    var minDate = jQuery("#start-date").attr("min");
-    jQuery('#start-date, #end-date').on('input',function(e){
-      if(jQuery("#start-date").val().length > 10){
-          jQuery("#start-date").val(minDate);
+jQuery().ready(function() {
+  jQuery('#start-date, #end-date').datepicker({
+    minDate: new Date(),
+    language: jQuery(this).attr("data-language"),
+    autoClose: true,
+    onSelect: function (fd, d, picker) {
+      startdate = changeDateformat(jQuery('#start-date').val());
+      enddate = changeDateformat(jQuery('#end-date').val());
+      if(startdate > enddate){
+        jQuery("#end-date").val(jQuery("#start-date").val());
       }
-      if(jQuery("#end-date").val().length > 10){
-          jQuery("#end-date").val(minDate);
-      }
-      if(jQuery("#start-date").val() < minDate){
-          jQuery("#start-date").val(minDate);
-      }
-      if(jQuery("#end-date").val() < minDate){
-          jQuery("#end-date").val(minDate);
-      }
-      if(jQuery("#start-date").val() > jQuery("#end-date").val()){
-          jQuery("#end-date").val(jQuery("#start-date").val());
-      }
-    });
-    attachFunction();
-    quickCheck();
+      quickCheck();
+    }
+  }).attr('readonly','readonly');
+  attachFunction();
+  quickCheck();
 });
+
+function changeDateformat(dates) {
+  return parseInt(dates.substring(6,10) + dates.substring(3,5) + dates.substring(0,2));
+}
 
 // Adds availability function to the 'amount' field
 function attachFunction() {
@@ -33,19 +31,33 @@ function attachFunction() {
 
 // Function that applies the availability check when changes are made on the page
 function quickCheck() {
+    re = /^\d{1,2}\-\d{1,2}\-\d{4}$/;
+    if(!jQuery("#start-date").val().match(re)) {
+      jQuery("#start-date").val(jQuery("#start-date").attr("min"));
+    }
+    if(!jQuery("#end-date").val().match(re)) {
+      jQuery("#end-date").val(jQuery("#start-date").attr("min"));
+    }
+    startdate = changeDateformat(jQuery('#start-date').val());
+    enddate = changeDateformat(jQuery('#end-date').val());
+    if(startdate > enddate){
+      jQuery("#end-date").val(jQuery("#start-date").val());
+      enddate = startdate;
+    }
+
     jQuery(".availLog").html("...");
     jQuery(".availLog").css("color", "#4C4C4C");
     if (document.contains(document.getElementsByName("start_date")[0])) {
-        var fromDate = document.getElementsByName("start_date")[0].value;
-        var toDate = document.getElementsByName("end_date")[0].value;
+        var fromDate = startdate;
+        var toDate = enddate;
         if (fromDate != null && fromDate != "" && toDate != null && toDate != null){
         	var incDate = new Date(toDate);
         	incDate.setDate(incDate.getDate() + 1);
         	toDate = incDate.toISOString().substring(0,19);
         }
     } else {
-        var fromDate = startDate;
-        var toDate = endDate;
+        var fromDate = startdate;
+        var toDate = enddate;
     }
     if (fromDate == null || toDate == null || fromDate == ""|| toDate == "" || fromDate > toDate){
         document.getElementsByClassName("availLog")[0].innerHTML = unavailable;

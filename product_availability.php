@@ -33,6 +33,7 @@
               $fromDate = $dates['from_date'];
               $toDate = $dates['to_date'];
               $today = date("Y-m-d");
+              $datepickerlanguage = get_datepicker_translation(get_locale());
               # Check if the 'from' date is earlier than the 'to' date
               if (strtotime($fromDate) < strtotime($today))
                   $fromDate = $today;
@@ -41,16 +42,16 @@
               ?>
               <!-- actual HTML code for the date input fields -->
               <?php _e('From:', 'rentalshop');?>
-              <input type="date" name="start_date" id="start-date" onchange="quickCheck()" value="<?php echo $fromDate;?>" min="<?php echo $today;?>">
+              <input type="text" name="start_date" id="start-date" onchange="quickCheck()" value="<?php echo(format_date_picker_date($fromDate)); ?>" data-language='<?php echo($datepickerlanguage); ?>' min="<?php echo(format_date_picker_date($today)); ?>" /><br />
               <?php _e('To:', 'rentalshop');?>
-              <input type="date" name="end_date" id="end-date" onchange="quickCheck()" value="<?php echo $toDate;?>" min="<?php echo $today;?>">
+              <input type="text" name="end_date" id="end-date" onchange="quickCheck()" value="<?php echo(format_date_picker_date($toDate)); ?>" data-language='<?php echo($datepickerlanguage); ?>' />
               <p><?php _e('Important: You can change the rent dates for other materials that you want to rent in the cart!', 'rentalshop');?></p>
               <?php
           }
           else{ # Else, display the dates from the products in your shopping cart
               $dates = get_dates();
               ?>
-              <?php _e('<h3>Selected dates: </h3> <p><b>From </b>', 'rentalshop'); echo $dates['from_date']; _e('<b> to </b>', 'rentalshop'); echo $dates['to_date'];?></p>
+              <?php _e('<h3>Selected dates: </h3> <p><b>From </b>', 'rentalshop'); echo(format_date_picker_date($dates['from_date'])); _e('<b> to </b>', 'rentalshop'); echo(format_date_picker_date($dates['to_date'])); ?></p>
               <?php
           }
           # Only show the availability messages when 'check availability for sending' is allowed
@@ -86,13 +87,13 @@
               $enddate = $dates['to_date'];
               $sdate =& $startdate;
               $edate =& $enddate;
+              $datepickerlanguage = get_datepicker_translation(get_locale());
               ?>
               <form method="post">
                   <?php _e('From:', 'rentalshop'); ?>
-                  <input type="date" name="start_date" id="start-date" value="<?php echo $startdate; ?>" min="<?php echo $today;?>">
+                  <input type="text" name="start_date" id="start-date" value="<?php echo(format_date_picker_date($startdate)); ?>" data-language='<?php echo($datepickerlanguage); ?>' min="<?php echo(format_date_picker_date($today)); ?>" />
                   <?php _e('To:', 'rentalshop'); ?>
-                  <input type="date" name="end_date" id="end-date" value="<?php echo $enddate; ?>" min="<?php echo $today;?>"><br>
-
+                  <input type="text" name="end_date" id="end-date" value="<?php echo(format_date_picker_date($enddate)); ?>" data-language='<?php echo($datepickerlanguage); ?>' min="<?php echo(format_date_picker_date($today)); ?>" />
                   <!-- Update Button --></p>
               <input type="hidden" name="rm-update-dates">
               <input type="button" class="button button-primary" id="changePeriod" value="<?php _e('Update Dates', 'rentalshop');?>">
@@ -119,7 +120,7 @@
       if ($rentableProduct){
           $dates = get_dates();
           ?>
-          <?php _e('<h3>Selected dates </h3> <p class="rentman-rental-period"><b>From </b>', 'rentalshop'); echo $dates['from_date']; _e('<b> to </b>', 'rentalshop'); echo $dates['to_date'];?></p>
+          <?php _e('<h3>Selected dates </h3> <p class="rentman-rental-period"><b>From </b>', 'rentalshop'); echo(format_date_picker_date($dates['from_date'])); _e('<b> to </b>', 'rentalshop'); echo(format_date_picker_date($dates['to_date'])); ?></p>
           <?php
       }
   }
@@ -212,6 +213,12 @@
       $enddate = $dates['to_date'];
       $enddate = date("Y-m-j", strtotime("+1 day", strtotime($enddate)));
       # Register and localize the availability script
+      wp_register_style('style_datepicker', plugins_url('js/datepicker.css', __FILE__ ));
+      wp_enqueue_style('style_datepicker');
+      wp_register_script('admin_datepicker', plugins_url('js/admin_datepicker.js', __FILE__ ));
+      wp_enqueue_script('admin_datepicker');
+      wp_register_script('admin_datepicker_translation', plugins_url('js/admin_datepicker_translation.js', __FILE__ ));
+      wp_enqueue_script('admin_datepicker_translation');
       wp_register_script('admin_availability', plugins_url('js/admin_available.js', __FILE__ ));
       wp_localize_script('admin_availability', 'startDate', $dates['from_date']);
       wp_localize_script('admin_availability', 'endDate', $enddate);
@@ -228,10 +235,64 @@
   # Attach script to the 'update rental period' button
   function init_datepickers(){
       # Register and localize the datepickers script
+      wp_register_style('style_datepicker', plugins_url('js/datepicker.css', __FILE__ ));
+      wp_enqueue_style('style_datepicker');
+      wp_register_script('admin_datepicker', plugins_url('js/admin_datepicker.js', __FILE__ ));
+      wp_enqueue_script('admin_datepicker');
+      wp_register_script('admin_datepicker_translation', plugins_url('js/admin_datepicker_translation.js', __FILE__ ));
+      wp_enqueue_script('admin_datepicker_translation');
       wp_register_script('admin_datepickers', plugins_url('js/admin_datepickers.js', __FILE__ ));
       wp_localize_script('admin_datepickers', 'ajax_file_path', admin_url('admin-ajax.php'));
       wp_enqueue_script('admin_datepickers');
   }
+
+  # Format date for Jquery datepicker
+  function format_date_picker_date($formatdate) {
+    return substr($formatdate, -2) . "-" . substr($formatdate, 5, 2) . "-" . substr($formatdate, 0, 4);
+  }
+
+  # Get language code for datepicker
+  function get_datepicker_translation($languagecode){
+      $transvalues[] = ["cs", "cs_CZ"];
+      $transvalues[] = ["da", "da_DK"];
+      $transvalues[] = ["de", "de_DE"];
+      $transvalues[] = ["de", "de_CH"];
+      $transvalues[] = ["en", "en_US"];
+      $transvalues[] = ["en", "en_AU"];
+      $transvalues[] = ["en", "en_CA"];
+      $transvalues[] = ["en", "en_GB"];
+      $transvalues[] = ["es", "es_AR"];
+      $transvalues[] = ["es", "es_CL"];
+      $transvalues[] = ["es", "es_CO"];
+      $transvalues[] = ["es", "es_MX"];
+      $transvalues[] = ["es", "es_PE"];
+      $transvalues[] = ["es", "es_ES"];
+      $transvalues[] = ["es", "es_PR"];
+      $transvalues[] = ["es", "es_VE"];
+      $transvalues[] = ["fi", "fi"];
+      $transvalues[] = ["fr", "fr_BE"];
+      $transvalues[] = ["fr", "fr_CA"];
+      $transvalues[] = ["fr", "fr_FR"];
+      $transvalues[] = ["hu", "hu_HU"];
+      $transvalues[] = ["it", "it_IT"];
+      $transvalues[] = ["nl", "nl_BE"];
+      $transvalues[] = ["nl", "nl_NL"];
+      $transvalues[] = ["pl", "pl_PL"];
+      $transvalues[] = ["pt-BR", "pt_BR"];
+      $transvalues[] = ["pt", "pt_PT"];
+      $transvalues[] = ["ro", "ro_RO"];
+      $transvalues[] = ["sk", "sk_SK"];
+      $transvalues[] = ["zh", "zh_CN"];
+      $transvalues[] = ["zh", "zh_HK"];
+      $transvalues[] = ["zh", "zh_TW"];
+      $key = array_search($languagecode, array_column($transvalues,1));
+      if($key==""){
+        return "en";
+      }else{
+        return $transvalues[$key][0];
+      }
+  }
+
   # Main function for the availability check and relevant API requests
   function check_available($passed, $product_id, $quantity, $variation_id = '', $variations = ''){
      # Get the product and chosen dates
@@ -315,5 +376,5 @@
      }
      return $passed;
  }
- 
+
 ?>
