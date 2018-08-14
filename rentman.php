@@ -42,13 +42,13 @@
             }
             foreach($active_plugins as $plugin){
               if($plugin == 'wordpress-seo/wp-seo.php'){
-                $plugin_data = get_plugin_data(ABSPATH . 'wp-content/plugins/' . $plugin);
+                $plugin_data = $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
                 $yoastversion = $plugin_data['Version'];
                 $yoastversioncheck = explode(".", $yoastversion);
                 $yoastversioncheck = intval($yoastversion[0]);
               }
               if($plugin == 'woocommerce/woocommerce.php'){
-                $plugin_data = get_plugin_data(ABSPATH . 'wp-content/plugins/' . $plugin);
+                $plugin_data = $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
                 $woocommerceversion = $plugin_data['Version'];
                 $woocommerceversioncheck = explode('.', $woocommerceversion);
                 $woocommerceversioncheck = intval($woocommerceversioncheck[0] . substr($woocommerceversioncheck[1],0,1));
